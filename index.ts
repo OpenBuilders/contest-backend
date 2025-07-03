@@ -1,5 +1,6 @@
 import { sendMessage } from "nyx-bot-client";
 import client from "nyx-bot-client/nyx-client";
+import { initializeAPI } from "./api/api";
 import { handlerCallbackQueryAnalytics } from "./pipelines/callback_query/analytics";
 import { handlerCallbackQueryDefault } from "./pipelines/callback_query/default";
 import { handlerCallbackQueryFlood } from "./pipelines/callback_query/flood";
@@ -75,3 +76,5 @@ client.initialize({
 	},
 	benchmark: false,
 });
+
+initializeAPI();
