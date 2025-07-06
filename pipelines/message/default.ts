@@ -7,7 +7,7 @@ export const handlerMessageDefault: BotPipeline<"message", DBSchema> = async (
 ) => {
 	sendMessage({
 		chat_id: message.chat!.id!,
-		text: t("fa", "general.greet", {
+		text: t("en", "general.greet", {
 			name: message.from!.first_name,
 		}),
 		reply_markup: {

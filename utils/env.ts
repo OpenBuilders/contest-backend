@@ -19,6 +19,7 @@ const envScheme = z.object({
 	API_AUTH_TTL: z.coerce.number().default(3600),
 	API_JWT_SECRET: z.string().nonempty().optional(),
 	WEBHOOK_SECRET: z.string().nonempty().optional(),
+	API_VERSION: z.string().nonempty().default("0.0.0"),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);

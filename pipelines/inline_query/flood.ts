@@ -26,9 +26,9 @@ export const handlerInlineQueryFlood: BotPipeline<
 				{
 					type: "article",
 					id: "flood",
-					title: t("fa", "general.flood"),
+					title: t("en", "general.flood"),
 					input_message_content: {
-						message_text: t("fa", "general.flood"),
+						message_text: t("en", "general.flood"),
 					},
 				},
 			],

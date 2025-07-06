@@ -1,10 +1,12 @@
-import dictionary_default from "../i18n/fa";
+import dictionary_default from "../i18n/en";
+import dictionary_fa from "../i18n/fa";
 import type { ExtractParams, NestedPaths } from "../types";
 
 type Dictionary = typeof dictionary_default;
 
 const dictionaries = {
-	fa: dictionary_default,
+	en: dictionary_default,
+	fa: dictionary_fa,
 };
 
 type Languages = keyof typeof dictionaries;

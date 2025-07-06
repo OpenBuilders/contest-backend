@@ -17,7 +17,7 @@ export const handlerMessageFlood: BotPipeline<"message", DBSchema> = async (
 	if (flooding) {
 		sendMessage({
 			chat_id: message.chat.id,
-			text: t("fa", "general.flood"),
+			text: t("en", "general.flood"),
 		});
 
 		return NyxResponse.Finish;

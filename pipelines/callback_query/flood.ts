@@ -22,7 +22,7 @@ export const handlerCallbackQueryFlood: BotPipeline<
 	if (flooding) {
 		answerCallbackQuery({
 			callback_query_id: callback_query.id,
-			text: t("fa", "general.flood"),
+			text: t("en", "general.flood"),
 			cache_time: 300,
 			show_alert: true,
 		});

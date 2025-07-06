@@ -1,10 +1,33 @@
-export type DBDPXTGCRM = {
-	[key: string]: {
+export type DBSchema = {
+	contests: {
 		id?: number;
-		user_id: string;
-		date: number;
-		last_message_date: number;
+		owner_id: number;
+		moderators?: number[];
+		title: string;
+		description: string;
+		price: number;
+		public: boolean;
+		anonymous: boolean;
+		category?: number;
+		date_start: number;
+		date_end: number;
+		date_results?: number;
+	};
+
+	users: {
+		id?: number;
+		user_id: number;
+		first_name: string;
+		last_name?: string;
+		profile_photo?: string;
+		anonymous_profile: [number, string, string];
+		language: string;
+	};
+
+	participants: {
+		id?: number;
+		user_id: number;
+		contest_id: number;
+		submission: string;
 	};
 };
-
-export type DBSchema = {};

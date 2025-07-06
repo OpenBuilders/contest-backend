@@ -1,6 +1,12 @@
 import type { Handler } from "elysia";
 import { createSigner } from "fast-jwt";
+import type { PoolInjections } from "../../api";
+import dictionary_default from "../../i18n/en";
+import type { DBSchema } from "../../schema";
+import { transformUserAPI } from "../../transformers/user";
 import { env } from "../../utils/env";
+import { getRandomItemFromArray } from "../../utils/general";
+import { getRandomIntInclusive } from "../../utils/number";
 import { validateInitDataHash, validateInitDataTTL } from "../utils/tma";
 
 const jwtSigner = createSigner({
@@ -8,20 +14,60 @@ const jwtSigner = createSigner({
 	expiresIn: `${env.API_AUTH_TTL}s`,
 });
 
+const anonymous_aliases = {
+	adjectives: Object.keys(dictionary_default.aliases.adjectives),
+	animals: Object.keys(dictionary_default.aliases.animals),
+};
+
 export const routePOSTAuthorize: Handler = async (ctx) => {
 	const initData = JSON.parse((ctx.body as any).initDataUnsafe ?? "");
 
 	if (initData) {
-		initData.user = JSON.parse(initData.user);
+		initData.user =
+			typeof initData.user === "string"
+				? JSON.parse(initData.user)
+				: initData.user;
 		const validInitData = await validateInitDataHash(initData);
 
 		if (validInitData && validateInitDataTTL(initData)) {
+			const { db }: PoolInjections = ctx as any;
+
+			let user: DBSchema["users"] | undefined;
+
+			do {
+				user = (await db
+					.selectFrom("users")
+					.selectAll()
+					.where("user_id", "=", initData.user.id)
+					.executeTakeFirst()) as DBSchema["users"];
+
+				if (!user) {
+					await db
+						.insertInto("users")
+						.values({
+							user_id: initData.user.id,
+							first_name: initData.user.first_name,
+							last_name: initData.user.last_name,
+							anonymous_profile: JSON.stringify([
+								getRandomIntInclusive(0, 6),
+								getRandomItemFromArray(anonymous_aliases.adjectives)!,
+								getRandomItemFromArray(anonymous_aliases.animals)!,
+							]) as any,
+							language: "en",
+							profile_photo: initData.user.photo_url,
+						})
+						.execute();
+				}
+			} while (!user);
+
 			return {
 				status: "success",
 				result: {
 					token: jwtSigner({
 						user_id: initData.user.id,
 					}),
+					user: transformUserAPI(user),
+					version: env.API_VERSION,
 				},
 			};
 		}
