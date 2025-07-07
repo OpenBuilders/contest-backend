@@ -15,7 +15,7 @@
         "mysql2": "^3.14.1",
         "nyx-bot-client": "/usr/local/DPX/nyx-bot-client/",
         "redis": "^5.5.6",
-        "zod": "^3.25.71",
+        "zod": "^3.25.74",
       },
       "devDependencies": {
         "@types/bun": "^1.2.18",
@@ -160,7 +160,7 @@
 
     "undici-types": ["undici-types@7.8.0", "", {}, "sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw=="],
 
-    "zod": ["zod@3.25.71", "", {}, "sha512-BsBc/NPk7h8WsUWYWYL+BajcJPY8YhjelaWu2NMLuzgraKAz4Lb4/6K11g9jpuDetjMiqhZ6YaexFLOC0Ogi3Q=="],
+    "zod": ["zod@3.25.74", "", {}, "sha512-J8poo92VuhKjNknViHRAIuuN6li/EwFbAC8OedzI8uxpEPGiXHGQu9wemIAioIpqgfB4SySaJhdk0mH5Y4ICBg=="],
 
     "nyx-bot-client/@types/bun": ["@types/bun@1.2.17", "", { "dependencies": { "bun-types": "1.2.17" } }, "sha512-l/BYs/JYt+cXA/0+wUhulYJB6a6p//GTPiJ7nV+QHa8iiId4HZmnu/3J/SowP5g0rTiERY2kfGKXEK5Ehltx4Q=="],
 
