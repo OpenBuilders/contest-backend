@@ -6,8 +6,8 @@ export type DBSchema = {
 		title: string;
 		description: string;
 		price: number;
-		public: boolean;
-		anonymous: boolean;
+		public: number;
+		anonymous: number;
 		category?: number;
 		date_start: number;
 		date_end: number;
@@ -20,6 +20,7 @@ export type DBSchema = {
 		first_name: string;
 		last_name?: string;
 		profile_photo?: string;
+		premium?: number;
 		anonymous_profile: [number, string, string];
 		language: string;
 	};

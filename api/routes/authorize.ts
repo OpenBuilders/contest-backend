@@ -41,7 +41,42 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 					.where("user_id", "=", initData.user.id)
 					.executeTakeFirst()) as DBSchema["users"];
 
-				if (!user) {
+				if (user) {
+					const volatileParams = {
+						first_name: initData.user.first_name,
+						last_name: initData.user.last_name,
+						profile_photo: initData.user.photo_url,
+						premium: initData.user.is_premium ? 1 : 0,
+					};
+
+					if (
+						JSON.stringify(volatileParams) !==
+						JSON.stringify({
+							first_name: user!.first_name,
+							last_name: user!.last_name,
+							profile_photo: user!.profile_photo,
+							premium: user!.premium!,
+						})
+					) {
+						for (const key in volatileParams) {
+							// @ts-ignore
+							user[key] = volatileParams[key];
+						}
+
+						setTimeout(async () => {
+							await db
+								.updateTable("users")
+								.set({
+									first_name: initData.user.first_name,
+									last_name: initData.user.last_name,
+									profile_photo: initData.user.photo_url,
+									premium: initData.user.is_premium ? 1 : 0,
+								})
+								.where("user_id", "=", initData.user.id)
+								.execute();
+						});
+					}
+				} else {
 					await db
 						.insertInto("users")
 						.values({
@@ -55,6 +90,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 							]) as any,
 							language: "en",
 							profile_photo: initData.user.photo_url,
+							premium: initData.user.is_premium ? 1 : 0,
 						})
 						.execute();
 				}
