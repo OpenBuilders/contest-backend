@@ -896,6 +896,26 @@ const dictionary = {
 			zebra: "Zebra",
 		},
 	},
+	categories: {
+		tech: "Technology",
+		crypto: "Crypto & Blockchain",
+		design: "Design",
+		development: "Software Development",
+		ai: "AI & Machine Learning",
+		business: "Business & Startups",
+		marketing: "Marketing & Growth",
+		product: "Product & UX",
+		community: "Community Engagement",
+		gaming: "Gaming",
+		education: "Education & Learning",
+		photography: "Photography",
+		art: "Art & Illustration",
+		video: "Video Creation",
+		music: "Music",
+		memes: "Memes & Humor",
+		writing: "Writing & Blogging",
+		hackathon: "Hackathons",
+	},
 } as const;
 
 export default dictionary;

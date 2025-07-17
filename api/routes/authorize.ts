@@ -2,10 +2,12 @@ import type { Handler } from "elysia";
 import { createSigner } from "fast-jwt";
 import type { PoolInjections } from "../../api";
 import dictionary_default from "../../i18n/en";
+import { Categories } from "../../information/categories";
 import type { DBSchema } from "../../schema";
 import { transformUserAPI } from "../../transformers/user";
 import { env } from "../../utils/env";
 import { getRandomItemFromArray } from "../../utils/general";
+import { t } from "../../utils/i18n";
 import { getRandomIntInclusive } from "../../utils/number";
 import { validateInitDataHash, validateInitDataTTL } from "../utils/tma";
 
@@ -103,6 +105,12 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 						user_id: initData.user.id,
 					}),
 					user: transformUserAPI(user),
+					categories: Object.fromEntries(
+						Categories.map((category) => [
+							category,
+							t("en", `categories.${category}` as any),
+						]),
+					),
 					version: env.API_VERSION,
 				},
 			};
