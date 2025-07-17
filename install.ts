@@ -13,7 +13,7 @@ const workingDirectory = resolve(".");
 const serviceContent = `
 [Unit]
 Description=${description}
-After=network.target redis.service mysql.service nyx-bot-server.service nyx-bot-client-actions-server.service
+After=network.target redis.service mysql.service telegram-bot-api.service nyx-bot-server.service nyx-bot-client-actions-server.service
 
 [Service]
 ExecStart=/usr/bin/env /root/.bun/bin/bun ${indexPath}
