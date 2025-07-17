@@ -1,18 +1,17 @@
 export type DBSchema = {
 	contests: {
 		id?: number;
-      slug: string;
+		slug: string;
 		owner_id: number;
 		moderators?: number[];
 		title: string;
 		description: string;
 		price: number;
+		prize: string;
 		public: number;
 		anonymous: number;
 		category?: number;
-		date_start: number;
 		date_end: number;
-		date_results?: number;
 	};
 
 	users: {
