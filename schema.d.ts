@@ -1,6 +1,7 @@
 export type DBSchema = {
 	contests: {
 		id?: number;
+      slug: string;
 		owner_id: number;
 		moderators?: number[];
 		title: string;
