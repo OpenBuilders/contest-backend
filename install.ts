@@ -13,7 +13,7 @@ const workingDirectory = resolve(".");
 const serviceContent = `
 [Unit]
 Description=${description}
-After=network.target
+After=network.target redis.service mysql.service nyx-bot-server.service nyx-bot-client-actions-server.service
 
 [Service]
 ExecStart=/usr/bin/env /root/.bun/bin/bun ${indexPath}
@@ -24,8 +24,6 @@ Environment=NODE_ENV=production
 StandardOutput=journal
 StandardError=journal
 User=${process.env.SUDO_USER || process.env.USER || "bun"}
-# Adjust this if you need to set a group
-# Group=${process.env.USER}
 
 [Install]
 WantedBy=multi-user.target
