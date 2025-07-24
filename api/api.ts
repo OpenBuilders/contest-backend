@@ -6,6 +6,8 @@ import { pluginJWT } from "./plugins/jwt";
 import { pluginPools } from "./plugins/pools";
 import { routePOSTAuthorize } from "./routes/authorize";
 import { routePOSTBotWebhook } from "./routes/bot-webhook";
+import { routePOSTContestCreate } from "./routes/contest-create";
+import { routeGETContestImage } from "./routes/contest-image";
 import { routePOSTContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
 
@@ -14,11 +16,14 @@ export const initializeAPI = async () => {
 		API_PORT: z.coerce.number(),
 	}).parse(import.meta.env);
 
-	const bareRoutes = new Elysia().post("/bot-webhook", routePOSTBotWebhook);
+	const bareRoutes = new Elysia()
+		.post("/bot-webhook", routePOSTBotWebhook)
+		.get("/images/:name", routeGETContestImage);
 
 	const jwtGuardedRoutes = new Elysia()
 		.use(pluginJWT)
-		.post("/contests/my", routePOSTContestsMy);
+		.post("/contests/my", routePOSTContestsMy)
+		.post("/contest/create", routePOSTContestCreate);
 
 	const regularRoutes = new Elysia()
 		.get("/", routeGETDefault)

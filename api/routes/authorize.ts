@@ -3,6 +3,7 @@ import { createSigner } from "fast-jwt";
 import type { PoolInjections } from "../../api";
 import dictionary_default from "../../i18n/en";
 import { Categories } from "../../information/categories";
+import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { transformUserAPI } from "../../transformers/user";
 import { env } from "../../utils/env";
@@ -105,6 +106,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 						user_id: initData.user.id,
 					}),
 					user: transformUserAPI(user),
+					limits: limits,
 					categories: Object.fromEntries(
 						Categories.map((category) => [
 							category,
