@@ -9,15 +9,25 @@ export const routePOSTContestsMy: Handler = async (ctx) => {
 	// TODO: Moderator, Participant
 	const contests: Partial<DBSchema["contests"]>[] = await db
 		.selectFrom("contests")
-		.select(["slug", "title", "image", "theme", "date_end"])
+		.select([
+			"slug",
+			"title",
+			"image",
+			"theme",
+			"date_end",
+			"owner_id",
+			"prize",
+		])
 		.where("owner_id", "=", user_id)
-		.orderBy('id', 'desc')
+		.orderBy("id", "desc")
 		.execute();
 
 	return {
 		status: "success",
 		result: {
-			contests: contests.map(transformContestAPI),
+			contests: contests.map((contest) =>
+				transformContestAPI(contest, user_id),
+			),
 		},
 	};
 };
