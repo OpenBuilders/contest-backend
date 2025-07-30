@@ -5,6 +5,7 @@ import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
+import { domPurify } from "../../utils/dompurify";
 import { normalizeImageToWebP } from "../../utils/image";
 
 const validator = z.preprocess(
@@ -73,7 +74,13 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			slug: slug,
 			slug_moderator: slug_moderator,
 			title: data.title,
-			description: data.description ?? "",
+			description: domPurify.sanitize(data.description ?? "", {
+				ALLOWED_TAGS: limits.form.create.description.allowedTags,
+				ALLOWED_ATTR: limits.form.create.description.allowedAttrs,
+				ALLOW_ARIA_ATTR: false,
+				ALLOW_DATA_ATTR: false,
+				KEEP_CONTENT: true,
+			}),
 			category: data.category ?? undefined,
 			anonymous: data.anonymous ? 1 : 0,
 			date_end: Math.trunc(data.date.end / 1_000),

@@ -3,15 +3,17 @@ export const limits = {
 		create: {
 			title: {
 				minLength: 3,
-				maxLength: 64,
+				maxLength: 32,
 			},
 			description: {
 				minLength: 0,
 				maxLength: 2048,
+				allowedTags: ["b", "i", "u", "a", "strike", "br"],
+				allowedAttrs: ["href"],
 			},
 			prize: {
 				minLength: 0,
-				maxLength: 32,
+				maxLength: 16,
 			},
 			fee: {
 				min: 0,

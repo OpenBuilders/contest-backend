@@ -6,9 +6,19 @@ type TransformedContest = Partial<DBSchema["contests"]> & {
 
 export const transformContestAPI = (
 	contest: TransformedContest,
-	requester_id: number | undefined,
+	requester_id: number | undefined = undefined,
 ) => {
-	const { slug, title, image, date_end, owner_id, prize } = contest;
+	const {
+		slug,
+		title,
+		image,
+		date_end,
+		owner_id,
+		prize,
+		fee,
+		description,
+		anonymous: anonymousValue,
+	} = contest;
 
 	const theme: DBSchema["contests"]["theme"] = contest.theme
 		? JSON.parse(contest.theme as any)
@@ -22,5 +32,18 @@ export const transformContestAPI = (
 		}
 	}
 
-	return { slug, title, image, theme, date_end, role, prize };
+	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
+
+	return {
+		slug,
+		title,
+		image,
+		theme,
+		date_end,
+		role,
+		prize,
+		anonymous,
+		fee,
+		description,
+	};
 };

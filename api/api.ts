@@ -6,6 +6,7 @@ import { pluginJWT } from "./plugins/jwt";
 import { pluginPools } from "./plugins/pools";
 import { routePOSTAuthorize } from "./routes/authorize";
 import { routePOSTBotWebhook } from "./routes/bot-webhook";
+import { routePOSTContest } from "./routes/contest";
 import { routePOSTContestCreate } from "./routes/contest-create";
 import { routeGETContestImage } from "./routes/contest-image";
 import { routePOSTContestsMy } from "./routes/contests";
@@ -23,7 +24,8 @@ export const initializeAPI = async () => {
 	const jwtGuardedRoutes = new Elysia()
 		.use(pluginJWT)
 		.post("/contests/my", routePOSTContestsMy)
-		.post("/contest/create", routePOSTContestCreate);
+		.post("/contest/create", routePOSTContestCreate)
+		.post("/contest/:slug", routePOSTContest);
 
 	const regularRoutes = new Elysia()
 		.get("/", routeGETDefault)
