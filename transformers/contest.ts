@@ -18,6 +18,7 @@ export const transformContestAPI = (
 		fee,
 		description,
 		anonymous: anonymousValue,
+		verified: verifiedValue,
 	} = contest;
 
 	const theme: DBSchema["contests"]["theme"] = contest.theme
@@ -32,6 +33,8 @@ export const transformContestAPI = (
 		}
 	}
 
+	const verified = verifiedValue ? verifiedValue === 1 : undefined;
+
 	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
 
 	return {
@@ -45,5 +48,6 @@ export const transformContestAPI = (
 		anonymous,
 		fee,
 		description,
+		verified,
 	};
 };

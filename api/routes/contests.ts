@@ -17,6 +17,7 @@ export const routePOSTContestsMy: Handler = async (ctx) => {
 			"date_end",
 			"owner_id",
 			"prize",
+			"verified",
 		])
 		.where("owner_id", "=", user_id)
 		.orderBy("id", "desc")

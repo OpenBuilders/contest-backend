@@ -11,6 +11,7 @@ export type DBSchema = {
 		prize?: string;
 		public: number;
 		anonymous: number;
+		verified: number;
 		category?: string;
 		image?: string;
 		theme?: {

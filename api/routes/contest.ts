@@ -19,6 +19,7 @@ export const routePOSTContest: Handler = async (ctx) => {
 			"anonymous",
 			"fee",
 			"description",
+			"verified",
 		])
 		.where("slug", "=", ctx.params.slug)
 		.executeTakeFirst();
