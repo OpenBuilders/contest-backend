@@ -1,34 +1,45 @@
 import type { Handler } from "elysia";
 import type { JWTInjections, PoolInjections } from "../../api";
-import type { DBSchema } from "../../schema";
-import { transformContestAPI } from "../../transformers/contest";
 
-export const routePOSTContest: Handler = async (ctx) => {
+import {
+	annotateContestAPI,
+	transformContestAPI,
+} from "../../transformers/contest";
+
+export const routeGETContest: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
 
-	const contest: Partial<DBSchema["contests"]> | undefined = await db
+	const contest = await db
 		.selectFrom("contests")
+		.leftJoin("bookmarks", (join) =>
+			join
+				.onRef("bookmarks.contest_id", "=", "contests.id")
+				.on("bookmarks.user_id", "=", user_id),
+		)
 		.select([
-			"slug",
-			"title",
-			"image",
-			"theme",
-			"date_end",
-			"owner_id",
-			"prize",
-			"anonymous",
-			"fee",
-			"description",
-			"verified",
+			"contests.id",
+			"contests.slug",
+			"contests.title",
+			"contests.image",
+			"contests.theme",
+			"contests.date_end",
+			"contests.owner_id",
+			"contests.prize",
+			"contests.anonymous",
+			"contests.fee",
+			"contests.description",
+			"contests.verified",
+			"bookmarks.id as bookmark_id",
 		])
-		.where("slug", "=", ctx.params.slug)
+		.where("contests.slug", "=", ctx.params.slug)
 		.executeTakeFirst();
 
 	if (contest) {
 		return {
 			status: "success",
 			result: {
-				contest: transformContestAPI(contest, user_id),
+				contest: transformContestAPI(contest),
+				metadata: annotateContestAPI(contest, user_id),
 			},
 		};
 	}

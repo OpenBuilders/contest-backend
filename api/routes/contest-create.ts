@@ -90,6 +90,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			public: data.public ? 1 : 0,
 			theme: data.theme,
 			moderators: [],
+			verified: 0,
 		};
 
 		if (data.image) {

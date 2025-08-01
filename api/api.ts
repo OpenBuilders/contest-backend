@@ -6,10 +6,11 @@ import { pluginJWT } from "./plugins/jwt";
 import { pluginPools } from "./plugins/pools";
 import { routePOSTAuthorize } from "./routes/authorize";
 import { routePOSTBotWebhook } from "./routes/bot-webhook";
-import { routePOSTContest } from "./routes/contest";
+import { routeGETContest } from "./routes/contest";
+import { routePOSTContestBookmark } from "./routes/contest-bookmark";
 import { routePOSTContestCreate } from "./routes/contest-create";
 import { routeGETContestImage } from "./routes/contest-image";
-import { routePOSTContestsMy } from "./routes/contests";
+import { routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
 
 export const initializeAPI = async () => {
@@ -23,9 +24,10 @@ export const initializeAPI = async () => {
 
 	const jwtGuardedRoutes = new Elysia()
 		.use(pluginJWT)
-		.post("/contests/my", routePOSTContestsMy)
+		.get("/contests/my", routeGETContestsMy)
 		.post("/contest/create", routePOSTContestCreate)
-		.post("/contest/:slug", routePOSTContest);
+		.get("/contest/:slug", routeGETContest)
+		.post("/contest/:id/bookmark", routePOSTContestBookmark);
 
 	const regularRoutes = new Elysia()
 		.get("/", routeGETDefault)
@@ -44,6 +46,7 @@ export const initializeAPI = async () => {
 		.listen({
 			port: env.API_PORT,
 			hostname: env.API_HOST ?? "127.0.0.1",
+			development: false,
 		});
 
 	return app;

@@ -1,3 +1,5 @@
+export type BoolInt = 0 | 1;
+
 export type DBSchema = {
 	contests: {
 		id?: number;
@@ -9,9 +11,9 @@ export type DBSchema = {
 		description: string;
 		fee: number;
 		prize?: string;
-		public: number;
-		anonymous: number;
-		verified: number;
+		public: BoolInt;
+		anonymous: BoolInt;
+		verified?: BoolInt;
 		category?: string;
 		image?: string;
 		theme?: {
@@ -27,7 +29,7 @@ export type DBSchema = {
 		first_name: string;
 		last_name?: string;
 		profile_photo?: string;
-		premium?: number;
+		premium?: BoolInt;
 		anonymous_profile: [number, string, string];
 		language: string;
 	};
@@ -37,5 +39,11 @@ export type DBSchema = {
 		user_id: number;
 		contest_id: number;
 		submission: string;
+	};
+
+	bookmarks: {
+		id?: number;
+		user_id: number;
+		contest_id: number;
 	};
 };

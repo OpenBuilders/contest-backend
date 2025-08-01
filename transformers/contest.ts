@@ -4,16 +4,13 @@ type TransformedContest = Partial<DBSchema["contests"]> & {
 	role?: "owner" | "moderator" | "participant";
 };
 
-export const transformContestAPI = (
-	contest: TransformedContest,
-	requester_id: number | undefined = undefined,
-) => {
+export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 	const {
+		id,
 		slug,
 		title,
 		image,
 		date_end,
-		owner_id,
 		prize,
 		fee,
 		description,
@@ -25,6 +22,31 @@ export const transformContestAPI = (
 		? JSON.parse(contest.theme as any)
 		: undefined;
 
+	const verified = verifiedValue ? verifiedValue === 1 : undefined;
+
+	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
+
+	return {
+		id,
+		slug,
+		title,
+		image,
+		theme,
+		date_end,
+		prize,
+		anonymous,
+		fee,
+		description,
+		verified,
+	} as TransformedContest;
+};
+
+export const annotateContestAPI = (
+	contest: Partial<DBSchema["contests"]>,
+	requester_id: number | undefined = undefined,
+) => {
+	const { owner_id } = contest;
+
 	let role: TransformedContest["role"];
 
 	if (requester_id) {
@@ -33,21 +55,10 @@ export const transformContestAPI = (
 		}
 	}
 
-	const verified = verifiedValue ? verifiedValue === 1 : undefined;
-
-	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
+	const bookmarked = (contest as any).bookmark_id != null ? true : undefined;
 
 	return {
-		slug,
-		title,
-		image,
-		theme,
-		date_end,
 		role,
-		prize,
-		anonymous,
-		fee,
-		description,
-		verified,
+		bookmarked,
 	};
 };
