@@ -13,15 +13,21 @@ export const transformUserAPI = (user: DBSchema["users"]) => {
 
 	const anonymous_profile_transformed = JSON.parse(anonymous_profile as any);
 
-	anonymous_profile_transformed[1] = t(
-		language as any,
-		`aliases.adjectives.${anonymous_profile_transformed[1]}` as any,
-	);
+	anonymous_profile_transformed[1] = [
+		anonymous_profile_transformed[1],
+		t(
+			language as any,
+			`aliases.adjectives.${anonymous_profile_transformed[1]}` as any,
+		),
+	];
 
-	anonymous_profile_transformed[2] = t(
-		language as any,
-		`aliases.animals.${anonymous_profile_transformed[2]}` as any,
-	);
+	anonymous_profile_transformed[2] = [
+		anonymous_profile_transformed[2],
+		t(
+			language as any,
+			`aliases.animals.${anonymous_profile_transformed[2]}` as any,
+		),
+	];
 
 	return {
 		first_name,
