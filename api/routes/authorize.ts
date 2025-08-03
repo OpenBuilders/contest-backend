@@ -87,7 +87,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 							first_name: initData.user.first_name,
 							last_name: initData.user.last_name,
 							anonymous_profile: JSON.stringify([
-								getRandomIntInclusive(0, 7),
+								getRandomIntInclusive(0, 6),
 								getRandomItemFromArray(anonymous_aliases.adjectives)!,
 								getRandomItemFromArray(anonymous_aliases.animals)!,
 							]) as any,
