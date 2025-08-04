@@ -6,6 +6,7 @@ import type { JWTInjections, PoolInjections } from "../../api";
 import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { domPurify } from "../../utils/dompurify";
+import { events } from "../../utils/events";
 import { normalizeImageToWebP } from "../../utils/image";
 
 const validator = z.preprocess(
@@ -116,6 +117,17 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 		value.moderators = JSON.stringify(value.moderators) as any;
 
 		await db.insertInto("contests").values(value).execute();
+
+		const contest = await db
+			.selectFrom("contests")
+			.select(["id"])
+			.where("slug", "=", slug)
+			.executeTakeFirst();
+
+		events.emit("contestCreated", {
+			contest_id: contest!.id!,
+			user_id,
+		});
 
 		return {
 			status: "success",

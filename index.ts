@@ -13,6 +13,7 @@ import { handlerMessageFlood } from "./pipelines/message/flood";
 import { updateAnalyticsCounter } from "./utils/analytics";
 import { db } from "./utils/database";
 import { env } from "./utils/env";
+import { initializeEventHandlers } from "./utils/handlers";
 import { pools } from "./utils/pool";
 
 client.initialize({
@@ -76,3 +77,5 @@ client.initialize({
 });
 
 initializeAPI();
+
+initializeEventHandlers();

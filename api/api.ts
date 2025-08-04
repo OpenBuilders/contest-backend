@@ -10,6 +10,7 @@ import { routeGETContest } from "./routes/contest";
 import { routePOSTContestBookmark } from "./routes/contest-bookmark";
 import { routePOSTContestCreate } from "./routes/contest-create";
 import { routeGETContestImage } from "./routes/contest-image";
+import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
 
@@ -27,7 +28,8 @@ export const initializeAPI = async () => {
 		.get("/contests/my", routeGETContestsMy)
 		.post("/contest/create", routePOSTContestCreate)
 		.get("/contest/:slug", routeGETContest)
-		.post("/contest/:id/bookmark", routePOSTContestBookmark);
+		.post("/contest/:slug/bookmark", routePOSTContestBookmark)
+		.post("/contest/:slug/submit", routePOSTContestSubmit);
 
 	const regularRoutes = new Elysia()
 		.get("/", routeGETDefault)

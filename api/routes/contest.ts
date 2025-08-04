@@ -17,7 +17,7 @@ export const routeGETContest: Handler = async (ctx) => {
 				.on("bookmarks.user_id", "=", user_id),
 		)
 		.select([
-			"contests.id",
+			// "contests.id",
 			"contests.slug",
 			"contests.title",
 			"contests.image",

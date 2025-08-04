@@ -20,5 +20,17 @@ export const limits = {
 				max: 1_000,
 			},
 		},
+		participate: {
+			link: {
+				minLength: 3,
+				maxLength: 64,
+			},
+			description: {
+				minLength: 0,
+				maxLength: 1024,
+				allowedTags: ["b", "i", "u", "a", "strike", "br"],
+				allowedAttrs: ["href"],
+			},
+		},
 	},
 };
