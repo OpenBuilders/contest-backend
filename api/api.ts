@@ -9,6 +9,7 @@ import { routePOSTBotWebhook } from "./routes/bot-webhook";
 import { routeGETContest } from "./routes/contest";
 import { routePOSTContestBookmark } from "./routes/contest-bookmark";
 import { routePOSTContestCreate } from "./routes/contest-create";
+import { routePOSTContestDelete } from "./routes/contest-delete";
 import { routeGETContestImage } from "./routes/contest-image";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsMy } from "./routes/contests";
@@ -29,6 +30,7 @@ export const initializeAPI = async () => {
 		.post("/contest/create", routePOSTContestCreate)
 		.get("/contest/:slug", routeGETContest)
 		.post("/contest/:slug/bookmark", routePOSTContestBookmark)
+		.post("/contest/:slug/delete", routePOSTContestDelete)
 		.post("/contest/:slug/submit", routePOSTContestSubmit);
 
 	const regularRoutes = new Elysia()
