@@ -23,8 +23,8 @@
 		"kysely": "^0.28.4",
 		"mysql2": "^3.14.3",
 		"nyx-bot-client": "/usr/local/DPX/nyx-bot-client/",
-		"redis": "^5.7.0",
+		"redis": "^5.8.0",
 		"sharp": "^0.34.3",
-		"zod": "^4.0.14"
+		"zod": "^4.0.15"
 	}
 }
