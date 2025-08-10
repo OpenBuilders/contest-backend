@@ -17,7 +17,7 @@ export const routeGETContest: Handler = async (ctx) => {
 				.on("bookmarks.user_id", "=", user_id),
 		)
 		.select([
-			// "contests.id",
+			"contests.id",
 			"contests.slug",
 			"contests.title",
 			"contests.image",
@@ -39,7 +39,7 @@ export const routeGETContest: Handler = async (ctx) => {
 			status: "success",
 			result: {
 				contest: transformContestAPI(contest),
-				metadata: annotateContestAPI(contest, user_id),
+				metadata: await annotateContestAPI(contest, user_id),
 			},
 		};
 	}

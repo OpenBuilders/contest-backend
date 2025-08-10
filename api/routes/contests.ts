@@ -17,6 +17,7 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 				.on("bookmarks.user_id", "=", user_id),
 		)
 		.select([
+			"contests.id",
 			"contests.slug",
 			"contests.title",
 			"contests.image",
@@ -27,17 +28,30 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 			"contests.verified",
 			"bookmarks.id as bookmark_id",
 		])
-		.where("contests.owner_id", "=", user_id)
+		.where((eb) =>
+			eb.or([
+				eb("contests.owner_id", "=", user_id),
+				eb.exists(
+					eb
+						.selectFrom("moderators")
+						.whereRef("moderators.contest_id", "=", "contests.id")
+						.where("moderators.user_id", "=", user_id)
+						.selectAll(),
+				),
+			]),
+		)
 		.orderBy("contests.id", "desc")
 		.execute();
 
 	return {
 		status: "success",
 		result: {
-			contests: contests.map((contest) => ({
-				contest: transformContestAPI(contest),
-				metadata: annotateContestAPI(contest, user_id),
-			})),
+			contests: await Promise.all(
+				contests.map(async (contest) => ({
+					contest: transformContestAPI(contest),
+					metadata: await annotateContestAPI(contest, user_id),
+				})),
+			),
 		},
 	};
 };

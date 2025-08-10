@@ -17,7 +17,7 @@ export const pluginJWT = (app: Elysia) =>
 			}),
 		})
 		.derive(({ headers }) => {
-			const token = headers.authorization!.replace("Bearer ", "");
+			const token = (headers.authorization ?? "").replace("Bearer ", "");
 			try {
 				const jwt = jwtVerifier(token);
 

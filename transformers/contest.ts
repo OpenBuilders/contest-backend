@@ -1,7 +1,9 @@
 import type { DBSchema } from "../schema";
+import { db } from "../utils/database";
 
 type TransformedContest = Partial<DBSchema["contests"]> & {
 	role?: "owner" | "moderator" | "participant";
+	moderators_count?: number;
 };
 
 export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
@@ -41,18 +43,40 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 	} as TransformedContest;
 };
 
-export const annotateContestAPI = (
+export const annotateContestAPI = async (
 	contest: Partial<DBSchema["contests"]>,
 	requester_id: number | undefined = undefined,
 ) => {
-	const { owner_id } = contest;
+	const { id, owner_id } = contest;
 
 	let role: TransformedContest["role"];
+	let moderators_count: TransformedContest["moderators_count"];
 
 	if (requester_id) {
 		if (requester_id === owner_id) {
 			role = "owner";
+		} else {
+			const moderator = await db
+				.selectFrom("moderators")
+				.select(["id"])
+				.where("user_id", "=", requester_id)
+				.where("contest_id", "=", id!)
+				.executeTakeFirst();
+
+			if (moderator) {
+				role = "moderator";
+			}
 		}
+	}
+
+	if (role === "owner" && id) {
+		const result = await db
+			.selectFrom("moderators")
+			.select(({ fn }) => fn.countAll().as("count"))
+			.where("contest_id", "=", id)
+			.executeTakeFirst();
+
+		moderators_count = Number(result?.count ?? 0);
 	}
 
 	const bookmarked = (contest as any).bookmark_id != null ? true : undefined;
@@ -60,5 +84,6 @@ export const annotateContestAPI = (
 	return {
 		role,
 		bookmarked,
+		moderators_count,
 	};
 };

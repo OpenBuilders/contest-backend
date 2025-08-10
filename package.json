@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"devDependencies": {
-		"@types/bun": "^1.2.19"
+		"@types/bun": "^1.2.20"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
@@ -20,11 +20,11 @@
 		"fast-sha256": "^1.3.0",
 		"generic-pool": "^3.9.0",
 		"jsdom": "^26.1.0",
-		"kysely": "^0.28.4",
+		"kysely": "^0.28.5",
 		"mysql2": "^3.14.3",
 		"nyx-bot-client": "/usr/local/DPX/nyx-bot-client/",
 		"redis": "^5.8.0",
 		"sharp": "^0.34.3",
-		"zod": "^4.0.16"
+		"zod": "^4.0.17"
 	}
 }

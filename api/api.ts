@@ -11,6 +11,13 @@ import { routePOSTContestBookmark } from "./routes/contest-bookmark";
 import { routePOSTContestCreate } from "./routes/contest-create";
 import { routePOSTContestDelete } from "./routes/contest-delete";
 import { routeGETContestImage } from "./routes/contest-image";
+import {
+	routeGETContestModerators,
+	routeGETContestModeratorsInfo,
+	routePOSTContestModeratorsJoin,
+	routePOSTContestModeratorsRemove,
+	routePOSTContestModeratorsRevoke,
+} from "./routes/contest-moderators";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
@@ -29,6 +36,11 @@ export const initializeAPI = async () => {
 		.get("/contests/my", routeGETContestsMy)
 		.post("/contest/create", routePOSTContestCreate)
 		.get("/contest/:slug", routeGETContest)
+		.get("/contest/:slug/moderators", routeGETContestModerators)
+		.get("/contest/:slug/moderators/info", routeGETContestModeratorsInfo)
+		.post("/contest/:slug/moderators/join", routePOSTContestModeratorsJoin)
+		.post("/contest/:slug/moderators/revoke", routePOSTContestModeratorsRevoke)
+		.post("/contest/:slug/moderators/remove", routePOSTContestModeratorsRemove)
 		.post("/contest/:slug/bookmark", routePOSTContestBookmark)
 		.post("/contest/:slug/delete", routePOSTContestDelete)
 		.post("/contest/:slug/submit", routePOSTContestSubmit);

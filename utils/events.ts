@@ -50,6 +50,7 @@ export class EventEmitter<
 
 export type Events = {
 	contestCreated: { contest_id: number; user_id: number };
+	contestBeforeDelete: { contest_id: number; user_id: number };
 	contestDeleted: { contest_id: number; user_id: number };
 	contestBookmarked: { contest_id: number; user_id: number };
 	contestSubmitted: {

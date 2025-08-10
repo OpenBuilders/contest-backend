@@ -46,4 +46,10 @@ export type DBSchema = {
 		user_id: number;
 		contest_id: number;
 	};
+
+	moderators: {
+		id?: number;
+		user_id: number;
+		contest_id: number;
+	};
 };
