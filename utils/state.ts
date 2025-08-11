@@ -1,5 +1,6 @@
-import { createClient, type RedisClientType } from "redis";
+import type { RedisClientType } from "redis";
 import { env } from "./env";
+import { pools } from "./pool";
 
 type UserState = {
 	state?: string;
@@ -11,10 +12,7 @@ export const getState = async (
 	context: string,
 	redis?: RedisClientType,
 ): Promise<UserState> => {
-	const connection = redis ?? createClient();
-	if (!redis) {
-		await connection.connect();
-	}
+	const connection = redis ?? pools.redis;
 
 	const data = await connection.get(
 		`${env.BOT_USERNAME}-state-${context}-${user_id}`,
@@ -38,10 +36,7 @@ export const setState = async (
 	state?: UserState,
 	redis?: RedisClientType,
 ) => {
-	const connection = redis ?? createClient();
-	if (!redis) {
-		await connection.connect();
-	}
+	const connection = redis ?? pools.redis;
 
 	await connection.set(
 		`${env.BOT_USERNAME}-state-${context}-${user_id}`,

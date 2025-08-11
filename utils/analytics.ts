@@ -1,5 +1,5 @@
-import { createClient } from "redis";
 import { env } from "./env";
+import { pools } from "./pool";
 
 type Analytics = {
 	startup_time: number;
@@ -32,22 +32,17 @@ export const updateAnalyticsCounter = (index: keyof Analytics["requests"]) => {
 };
 
 setInterval(async () => {
-	const redis = createClient();
-	await redis.connect();
-
 	const stats = {
 		uptime: Math.trunc(Date.now() / 1000) - analytics.startup_time,
 		memory: process.memoryUsage(),
 		requests: analytics.requests,
 	};
 
-	await redis.publish(
+	await pools.redis.publish(
 		"nyx-analytics",
 		JSON.stringify({
 			client: env.BOT_USERNAME,
 			stats,
 		}),
 	);
-
-	redis.destroy();
 }, 5 * 60_000);

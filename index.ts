@@ -42,17 +42,14 @@ client.initialize({
 	},
 	injections: async () => {
 		updateAnalyticsCounter("total");
-		const redis = await pools.redis?.acquire();
 
 		return {
 			injections: {
 				db: db,
 				mysql: pools.mysql,
-				redis: redis as any,
+				redis: pools.redis,
 			},
-			onFinish: async () => {
-				await pools.redis?.release(redis);
-			},
+			onFinish: async () => {},
 		};
 	},
 	onStartup: async () => {

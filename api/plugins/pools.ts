@@ -5,14 +5,10 @@ import { pools } from "../../utils/pool";
 export const pluginPools = (app: Elysia) =>
 	app
 		.derive(async () => {
-			const redis = await pools.redis?.acquire();
-
 			return {
 				mysql: pools.mysql,
-				redis: redis,
+				redis: pools.redis,
 				db: db,
 			};
 		})
-		.onAfterHandle(async ({ redis }) => {
-			await pools.redis?.release(redis);
-		});
+		.onAfterHandle(async () => {});

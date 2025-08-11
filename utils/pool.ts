@@ -1,6 +1,6 @@
 import genereicPool from "generic-pool";
 import { createPool } from "mysql2";
-import { createClient } from "redis";
+import { createClientPool } from "redis";
 import { env } from "./env";
 
 export const pools = {
@@ -13,29 +13,25 @@ export const pools = {
 		maxIdle: 1,
 		idleTimeout: 60 * 60_000,
 	}),
-	redis: genereicPool.createPool(
+	redis: createClientPool(
+		{},
 		{
-			create: async () => {
-				const client = createClient();
-				await client.connect();
-				return client;
-			},
-			destroy: async (client) => {
-				client.destroy();
-			},
-			validate: async (client) => {
-				try {
-					await client.ping();
-					return true;
-				} catch {
-					return false;
-				}
-			},
+			minimum: 1,
+			maximum: env.POOL_SIZE_REDIS,
+			cleanupDelay: 30_000,
+		},
+	),
+	sample: genereicPool.createPool(
+		{
+			create: async () => {},
+			destroy: async () => {},
 		},
 		{
 			min: 1,
-			max: env.POOL_SIZE_REDIS,
+			max: 1,
 			idleTimeoutMillis: 30_000,
 		},
 	),
 };
+
+await pools.redis.connect();
