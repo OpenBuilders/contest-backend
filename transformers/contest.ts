@@ -4,6 +4,7 @@ import { db } from "../utils/database";
 type TransformedContest = Partial<DBSchema["contests"]> & {
 	role?: "owner" | "moderator" | "participant";
 	moderators_count?: number;
+	submissions_count?: number;
 };
 
 export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
@@ -51,6 +52,7 @@ export const annotateContestAPI = async (
 
 	let role: TransformedContest["role"];
 	let moderators_count: TransformedContest["moderators_count"];
+	let submissions_count: TransformedContest["submissions_count"];
 
 	if (requester_id) {
 		if (requester_id === owner_id) {
@@ -70,13 +72,21 @@ export const annotateContestAPI = async (
 	}
 
 	if (role === "owner" && id) {
-		const result = await db
+		const result_moderators = await db
 			.selectFrom("moderators")
 			.select(({ fn }) => fn.countAll().as("count"))
 			.where("contest_id", "=", id)
 			.executeTakeFirst();
 
-		moderators_count = Number(result?.count ?? 0);
+		moderators_count = Number(result_moderators?.count ?? 0);
+
+		const result_submissions = await db
+			.selectFrom("submissions")
+			.select(({ fn }) => fn.countAll().as("count"))
+			.where("contest_id", "=", id)
+			.executeTakeFirst();
+
+		submissions_count = Number(result_submissions?.count ?? 0);
 	}
 
 	const bookmarked = (contest as any).bookmark_id != null ? true : undefined;
@@ -85,5 +95,6 @@ export const annotateContestAPI = async (
 		role,
 		bookmarked,
 		moderators_count,
+		submissions_count,
 	};
 };

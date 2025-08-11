@@ -34,11 +34,13 @@ export type DBSchema = {
 		language: string;
 	};
 
-	participants: {
+	submissions: {
 		id?: number;
 		user_id: number;
 		contest_id: number;
 		submission: string;
+		likes?: number[];
+		dislikes?: number[];
 	};
 
 	bookmarks: {

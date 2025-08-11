@@ -18,6 +18,7 @@ import {
 	routePOSTContestModeratorsRemove,
 	routePOSTContestModeratorsRevoke,
 } from "./routes/contest-moderators";
+import { routeGETContestSubmissions } from "./routes/contest-submissions";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
@@ -35,15 +36,26 @@ export const initializeAPI = async () => {
 		.use(pluginJWT)
 		.get("/contests/my", routeGETContestsMy)
 		.post("/contest/create", routePOSTContestCreate)
-		.get("/contest/:slug", routeGETContest)
+
+		// Contest Manage Moderators
 		.get("/contest/:slug/moderators", routeGETContestModerators)
 		.get("/contest/:slug/moderators/info", routeGETContestModeratorsInfo)
 		.post("/contest/:slug/moderators/join", routePOSTContestModeratorsJoin)
 		.post("/contest/:slug/moderators/revoke", routePOSTContestModeratorsRevoke)
 		.post("/contest/:slug/moderators/remove", routePOSTContestModeratorsRemove)
+		// Contest Manage Moderators
+
+		// Contest Manage Submissions
+		.get("/contest/:slug/submissions", routeGETContestSubmissions)
+		// Contest Manage Submissions
+
+		// Contest Actions
 		.post("/contest/:slug/bookmark", routePOSTContestBookmark)
 		.post("/contest/:slug/delete", routePOSTContestDelete)
-		.post("/contest/:slug/submit", routePOSTContestSubmit);
+		.post("/contest/:slug/submit", routePOSTContestSubmit)
+		// Contest Actions
+
+		.get("/contest/:slug", routeGETContest);
 
 	const regularRoutes = new Elysia()
 		.get("/", routeGETDefault)
