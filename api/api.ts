@@ -18,7 +18,10 @@ import {
 	routePOSTContestModeratorsRemove,
 	routePOSTContestModeratorsRevoke,
 } from "./routes/contest-moderators";
-import { routeGETContestSubmissions } from "./routes/contest-submissions";
+import {
+	routeGETContestSubmissions,
+	routePOSTContestSubmissionsVote,
+} from "./routes/contest-submissions";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
@@ -47,6 +50,10 @@ export const initializeAPI = async () => {
 
 		// Contest Manage Submissions
 		.get("/contest/:slug/submissions", routeGETContestSubmissions)
+		.post(
+			"/contest/:slug/submissions/:id/vote",
+			routePOSTContestSubmissionsVote,
+		)
 		// Contest Manage Submissions
 
 		// Contest Actions
