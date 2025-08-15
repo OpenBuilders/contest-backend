@@ -20,6 +20,16 @@ export const limits = {
 				max: 1_000,
 			},
 		},
+		placement: {
+			name: {
+				minLength: 1,
+				maxLength: 16,
+			},
+			prize: {
+				minLength: 0,
+				maxLength: 16,
+			},
+		},
 		participate: {
 			link: {
 				minLength: 3,

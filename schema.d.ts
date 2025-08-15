@@ -1,5 +1,12 @@
 export type BoolInt = 0 | 1;
 
+export type Placement = {
+	id: number;
+	name: string;
+	prize?: string;
+	submissions: number[];
+};
+
 export type DBSchema = {
 	contests: {
 		id?: number;
@@ -20,6 +27,7 @@ export type DBSchema = {
 			backdrop?: number;
 			symbol?: string;
 		};
+		results?: Placement[];
 		date_end: number;
 	};
 
