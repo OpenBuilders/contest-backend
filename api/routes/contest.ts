@@ -29,6 +29,7 @@ export const routeGETContest: Handler = async (ctx) => {
 			"contests.fee",
 			"contests.description",
 			"contests.verified",
+			"contests.announced",
 			"bookmarks.id as bookmark_id",
 		])
 		.where("contests.slug", "=", ctx.params.slug)

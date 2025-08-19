@@ -106,6 +106,7 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 			};
 		}
 	}
+
 	return {
 		status: "failed",
 		result: {},

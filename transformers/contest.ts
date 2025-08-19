@@ -19,6 +19,7 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 		description,
 		anonymous: anonymousValue,
 		verified: verifiedValue,
+		announced: announcedValue,
 	} = contest;
 
 	const theme: DBSchema["contests"]["theme"] = contest.theme
@@ -28,6 +29,8 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 	const verified = verifiedValue ? verifiedValue === 1 : undefined;
 
 	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
+
+	const announced = announcedValue ? announcedValue === 1 : undefined;
 
 	return {
 		id,
@@ -41,6 +44,7 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 		fee,
 		description,
 		verified,
+		announced,
 	} as TransformedContest;
 };
 

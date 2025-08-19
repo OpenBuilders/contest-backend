@@ -28,6 +28,7 @@ import {
 	routePOSTContestPlacementDelete,
 	routePOSTContestPlacementOrder,
 	routePOSTContestPlacementUpdate,
+	routePOSTContestResultsAnnounce,
 } from "./routes/contest-results";
 import {
 	routeGETContestSubmissions,
@@ -71,6 +72,7 @@ export const initializeAPI = async () => {
 		.get("/contest/:slug/results", routeGETContestResults)
 		.post("/contest/:slug/results/create", routePOSTContestPlacementCreate)
 		.post("/contest/:slug/results/order", routePOSTContestPlacementOrder)
+		.post("/contest/:slug/results/announce", routePOSTContestResultsAnnounce)
 		.post("/contest/:slug/results/:id/update", routePOSTContestPlacementUpdate)
 		.post("/contest/:slug/results/:id/delete", routePOSTContestPlacementDelete)
 		// Contest Manage Results

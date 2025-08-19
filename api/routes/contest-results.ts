@@ -7,6 +7,7 @@ import {
 	annotateSubmission,
 	transformSubmission,
 } from "../../transformers/submission";
+import { events } from "../../utils/events";
 import { randomLong } from "../../utils/number";
 
 export const routeGETContestResults: Handler = async (ctx) => {
@@ -14,7 +15,7 @@ export const routeGETContestResults: Handler = async (ctx) => {
 
 	const contest = await db
 		.selectFrom("contests")
-		.select(["id", "results", "owner_id"])
+		.select(["id", "results", "owner_id", "announced"])
 		.where("slug", "=", ctx.params.slug)
 		.where("owner_id", "=", user_id)
 		.executeTakeFirst();
@@ -55,6 +56,7 @@ export const routeGETContestResults: Handler = async (ctx) => {
 					submission: transformSubmission(submission),
 					metadata: annotateSubmission(submission, user_id),
 				})),
+				announced: Boolean(contest.announced),
 			},
 		};
 	}
@@ -280,6 +282,43 @@ export const routePOSTContestPlacementDelete: Handler = async (ctx) => {
 
 			return routeGETContestResults(ctx);
 		}
+	}
+
+	return {
+		status: "failed",
+		result: {},
+	};
+};
+
+export const routePOSTContestResultsAnnounce: Handler = async (ctx) => {
+	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
+
+	const contest = await db
+		.selectFrom("contests")
+		.select(["id", "announced"])
+		.where("slug", "=", ctx.params.slug)
+		.where("owner_id", "=", user_id)
+		.executeTakeFirst();
+
+	if (contest && !contest.announced) {
+		await db
+			.updateTable("contests")
+			.set({
+				announced: 1,
+			})
+			.where("slug", "=", ctx.params.slug)
+			.where("owner_id", "=", user_id)
+			.executeTakeFirst();
+
+		events.emit("contestAnnounced", {
+			contest_id: contest.id,
+			user_id,
+		});
+
+		return {
+			status: "success",
+			result: {},
+		};
 	}
 
 	return {

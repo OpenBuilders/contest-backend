@@ -21,6 +21,7 @@ export type DBSchema = {
 		public: BoolInt;
 		anonymous: BoolInt;
 		verified?: BoolInt;
+		announced?: BoolInt;
 		category?: string;
 		image?: string;
 		theme?: {

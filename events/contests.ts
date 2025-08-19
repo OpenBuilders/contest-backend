@@ -19,6 +19,11 @@ export const handleContestBeforeDelete = async (
 		.deleteFrom("bookmarks")
 		.where("contest_id", "=", contest_id)
 		.execute();
+
+	await db
+		.deleteFrom("submissions")
+		.where("contest_id", "=", contest_id)
+		.execute();
 };
 
 export const handleContestDeleted = async (
@@ -29,6 +34,6 @@ export const handleContestBookmarked = (
 	data: Events["contestBookmarked"],
 ) => {};
 
-export const handleContestSubmitted = (data: Events["contestSubmitted"]) => {
-	console.log(data);
-};
+export const handleContestSubmitted = (data: Events["contestSubmitted"]) => {};
+
+export const handleContestAnnounced = (data: Events["contestAnnounced"]) => {};
