@@ -3,6 +3,8 @@ import type { Events } from "../utils/events";
 
 export const handleContestCreated = (data: Events["contestCreated"]) => {};
 
+export const handleContestUpdated = (data: Events["contestUpdated"]) => {};
+
 export const handleContestBeforeDelete = async (
 	data: Events["contestBeforeDelete"],
 ) => {
