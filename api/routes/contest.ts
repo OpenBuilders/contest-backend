@@ -28,6 +28,7 @@ export const routeGETContest: Handler = async (ctx) => {
 			"contests.anonymous",
 			"contests.fee",
 			"contests.description",
+			"contests.results",
 			"contests.verified",
 			"contests.announced",
 			"bookmarks.id as bookmark_id",
@@ -39,7 +40,7 @@ export const routeGETContest: Handler = async (ctx) => {
 		return {
 			status: "success",
 			result: {
-				contest: transformContestAPI(contest),
+				contest: await transformContestAPI(contest),
 				metadata: await annotateContestAPI(contest, user_id),
 			},
 		};

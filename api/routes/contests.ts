@@ -39,6 +39,13 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 						.where("moderators.user_id", "=", user_id)
 						.selectAll(),
 				),
+				eb.exists(
+					eb
+						.selectFrom("submissions")
+						.whereRef("submissions.contest_id", "=", "contests.id")
+						.where("submissions.user_id", "=", user_id)
+						.selectAll(),
+				),
 			]),
 		)
 		.orderBy("contests.id", "desc")
@@ -49,7 +56,7 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 		result: {
 			contests: await Promise.all(
 				contests.map(async (contest) => ({
-					contest: transformContestAPI(contest),
+					contest: await transformContestAPI(contest),
 					metadata: await annotateContestAPI(contest, user_id),
 				})),
 			),

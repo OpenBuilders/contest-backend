@@ -21,7 +21,7 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 		return {
 			status: "success",
 			result: {
-				contest: transformContestAPI(contest),
+				contest: await transformContestAPI(contest),
 			},
 		};
 	}

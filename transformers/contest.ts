@@ -1,5 +1,6 @@
-import type { DBSchema } from "../schema";
+import type { DBSchema, Placement } from "../schema";
 import { db } from "../utils/database";
+import { transformUserAPI } from "./user";
 
 type TransformedContest = Partial<DBSchema["contests"]> & {
 	role?: "owner" | "moderator" | "participant";
@@ -7,7 +8,9 @@ type TransformedContest = Partial<DBSchema["contests"]> & {
 	submissions_count?: number;
 };
 
-export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
+export const transformContestAPI = async (
+	contest: Partial<DBSchema["contests"]>,
+) => {
 	const {
 		id,
 		slug,
@@ -20,6 +23,7 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 		anonymous: anonymousValue,
 		verified: verifiedValue,
 		announced: announcedValue,
+		results: resultsValue,
 	} = contest;
 
 	const theme: DBSchema["contests"]["theme"] = contest.theme
@@ -31,6 +35,13 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
 
 	const announced = announcedValue ? announcedValue === 1 : undefined;
+
+	const results = resultsValue
+		? await populateContestResults(
+				JSON.parse(resultsValue as any),
+				Boolean(anonymousValue),
+			)
+		: undefined;
 
 	return {
 		id,
@@ -45,6 +56,7 @@ export const transformContestAPI = (contest: Partial<DBSchema["contests"]>) => {
 		description,
 		verified,
 		announced,
+		results,
 	} as TransformedContest;
 };
 
@@ -71,6 +83,17 @@ export const annotateContestAPI = async (
 
 			if (moderator) {
 				role = "moderator";
+			}
+
+			const participant = await db
+				.selectFrom("submissions")
+				.select(["id"])
+				.where("user_id", "=", requester_id)
+				.where("contest_id", "=", id!)
+				.executeTakeFirst();
+
+			if (participant) {
+				role = "participant";
 			}
 		}
 	}
@@ -101,4 +124,77 @@ export const annotateContestAPI = async (
 		moderators_count,
 		submissions_count,
 	};
+};
+
+const populateContestResults = async (
+	placements: Placement[],
+	anonymous?: boolean,
+) => {
+	if (placements.length === 0) return [];
+
+	const submission_ids = [...new Set(placements.flatMap((i) => i.submissions))];
+
+	const submissions = await db
+		.selectFrom("submissions")
+		.select(["user_id", "id"])
+		.where("id", "in", submission_ids.length > 0 ? submission_ids : [-1])
+		.execute();
+
+	const user_ids = [...new Set(submissions.flatMap((i) => i.user_id))];
+	const users = (
+		await db
+			.selectFrom("users")
+			.select([
+				"anonymous_profile",
+				"first_name",
+				"last_name",
+				"profile_photo",
+				"user_id",
+				"language",
+			])
+			.where("user_id", "in", user_ids.length > 0 ? user_ids : [-1])
+			.execute()
+	).map((i) => transformUserAPI(i as any));
+
+	const results = placements.map((placement) => {
+		const { name, prize } = placement;
+
+		return {
+			name,
+			prize,
+			submissions: placement.submissions
+				.map((submission_id) => {
+					const submission = submissions.find((i) => i.id === submission_id);
+					if (!submission) return undefined;
+
+					const user = users.find((i) => i.user_id === submission.user_id);
+					if (!user) return undefined;
+
+					const {
+						anonymous_profile,
+						first_name,
+						last_name,
+						profile_photo,
+						user_id,
+					} = user;
+
+					if (anonymous === false) {
+						return {
+							anonymous_profile,
+							first_name,
+							last_name,
+							profile_photo,
+							user_id,
+						};
+					}
+
+					return {
+						anonymous_profile,
+					};
+				})
+				.filter(Boolean),
+		};
+	});
+
+	return results;
 };
