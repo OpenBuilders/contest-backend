@@ -5,6 +5,9 @@ import {
 	annotateContestAPI,
 	transformContestAPI,
 } from "../../transformers/contest";
+import { getGallery } from "../utils/gallery";
+
+const gallery = await getGallery();
 
 export const routeGETContestsMy: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -60,6 +63,15 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 					metadata: await annotateContestAPI(contest, user_id),
 				})),
 			),
+		},
+	};
+};
+
+export const routeGETContestsGallery: Handler = async () => {
+	return {
+		status: "success",
+		result: {
+			gallery,
 		},
 	};
 };

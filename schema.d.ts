@@ -7,6 +7,28 @@ export type Placement = {
 	submissions: number[];
 };
 
+export type GallerySliderItem = {
+	image: string;
+	link: {
+		url: string;
+		internal?: boolean;
+	};
+};
+
+export type GallerySlider = {
+	type: "slider";
+	items_per_view?: number;
+	items: GallerySliderItem[];
+};
+
+export type GallerySection = {
+	type: "section";
+	title: string;
+	items: Pick<DBSchema["contests"], "slug" | "title" | "image" | "theme">[];
+};
+
+export type GalleryItem = GallerySlider | GallerySection;
+
 export type DBSchema = {
 	contests: {
 		id?: number;

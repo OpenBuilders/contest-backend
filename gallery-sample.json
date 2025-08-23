@@ -1,0 +1,11 @@
+[
+	{
+		"type": "slider",
+		"items": []
+	},
+	{
+		"type": "section",
+		"title": "xyz",
+		"items": [1, 2, 3]
+	}
+]

@@ -4,6 +4,7 @@ import z from "zod";
 import { env } from "../utils/env";
 import { pluginJWT } from "./plugins/jwt";
 import { pluginPools } from "./plugins/pools";
+import { routeGETAchievementsMy } from "./routes/achievements";
 import { routePOSTAuthorize } from "./routes/authorize";
 import { routePOSTBotWebhook } from "./routes/bot-webhook";
 import { routeGETContest } from "./routes/contest";
@@ -35,9 +36,8 @@ import {
 	routePOSTContestSubmissionsVote,
 } from "./routes/contest-submissions";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
-import { routeGETContestsMy } from "./routes/contests";
+import { routeGETContestsGallery, routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
-import { routeGETAchievementsMy } from "./routes/achievements";
 
 export const initializeAPI = async () => {
 	z.object({
@@ -51,6 +51,7 @@ export const initializeAPI = async () => {
 	const jwtGuardedRoutes = new Elysia()
 		.use(pluginJWT)
 		.get("/contests/my", routeGETContestsMy)
+		.get("/contests/gallery", routeGETContestsGallery)
 		.get("/achievements/my", routeGETAchievementsMy)
 		.post("/contest/create", routePOSTContestCreate)
 
