@@ -10,6 +10,7 @@ type TransformedContest = Partial<DBSchema["contests"]> & {
 
 export const transformContestAPI = async (
 	contest: Partial<DBSchema["contests"]>,
+	anonymous?: boolean,
 ) => {
 	const {
 		id,
@@ -32,14 +33,14 @@ export const transformContestAPI = async (
 
 	const verified = verifiedValue ? verifiedValue === 1 : undefined;
 
-	const anonymous = anonymousValue ? anonymousValue === 1 : undefined;
+	anonymous = anonymous ?? (anonymousValue ? anonymousValue === 1 : undefined);
 
 	const announced = announcedValue ? announcedValue === 1 : undefined;
 
 	const results = resultsValue
 		? await populateContestResults(
 				JSON.parse(resultsValue as any),
-				Boolean(anonymousValue),
+				Boolean(anonymous),
 			)
 		: undefined;
 
