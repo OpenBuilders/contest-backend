@@ -9,10 +9,7 @@ export type Placement = {
 
 export type GallerySliderItem = {
 	image: string;
-	link: {
-		url: string;
-		internal?: boolean;
-	};
+	url: string;
 };
 
 export type GallerySlider = {
