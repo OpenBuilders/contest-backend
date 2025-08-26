@@ -1,7 +1,44 @@
+import { sleep } from "bun";
+import { sendMessage } from "nyx-bot-client";
+import { miniAppInternalURL } from "../information/general";
 import { db } from "../utils/database";
 import type { Events } from "../utils/events";
+import { t } from "../utils/i18n";
 
-export const handleContestCreated = (data: Events["contestCreated"]) => {};
+export const handleContestCreated = async (data: Events["contestCreated"]) => {
+	const { contest_id } = data;
+
+	const contest = await db
+		.selectFrom("contests")
+		.select(["owner_id", "title", "slug"])
+		.where("id", "=", contest_id)
+		.executeTakeFirst();
+
+	if (!contest) return;
+
+	const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
+
+	sendMessage({
+		chat_id: contest.owner_id,
+		text: t("en", "notifications.created.text", {
+			contest_name: contest.title,
+			contest_url: contest_url,
+		}),
+		link_preview_options: {
+			is_disabled: true,
+		},
+		reply_markup: {
+			inline_keyboard: [
+				[
+					{
+						text: t("en", "notifications.created.buttons.view"),
+						url: contest_url,
+					},
+				],
+			],
+		},
+	});
+};
 
 export const handleContestUpdated = (data: Events["contestUpdated"]) => {};
 
@@ -34,6 +71,189 @@ export const handleContestBookmarked = (
 	data: Events["contestBookmarked"],
 ) => {};
 
-export const handleContestSubmitted = (data: Events["contestSubmitted"]) => {};
+export const handleContestSubmitted = async (
+	data: Events["contestSubmitted"],
+) => {
+	const { contest_id, user_id } = data;
 
-export const handleContestAnnounced = (data: Events["contestAnnounced"]) => {};
+	const contest = await db
+		.selectFrom("contests")
+		.select(["owner_id", "title", "slug"])
+		.where("id", "=", contest_id)
+		.executeTakeFirst();
+
+	if (!contest) return;
+
+	const participant = await db
+		.selectFrom("users")
+		.select(["first_name", "last_name", "language", "username"])
+		.where("user_id", "=", user_id)
+		.executeTakeFirst();
+
+	if (!participant) return;
+
+	const submission = await db
+		.selectFrom("submissions")
+		.select(["id", "submission"])
+		.where("contest_id", "=", contest_id)
+		.where("user_id", "=", user_id)
+		.executeTakeFirst();
+
+	if (!submission) return;
+
+	const moderators = await db
+		.selectFrom("moderators")
+		.select(["user_id"])
+		.where("contest_id", "=", contest_id)
+		.execute();
+
+	const { link } = JSON.parse(submission.submission);
+
+	const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
+	const submission_url = `${miniAppInternalURL}?startapp=submission-${contest.slug}-${submission.id}`;
+
+	// Notify the participant
+	await sendMessage({
+		chat_id: user_id,
+		text: t(
+			(participant.language ?? "en") as any,
+			"notifications.submitted.user.text",
+			{
+				contest_name: contest.title,
+				contest_url: contest_url,
+			},
+		),
+		link_preview_options: {
+			is_disabled: true,
+		},
+		reply_markup: {
+			inline_keyboard: [
+				[
+					{
+						text: t("en", "notifications.submitted.user.buttons.view"),
+						url: link,
+					},
+				],
+			],
+		},
+	});
+
+	// Notify the owner
+	await sendMessage({
+		chat_id: contest.owner_id,
+		text: t("en", "notifications.submitted.owner.text", {
+			contest_name: contest.title,
+			contest_url: contest_url,
+			info: [
+				[
+					"👤",
+					`<a href="tg://user?id=${user_id}">${[participant.first_name, participant.last_name].filter(Boolean).join(" ")}</a>`,
+				].join(" "),
+				["🆔", participant.username ? `@${participant.username}` : "∅"].join(
+					" ",
+				),
+				["🪪", user_id].join(" "),
+			].join("\n"),
+		}),
+		link_preview_options: {
+			is_disabled: true,
+		},
+		reply_markup: {
+			inline_keyboard: [
+				[
+					{
+						text: t("en", "notifications.submitted.owner.buttons.view"),
+						url: submission_url,
+					},
+				],
+			],
+		},
+	});
+
+	// Notify the moderators
+	for (const moderator of moderators) {
+		await sendMessage({
+			chat_id: moderator.user_id,
+			text: t("en", "notifications.submitted.moderator.text", {
+				contest_name: contest.title,
+				contest_url: contest_url,
+			}),
+			link_preview_options: {
+				is_disabled: true,
+			},
+			reply_markup: {
+				inline_keyboard: [
+					[
+						{
+							text: t("en", "notifications.submitted.moderator.buttons.view"),
+							url: submission_url,
+						},
+					],
+				],
+			},
+		});
+
+		await sleep(250);
+	}
+};
+
+export const handleContestAnnounced = async (
+	data: Events["contestAnnounced"],
+) => {
+	const { contest_id } = data;
+
+	const contest = await db
+		.selectFrom("contests")
+		.select(["owner_id", "title", "slug"])
+		.where("id", "=", contest_id)
+		.executeTakeFirst();
+
+	if (!contest) return;
+
+	const participants = await db
+		.selectFrom("submissions")
+		.select(["user_id"])
+		.where("contest_id", "=", contest_id)
+		.execute();
+
+	const moderators = await db
+		.selectFrom("moderators")
+		.select(["user_id"])
+		.where("contest_id", "=", contest_id)
+		.execute();
+
+	const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
+
+	const user_ids = [
+		...new Set([
+			contest.owner_id,
+			...moderators.flatMap((i) => i.user_id),
+			...participants.flatMap((i) => i.user_id),
+		]),
+	];
+
+	for (const user_id of user_ids) {
+		await sendMessage({
+			chat_id: user_id,
+			text: t("en", "notifications.results.participants.text", {
+				contest_name: contest.title,
+				contest_url: contest_url,
+			}),
+			link_preview_options: {
+				is_disabled: true,
+			},
+			reply_markup: {
+				inline_keyboard: [
+					[
+						{
+							text: t("en", "notifications.results.participants.buttons.view"),
+							url: contest_url,
+						},
+					],
+				],
+			},
+		});
+
+		await sleep(250);
+	}
+};

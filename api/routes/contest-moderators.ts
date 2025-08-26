@@ -3,6 +3,7 @@ import type { Handler } from "elysia";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { transformContestAPI } from "../../transformers/contest";
+import { events } from "../../utils/events";
 
 export const routeGETContestModerators: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -104,6 +105,11 @@ export const routePOSTContestModeratorsJoin: Handler = async (ctx) => {
 				})
 				.execute();
 
+			events.emit("moderatorJoined", {
+				contest_id: contest.id,
+				user_id: user_id,
+			});
+
 			return {
 				status: "success",
 				result: {},
@@ -140,6 +146,11 @@ export const routePOSTContestModeratorsRevoke: Handler = async (ctx) => {
 			})
 			.where("id", "=", contest.id)
 			.execute();
+
+		events.emit("moderatorsLinkRevoked", {
+			contest_id: contest.id,
+			user_id: user_id,
+		});
 
 		return {
 			status: "success",
@@ -181,6 +192,11 @@ export const routePOSTContestModeratorsRemove: Handler = async (ctx) => {
 				.where("contest_id", "=", contest.id)
 				.where("user_id", "=", schema.data.user_id)
 				.execute();
+
+			events.emit("moderatorRemoved", {
+				contest_id: contest.id,
+				user_id: schema.data.user_id,
+			});
 
 			return await routeGETContestModerators(ctx);
 		}

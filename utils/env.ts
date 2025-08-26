@@ -20,6 +20,9 @@ const envScheme = z.object({
 	API_JWT_SECRET: z.string().nonempty().optional(),
 	WEBHOOK_SECRET: z.string().nonempty().optional(),
 	API_VERSION: z.string().nonempty().default("0.0.0"),
+
+	MINIAPP_URL: z.url(),
+	MINIAPP_SLUG: z.string().nonempty(),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);

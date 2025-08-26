@@ -48,6 +48,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 					const volatileParams = {
 						first_name: initData.user.first_name,
 						last_name: initData.user.last_name,
+						username: initData.user.username,
 						profile_photo: initData.user.photo_url,
 						premium: initData.user.is_premium ? 1 : 0,
 					};
@@ -57,12 +58,13 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 						JSON.stringify({
 							first_name: user!.first_name,
 							last_name: user!.last_name,
+							username: user!.username,
 							profile_photo: user!.profile_photo,
 							premium: user!.premium!,
 						})
 					) {
 						for (const key in volatileParams) {
-							// @ts-ignore
+							// @ts-expect-error
 							user[key] = volatileParams[key];
 						}
 
@@ -72,6 +74,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 								.set({
 									first_name: initData.user.first_name,
 									last_name: initData.user.last_name,
+									username: initData.user.username,
 									profile_photo: initData.user.photo_url,
 									premium: initData.user.is_premium ? 1 : 0,
 								})
@@ -86,6 +89,7 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 							user_id: initData.user.id,
 							first_name: initData.user.first_name,
 							last_name: initData.user.last_name,
+							username: initData.user.username,
 							anonymous_profile: JSON.stringify([
 								getRandomIntInclusive(0, 6),
 								getRandomItemFromArray(anonymous_aliases.adjectives)!,

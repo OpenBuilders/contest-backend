@@ -56,6 +56,7 @@ export type DBSchema = {
 		user_id: number;
 		first_name: string;
 		last_name?: string;
+		username?: string;
 		profile_photo?: string;
 		premium?: BoolInt;
 		anonymous_profile: [number, string, string];

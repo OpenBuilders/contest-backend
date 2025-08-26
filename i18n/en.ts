@@ -1,7 +1,54 @@
 const dictionary = {
 	general: {
-		greet: "Hello {name}!",
+		name: "Contonest",
+		welcome: {
+			text: "Hi {name}, welcome to <b>{title}</b>! 🎉\n\n{title} is a platform where you can create, join, and enjoy contests of all kinds. Whether it’s public challenges, private competitions, or fun community events, Contonest makes it simple, engaging, and fair.",
+			button: "Launch App 🏆",
+		},
 		flood: "We are unable to process your request due to flooding.",
+	},
+	notifications: {
+		created: {
+			text: "🏆 <b><a href='{contest_url}'>{contest_name}</a></b> has been created.",
+			buttons: {
+				view: "View Contest",
+			},
+		},
+		submitted: {
+			user: {
+				text: "✅ We received your submission for <b><a href='{contest_url}'>{contest_name}</a></b>.",
+				buttons: {
+					view: "View Submission",
+				},
+			},
+			moderator: {
+				text: "📥 We received a new submission for <b><a href='{contest_url}'>{contest_name}</a></b>.",
+				buttons: {
+					view: "View Submission",
+				},
+			},
+			owner: {
+				text: "📥 We received a new submission for <b><a href='{contest_url}'>{contest_name}</a></b>.\n\nParticipant information:\n{info}",
+				buttons: {
+					view: "View Submission",
+				},
+			},
+		},
+		moderator: {
+			joined: {
+				owner: {
+					text: "👮‍♂️ {name} has joined <b><a href='{contest_url}'>{contest_name}</a></b> as a moderator.",
+				},
+			},
+		},
+		results: {
+			participants: {
+				text: "🏅 The results for <b><a href='{contest_url}'>{contest_name}</a></b> are out! See who won 🎉",
+				buttons: {
+					view: "View Results",
+				},
+			},
+		},
 	},
 	aliases: {
 		adjectives: {

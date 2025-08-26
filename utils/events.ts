@@ -59,6 +59,18 @@ export type Events = {
 		contest_id: number;
 		user_id: number;
 	};
+	moderatorJoined: {
+		contest_id: number;
+		user_id: number;
+	};
+	moderatorRemoved: {
+		contest_id: number;
+		user_id: number;
+	};
+	moderatorsLinkRevoked: {
+		contest_id: number;
+		user_id: number;
+	};
 };
 
 export const events = new EventEmitter<Events>();
