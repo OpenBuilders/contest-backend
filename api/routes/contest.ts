@@ -40,7 +40,7 @@ export const routeGETContest: Handler = async (ctx) => {
 		return {
 			status: "success",
 			result: {
-				contest: await transformContestAPI(contest),
+				contest: await transformContestAPI(contest, undefined, user_id),
 				metadata: await annotateContestAPI(contest, user_id),
 			},
 		};

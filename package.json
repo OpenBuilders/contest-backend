@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"devDependencies": {
-		"@types/bun": "^1.2.20"
+		"@types/bun": "^1.2.21"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
@@ -25,6 +25,6 @@
 		"nyx-bot-client": "/usr/local/DPX/nyx-bot-client/",
 		"redis": "^5.8.2",
 		"sharp": "^0.34.3",
-		"zod": "^4.1.2"
+		"zod": "^4.1.3"
 	}
 }

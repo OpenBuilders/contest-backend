@@ -11,6 +11,7 @@ type TransformedContest = Partial<DBSchema["contests"]> & {
 export const transformContestAPI = async (
 	contest: Partial<DBSchema["contests"]>,
 	anonymous?: boolean,
+	requester_id: number | undefined = undefined,
 ) => {
 	const {
 		id,
@@ -41,6 +42,7 @@ export const transformContestAPI = async (
 		? await populateContestResults(
 				JSON.parse(resultsValue as any),
 				Boolean(anonymous),
+				requester_id,
 			)
 		: undefined;
 
@@ -130,6 +132,7 @@ export const annotateContestAPI = async (
 const populateContestResults = async (
 	placements: Placement[],
 	anonymous?: boolean,
+	requester_id: number | undefined = undefined,
 ) => {
 	if (placements.length === 0) return [];
 
@@ -171,6 +174,8 @@ const populateContestResults = async (
 					const user = users.find((i) => i.user_id === submission.user_id);
 					if (!user) return undefined;
 
+					const self = user.user_id === requester_id;
+
 					const {
 						anonymous_profile,
 						first_name,
@@ -186,11 +191,13 @@ const populateContestResults = async (
 							last_name,
 							profile_photo,
 							user_id,
+							self,
 						};
 					}
 
 					return {
 						anonymous_profile,
+						self,
 					};
 				})
 				.filter(Boolean),
