@@ -13,7 +13,7 @@ const validator = z.preprocess(
 	(data: any) => {
 		data.date = JSON.parse(data.date);
 		data.theme = JSON.parse(data.theme);
-		data.fee = Number.parseInt(data.fee);
+		data.fee = Number.parseInt(data.fee, 10);
 		data.public = data.public === "true";
 		data.anonymous = data.anonymous === "true";
 		data.category = data.category === "none" ? undefined : data.category;
@@ -47,6 +47,10 @@ const validator = z.preprocess(
 			.number()
 			.min(limits.form.create.fee.min)
 			.max(limits.form.create.fee.max),
+		fee_wallet: z
+			.string()
+			.regex(/^(-?\d+):[0-9a-fA-F]{64}$/)
+			.optional(),
 		public: z.boolean(),
 		anonymous: z.boolean(),
 		image: z.instanceof(File).optional(),
@@ -86,6 +90,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			anonymous: data.anonymous ? 1 : 0,
 			date_end: Math.trunc(data.date.end / 1_000),
 			fee: data.fee,
+			fee_wallet: data.fee_wallet,
 			owner_id: user_id,
 			prize: data.prize ?? undefined,
 			public: data.public ? 1 : 0,

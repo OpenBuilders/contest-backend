@@ -36,6 +36,7 @@ export type DBSchema = {
 		title: string;
 		description: string;
 		fee: number;
+		fee_wallet?: string;
 		prize?: string;
 		public: BoolInt;
 		anonymous: BoolInt;

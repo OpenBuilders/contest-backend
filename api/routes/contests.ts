@@ -49,6 +49,13 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 						.where("submissions.user_id", "=", user_id)
 						.selectAll(),
 				),
+				eb.exists(
+					eb
+						.selectFrom("bookmarks")
+						.whereRef("bookmarks.contest_id", "=", "contests.id")
+						.where("bookmarks.user_id", "=", user_id)
+						.selectAll(),
+				),
 			]),
 		)
 		.orderBy("contests.id", "desc")
