@@ -18,7 +18,7 @@ export const getGallery = async (): Promise<GalleryItem[]> => {
 			(
 				await db
 					.selectFrom("contests")
-					.select(["id", "title", "theme", "slug"])
+					.select(["id", "title", "theme", "slug", "image"])
 					.where("id", "in", contest_ids.length > 0 ? contest_ids : [-1])
 					.execute()
 			).map((contest) => transformContestAPI(contest)),
