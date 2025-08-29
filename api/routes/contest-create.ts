@@ -18,6 +18,10 @@ const validator = z.preprocess(
 		data.anonymous = data.anonymous === "true";
 		data.category = data.category === "none" ? undefined : data.category;
 
+		if (data.theme.backdrop && !data.theme.symbol) {
+			data.theme.symbol = "symbol-55";
+		}
+
 		return data;
 	},
 	z.object({
