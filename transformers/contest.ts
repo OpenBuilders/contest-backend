@@ -79,17 +79,6 @@ export const annotateContestAPI = async (
 		if (requester_id === owner_id) {
 			role = "owner";
 		} else {
-			const moderator = await db
-				.selectFrom("moderators")
-				.select(["id"])
-				.where("user_id", "=", requester_id)
-				.where("contest_id", "=", id!)
-				.executeTakeFirst();
-
-			if (moderator) {
-				role = "moderator";
-			}
-
 			const participant = await db
 				.selectFrom("submissions")
 				.select(["id"])
@@ -99,6 +88,17 @@ export const annotateContestAPI = async (
 
 			if (participant) {
 				role = "participant";
+			}
+
+			const moderator = await db
+				.selectFrom("moderators")
+				.select(["id"])
+				.where("user_id", "=", requester_id)
+				.where("contest_id", "=", id!)
+				.executeTakeFirst();
+
+			if (moderator) {
+				role = "moderator";
 			}
 		}
 	}
