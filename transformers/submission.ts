@@ -14,7 +14,13 @@ type TransformedSubmission = Partial<DBSchema["submissions"]> &
 export const transformSubmission = (
 	submission: Partial<DBSchema["submissions"]> & Partial<DBSchema["users"]>,
 ) => {
-	const { id, submission: submissionInfo, likes, dislikes } = submission;
+	const {
+		id,
+		submission: submissionInfo,
+		likes,
+		dislikes,
+		created_at,
+	} = submission;
 
 	const user = transformUserAPI(submission as any);
 
@@ -26,6 +32,7 @@ export const transformSubmission = (
 		submission: JSON.parse(submissionInfo ?? "[]"),
 		likes: likes_count,
 		dislikes: dislikes_count,
+		created_at,
 		...user,
 	} as TransformedSubmission;
 };

@@ -50,6 +50,7 @@ export type DBSchema = {
 		};
 		results?: Placement[];
 		date_end: number;
+		created_at?: string;
 	};
 
 	users: {
@@ -62,6 +63,7 @@ export type DBSchema = {
 		premium?: BoolInt;
 		anonymous_profile: [number, string, string];
 		language: string;
+		created_at?: string;
 	};
 
 	submissions: {
@@ -71,17 +73,20 @@ export type DBSchema = {
 		submission: string;
 		likes?: number[];
 		dislikes?: number[];
+		created_at?: string;
 	};
 
 	bookmarks: {
 		id?: number;
 		user_id: number;
 		contest_id: number;
+		created_at?: string;
 	};
 
 	moderators: {
 		id?: number;
 		user_id: number;
 		contest_id: number;
+		created_at?: string;
 	};
 };

@@ -34,6 +34,7 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 			"submissions.id",
 			"submissions.likes",
 			"submissions.dislikes",
+			"submissions.created_at",
 		];
 
 		if (contest.owner_id === user_id) {
