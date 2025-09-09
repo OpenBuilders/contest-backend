@@ -21,7 +21,7 @@
 		"generic-pool": "^3.9.0",
 		"jsdom": "^26.1.0",
 		"kysely": "^0.28.5",
-		"mysql2": "^3.14.4",
+		"mysql2": "^3.14.5",
 		"nyx-bot-client": "/usr/local/DPX/nyx-bot-client/",
 		"redis": "^5.8.2",
 		"sharp": "^0.34.3",
