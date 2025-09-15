@@ -111,7 +111,9 @@ export const annotateContestAPI = async (
 			.executeTakeFirst();
 
 		moderators_count = Number(result_moderators?.count ?? 0);
+	}
 
+	if (id) {
 		const result_submissions = await db
 			.selectFrom("submissions")
 			.select(({ fn }) => fn.countAll().as("count"))

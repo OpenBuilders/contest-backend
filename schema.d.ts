@@ -14,14 +14,16 @@ export type GallerySliderItem = {
 
 export type GallerySlider = {
 	type: "slider";
+	id: string;
 	items_per_view?: number;
 	items: GallerySliderItem[];
 };
 
 export type GallerySection = {
 	type: "section";
+	id: string;
 	title: string;
-	items: Pick<DBSchema["contests"], "slug" | "title" | "image" | "theme">[];
+	items: any[];
 };
 
 export type GalleryItem = GallerySlider | GallerySection;

@@ -1,10 +1,12 @@
 [
 	{
 		"type": "slider",
+		"id": "ID",
 		"items": []
 	},
 	{
 		"type": "section",
+		"id": "ID",
 		"title": "xyz",
 		"items": [1, 2, 3]
 	}

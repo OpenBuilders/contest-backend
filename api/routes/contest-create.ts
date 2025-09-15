@@ -111,8 +111,8 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 
 			const image = await normalizeImageToWebP(
 				Buffer.from(await data.image.arrayBuffer()),
-				128,
-				128,
+				256,
+				256,
 			);
 
 			if (image) {

@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import type { GalleryItem } from "../../schema";
-import { transformContestAPI } from "../../transformers/contest";
+import {
+	annotateContestAPI,
+	transformContestAPI,
+} from "../../transformers/contest";
 import { db } from "../../utils/database";
 import { t } from "../../utils/i18n";
 
@@ -18,21 +21,35 @@ export const getGallery = async (): Promise<GalleryItem[]> => {
 			(
 				await db
 					.selectFrom("contests")
-					.select(["id", "title", "theme", "slug", "image"])
+					.select([
+						"id",
+						"title",
+						"theme",
+						"slug",
+						"image",
+						"date_end",
+						"announced",
+						"prize",
+						"contests.verified",
+					])
 					.where("id", "in", contest_ids.length > 0 ? contest_ids : [-1])
 					.execute()
-			).map((contest) => transformContestAPI(contest)),
+			).map(async (contest) => ({
+				contest: await transformContestAPI(contest),
+				metadata: await annotateContestAPI(contest, -1),
+			})),
 		);
 
 		const gallery = items.map((item) => {
 			if (item.type === "section") {
-				const { type, items, title } = item;
+				const { type, items, title, id } = item;
 
 				return {
 					type,
+					id,
 					title: t("en", title as any),
 					items: items.map(
-						(i: any) => contests.find((item) => item.id === i)!,
+						(i: any) => contests.find((item) => item.contest.id === i)!,
 					) as any,
 				} satisfies GalleryItem;
 			}

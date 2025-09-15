@@ -70,6 +70,7 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 					metadata: await annotateContestAPI(contest, user_id),
 				})),
 			),
+			gallery: gallery,
 		},
 	};
 };
