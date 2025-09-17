@@ -17,7 +17,7 @@ const validator = z.preprocess(
 		description: z
 			.string()
 			.min(limits.form.participate.description.minLength)
-			.max(limits.form.participate.description.maxLength)
+			.max(limits.form.participate.description.maxLength + 256)
 			.optional(),
 	}),
 );

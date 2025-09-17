@@ -32,7 +32,7 @@ const validator = z.preprocess(
 		description: z
 			.string()
 			.min(limits.form.create.description.minLength)
-			.max(limits.form.create.description.maxLength)
+			.max(limits.form.create.description.maxLength + 256)
 			.optional(),
 		prize: z
 			.string()

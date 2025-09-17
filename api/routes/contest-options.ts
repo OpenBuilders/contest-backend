@@ -34,7 +34,7 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 
 const validatorContestOptionsUpdate = z.preprocess(
 	(data: any) => {
-		data.fee = Number.parseInt(data.fee);
+		data.fee = Number.parseInt(data.fee, 10);
 		return data;
 	},
 	z.object({
@@ -45,7 +45,7 @@ const validatorContestOptionsUpdate = z.preprocess(
 		description: z
 			.string()
 			.min(limits.form.create.description.minLength)
-			.max(limits.form.create.description.maxLength)
+			.max(limits.form.create.description.maxLength + 256)
 			.optional(),
 		prize: z
 			.string()
