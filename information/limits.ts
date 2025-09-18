@@ -11,6 +11,10 @@ export const limits = {
 				allowedTags: ["b", "i", "u", "a", "strike", "br"],
 				allowedAttrs: ["href"],
 			},
+			instruction: {
+				minLength: 0,
+				maxLength: 128,
+			},
 			prize: {
 				minLength: 0,
 				maxLength: 16,
@@ -31,10 +35,6 @@ export const limits = {
 			},
 		},
 		participate: {
-			link: {
-				minLength: 3,
-				maxLength: 64,
-			},
 			description: {
 				minLength: 0,
 				maxLength: 1024,

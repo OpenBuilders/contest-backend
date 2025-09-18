@@ -107,8 +107,6 @@ export const handleContestSubmitted = async (
 		.where("contest_id", "=", contest_id)
 		.execute();
 
-	const { link } = JSON.parse(submission.submission);
-
 	const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
 	const submission_url = `${miniAppInternalURL}?startapp=submission-${contest.slug}-${submission.id}`;
 
@@ -131,7 +129,7 @@ export const handleContestSubmitted = async (
 				[
 					{
 						text: t("en", "notifications.submitted.user.buttons.view"),
-						url: link,
+						url: submission_url,
 					},
 				],
 			],

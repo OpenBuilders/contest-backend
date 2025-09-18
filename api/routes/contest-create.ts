@@ -34,6 +34,11 @@ const validator = z.preprocess(
 			.min(limits.form.create.description.minLength)
 			.max(limits.form.create.description.maxLength + 256)
 			.optional(),
+		instruction: z
+			.string()
+			.min(limits.form.create.instruction.minLength)
+			.max(limits.form.create.instruction.maxLength)
+			.optional(),
 		prize: z
 			.string()
 			.min(limits.form.create.prize.minLength)
@@ -90,6 +95,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				ALLOW_DATA_ATTR: false,
 				KEEP_CONTENT: true,
 			}),
+			instruction: data.instruction,
 			category: data.category ?? undefined,
 			anonymous: data.anonymous ? 1 : 0,
 			date_end: Math.trunc(data.date.end / 1_000),

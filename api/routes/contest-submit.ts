@@ -10,15 +10,10 @@ const validator = z.preprocess(
 		return data;
 	},
 	z.object({
-		link: z
-			.url()
-			.min(limits.form.participate.link.minLength)
-			.max(limits.form.participate.link.maxLength),
 		description: z
 			.string()
 			.min(limits.form.participate.description.minLength)
-			.max(limits.form.participate.description.maxLength + 256)
-			.optional(),
+			.max(limits.form.participate.description.maxLength + 256),
 	}),
 );
 
@@ -48,7 +43,6 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 				const value: DBSchema["submissions"] = {
 					contest_id: contest.id!,
 					submission: JSON.stringify({
-						link: data.link,
 						description: data.description,
 					}),
 					user_id: user_id,

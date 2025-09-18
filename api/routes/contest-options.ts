@@ -12,7 +12,7 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 
 	const contest = await db
 		.selectFrom("contests")
-		.select(["title", "prize", "fee", "description"])
+		.select(["title", "prize", "fee", "description", "instruction"])
 		.where("slug", "=", ctx.params.slug)
 		.where("owner_id", "=", user_id)
 		.executeTakeFirst();
@@ -46,6 +46,11 @@ const validatorContestOptionsUpdate = z.preprocess(
 			.string()
 			.min(limits.form.create.description.minLength)
 			.max(limits.form.create.description.maxLength + 256)
+			.optional(),
+		instruction: z
+			.string()
+			.min(limits.form.create.instruction.minLength)
+			.max(limits.form.create.instruction.maxLength)
 			.optional(),
 		prize: z
 			.string()
@@ -84,6 +89,7 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 					ALLOW_DATA_ATTR: false,
 					KEEP_CONTENT: true,
 				}),
+				instruction: data.instruction ?? "",
 				fee: data.fee,
 				prize: data.prize ?? undefined,
 			};

@@ -37,6 +37,7 @@ export type DBSchema = {
 		moderators?: number[];
 		title: string;
 		description: string;
+		instruction?: string;
 		fee: number;
 		fee_wallet?: string;
 		prize?: string;

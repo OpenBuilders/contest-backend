@@ -29,6 +29,7 @@ export const routeGETContest: Handler = async (ctx) => {
 			"contests.fee",
 			"contests.fee_wallet",
 			"contests.description",
+			"contests.instruction",
 			"contests.results",
 			"contests.verified",
 			"contests.announced",
