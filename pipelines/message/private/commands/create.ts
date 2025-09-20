@@ -1,0 +1,23 @@
+import { type BotPipeline, NyxResponse, sendMessage } from "nyx-bot-client";
+import type { DBSchema } from "../../../../schema";
+import { t } from "../../../../utils/i18n";
+
+export const handlerPrivateCommandCreate: BotPipeline<
+	"message",
+	DBSchema
+> = async (message) => {
+	if (message.text === t("en", "general.menu.create")) {
+		sendMessage({
+			chat_id: message.chat.id,
+			text: t("en", "general.create.title.text"),
+			reply_parameters: {
+				message_id: message.message_id,
+				allow_sending_without_reply: true,
+			},
+		});
+
+		return NyxResponse.Finish;
+	}
+
+	return NyxResponse.Ok;
+};

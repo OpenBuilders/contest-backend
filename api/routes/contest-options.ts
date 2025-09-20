@@ -12,7 +12,14 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 
 	const contest = await db
 		.selectFrom("contests")
-		.select(["title", "prize", "fee", "description", "instruction"])
+		.select([
+			"title",
+			"prize",
+			"fee",
+			"description",
+			"instruction",
+			"fee_wallet",
+		])
 		.where("slug", "=", ctx.params.slug)
 		.where("owner_id", "=", user_id)
 		.executeTakeFirst();

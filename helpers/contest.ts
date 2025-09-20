@@ -1,0 +1,44 @@
+import { domPurify } from "../utils/dompurify";
+import { type Languages, t } from "../utils/i18n";
+import { truncateString } from "./string";
+
+export function generateContestCaption(
+	title: string,
+	prize: string | undefined,
+	deadline: number,
+	fee: number,
+	description: string,
+	lang: Languages = "en",
+) {
+	let text = `<b>${title}</b>\n`;
+
+	if (prize) {
+		text += `\n🏆 ${t(lang, "general.contest.caption.reward")}: <b>${prize}</b>`;
+	}
+
+	text += `\n🗓 ${t(lang, "general.contest.caption.deadline")}: <b>${new Date(
+		deadline,
+	).toLocaleDateString("en-US", {
+		month: "short",
+		day: "numeric",
+	})}</b>`;
+
+	if (fee > 0) {
+		text += `\n🎫 ${t(lang, "general.contest.caption.fee.fee")}: <b>${fee} TON</b>`;
+	} else {
+		text += `\n🎫 <b>${t(lang, "general.contest.caption.fee.free")}</b>`;
+	}
+
+	text += `\n\n${truncateString(
+		domPurify
+			.sanitize(description, {
+				KEEP_CONTENT: true,
+				ALLOWED_TAGS: [],
+				ALLOWED_ATTR: [],
+			})
+			.replace(/\n+/g, "\n\n"),
+		768,
+	)}`;
+
+	return text;
+}

@@ -9,7 +9,7 @@ const dictionaries = {
 	fa: dictionary_fa,
 };
 
-type Languages = keyof typeof dictionaries;
+export type Languages = keyof typeof dictionaries;
 type TranslationKey = NestedPaths<Dictionary>;
 
 function getValue(obj: any, path: string): string {

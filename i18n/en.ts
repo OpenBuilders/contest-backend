@@ -1,11 +1,76 @@
 const dictionary = {
 	general: {
 		name: "Contonest",
+		start: {
+			text: "🏆 Welcome to <b>{title}</b>!",
+		},
 		welcome: {
 			text: "Hi {name}, welcome to <b>{title}</b>! 🎉\n\n{title} is a platform where you can create, join, and enjoy contests of all kinds. Whether it’s public challenges, private competitions, or fun community events, Contonest makes it simple, engaging, and fair.",
 			button: "Launch App 🏆",
 		},
+		myContests: {
+			list: "🏆 Here’s a list of contests you’ve created or joined:",
+			empty: "👀 You’re not part of any contest yet.",
+		},
+		create: {
+			title: {
+				text: "📣 Awesome! What’s the name of your contest?",
+				invalid:
+					"❌ Invalid title. Please use plain text between {min} and {max} characters.",
+			},
+			description: {
+				text: "🗒 Please send a brief description of your contest. You can use <b>bold</b>, <i>italic</i>, or links in your text.\nIf you’d like, you can also /skip this step and add a description later in the app.",
+				invalid:
+					"❌ Invalid description. Please make sure it’s a text with up to {max} characters.",
+			},
+			photo: {
+				text: "🖼 Please send a square thumbnail for your contest. You can also /skip this step.",
+				invalid:
+					"⚠️ That doesn’t look right. Please send a square thumbnail or /skip this step.",
+			},
+			date: {
+				text: "⏱ How long should your contest be open for submissions?\nSend the number of days (e.g., 7 for a week, 30 for a month).\nSubmissions will open immediately.",
+				invalid: "⚠️ That doesn’t work. Send a number from 1 to 90 days.",
+			},
+			done: {
+				text: "🎉 Congrats! You’ve successfully created <b>{name}</b>.\nYou can now open the app to manage your contest—edit the title, description, prize pool, and more.",
+				buttons: {
+					manage: "⚙️ Manage Contest ⚙️",
+				},
+			},
+		},
 		flood: "We are unable to process your request due to flooding.",
+		menu: {
+			my: "🏆 My Contests 🏆",
+			create: "➕ Create New Contest ➕",
+		},
+		contest: {
+			caption: {
+				reward: "Reward",
+				fee: {
+					fee: "Entry Fee",
+					free: "Free to join",
+				},
+				deadline: "Deadline",
+			},
+			buttons: {
+				open: "Open Contest",
+				share: "Share Contest",
+			},
+		},
+	},
+	callback_query: {
+		contest: {
+			view: {
+				notFound: "Contest not found.",
+			},
+		},
+	},
+	inline_query: {
+		notFound: {
+			title: "Not Found",
+			description: "We couldn't find anything",
+		},
 	},
 	notifications: {
 		created: {

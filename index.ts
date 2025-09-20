@@ -2,14 +2,16 @@ import { sendMessage } from "nyx-bot-client";
 import client from "nyx-bot-client/nyx-client";
 import { initializeAPI } from "./api/api";
 import { handlerCallbackQueryAnalytics } from "./pipelines/callback_query/analytics";
+import { handlerCallbackQueryContest } from "./pipelines/callback_query/contest";
 import { handlerCallbackQueryDefault } from "./pipelines/callback_query/default";
 import { handlerCallbackQueryFlood } from "./pipelines/callback_query/flood";
 import { handlerInlineQueryAnalytics } from "./pipelines/inline_query/analytics";
-import { handlerInlineQueryDefault } from "./pipelines/inline_query/default";
+import { handlerInlineQueryContest } from "./pipelines/inline_query/contest";
 import { handlerInlineQueryFlood } from "./pipelines/inline_query/flood";
+import { handlerInlineQueryNotFound } from "./pipelines/inline_query/not-found";
 import { handlerMessageAnalytics } from "./pipelines/message/analytics";
-import { handlerMessageDefault } from "./pipelines/message/default";
 import { handlerMessageFlood } from "./pipelines/message/flood";
+import { handlerMessagePrivate } from "./pipelines/message/private";
 import { updateAnalyticsCounter } from "./utils/analytics";
 import { db } from "./utils/database";
 import { env } from "./utils/env";
@@ -27,17 +29,19 @@ client.initialize({
 		message: [
 			handlerMessageAnalytics,
 			handlerMessageFlood,
-			handlerMessageDefault,
+			handlerMessagePrivate,
 		],
 		callback_query: [
 			handlerCallbackQueryAnalytics,
 			handlerCallbackQueryFlood,
+			handlerCallbackQueryContest,
 			handlerCallbackQueryDefault,
 		],
 		inline_query: [
 			handlerInlineQueryAnalytics,
 			handlerInlineQueryFlood,
-			handlerInlineQueryDefault,
+			handlerInlineQueryContest,
+			handlerInlineQueryNotFound,
 		],
 	},
 	injections: async () => {
