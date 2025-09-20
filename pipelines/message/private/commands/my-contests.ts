@@ -8,7 +8,7 @@ import { setState } from "../../../../utils/state";
 export const handlerPrivateCommandMyContests: BotPipeline<
 	"message",
 	DBSchema
-> = async (message, injections) => {
+> = async (message) => {
 	if (message.text === t("en", "general.menu.my")) {
 		const user_id = message.from?.id ?? -1;
 
@@ -78,7 +78,7 @@ export const handlerPrivateCommandMyContests: BotPipeline<
 			});
 		}
 
-		setState(message.chat.id, "private", {}, injections?.redis);
+		setState(message.chat.id, "private", {});
 
 		return NyxResponse.Finish;
 	}

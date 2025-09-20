@@ -7,8 +7,8 @@ import { handlerPrivateStates } from "./private/state";
 
 const pipelines: BotPipeline<"message", DBSchema>[] = [
 	handlerPrivateFlood,
-	handlerPrivateStates,
 	handlerPrivateCommands,
+	handlerPrivateStates,
 	handlerPrivateDefault,
 ];
 

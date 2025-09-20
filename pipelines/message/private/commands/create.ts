@@ -6,7 +6,7 @@ import { setState } from "../../../../utils/state";
 export const handlerPrivateCommandCreate: BotPipeline<
 	"message",
 	DBSchema
-> = async (message, injections) => {
+> = async (message) => {
 	if (message.text === t("en", "general.menu.create")) {
 		sendMessage({
 			chat_id: message.chat.id,
@@ -17,14 +17,12 @@ export const handlerPrivateCommandCreate: BotPipeline<
 			},
 		});
 
-		setState(
-			message.chat.id,
-			"private",
-			{
-				state: "create",
+		setState(message.chat.id, "private", {
+			state: "create",
+			params: {
+				step: "title",
 			},
-			injections?.redis,
-		);
+		});
 
 		return NyxResponse.Finish;
 	}

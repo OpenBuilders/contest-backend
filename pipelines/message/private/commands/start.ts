@@ -1,6 +1,7 @@
 import { type BotPipeline, NyxResponse, sendMessage } from "nyx-bot-client";
 import type { DBSchema } from "../../../../schema";
 import { t } from "../../../../utils/i18n";
+import { setState } from "../../../../utils/state";
 
 export const handlerPrivateCommandStart: BotPipeline<
 	"message",
@@ -25,6 +26,8 @@ export const handlerPrivateCommandStart: BotPipeline<
 				],
 			},
 		});
+
+		setState(message.chat.id, "private", {});
 	}
 
 	return NyxResponse.Ok;
