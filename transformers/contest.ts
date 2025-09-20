@@ -40,13 +40,14 @@ export const transformContestAPI = async (
 
 	const announced = announcedValue ? announcedValue === 1 : undefined;
 
-	const results = resultsValue
-		? await populateContestResults(
-				JSON.parse(resultsValue as any),
-				Boolean(anonymous),
-				requester_id,
-			)
-		: undefined;
+	const results =
+		resultsValue && announced
+			? await populateContestResults(
+					JSON.parse(resultsValue as any),
+					Boolean(anonymous),
+					requester_id,
+				)
+			: undefined;
 
 	return {
 		id,
