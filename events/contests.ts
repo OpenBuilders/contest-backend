@@ -1,6 +1,7 @@
 import { sleep } from "bun";
 import { sendMessage } from "nyx-bot-client";
 import { miniAppInternalURL } from "../information/general";
+import { cacheContestCoverImage } from "../utils/cover";
 import { db } from "../utils/database";
 import type { Events } from "../utils/events";
 import { t } from "../utils/i18n";
@@ -10,7 +11,15 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 
 	const contest = await db
 		.selectFrom("contests")
-		.select(["owner_id", "title", "slug"])
+		.select([
+			"id",
+			"owner_id",
+			"title",
+			"slug",
+			"image",
+			"cover_image",
+			"theme",
+		])
 		.where("id", "=", contest_id)
 		.executeTakeFirst();
 
@@ -38,9 +47,22 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 			],
 		},
 	});
+
+	await cacheContestCoverImage(contest);
 };
 
-export const handleContestUpdated = (data: Events["contestUpdated"]) => {};
+export const handleContestUpdated = async (data: Events["contestUpdated"]) => {
+	const { contest_id } = data;
+
+	const contest = await db
+		.selectFrom("contests")
+		.select(["id", "title", "image", "theme", "cover_image"])
+		.where("id", "=", contest_id)
+		.executeTakeFirst();
+
+	if (!contest) return;
+	await cacheContestCoverImage(contest);
+};
 
 export const handleContestBeforeDelete = async (
 	data: Events["contestBeforeDelete"],

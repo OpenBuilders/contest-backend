@@ -47,6 +47,17 @@ export type DBSchema = {
 		announced?: BoolInt;
 		category?: string;
 		image?: string;
+		cover_image?: {
+			file_id: string;
+			metadata: {
+				title: string;
+				image?: string;
+				theme?: {
+					backdrop?: number;
+					symbol?: string;
+				};
+			};
+		};
 		theme?: {
 			backdrop?: number;
 			symbol?: string;
