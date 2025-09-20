@@ -10,7 +10,6 @@ import { handlerInlineQueryContest } from "./pipelines/inline_query/contest";
 import { handlerInlineQueryFlood } from "./pipelines/inline_query/flood";
 import { handlerInlineQueryNotFound } from "./pipelines/inline_query/not-found";
 import { handlerMessageAnalytics } from "./pipelines/message/analytics";
-import { handlerMessageFlood } from "./pipelines/message/flood";
 import { handlerMessagePrivate } from "./pipelines/message/private";
 import { updateAnalyticsCounter } from "./utils/analytics";
 import { db } from "./utils/database";
@@ -26,11 +25,7 @@ client.initialize({
 		username: env.BOT_USERNAME,
 	},
 	pipelines: {
-		message: [
-			handlerMessageAnalytics,
-			handlerMessageFlood,
-			handlerMessagePrivate,
-		],
+		message: [handlerMessageAnalytics, handlerMessagePrivate],
 		callback_query: [
 			handlerCallbackQueryAnalytics,
 			handlerCallbackQueryFlood,
