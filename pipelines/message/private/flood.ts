@@ -9,7 +9,7 @@ export const handlerPrivateFlood: BotPipeline<"message", DBSchema> = async (
 	const flooding = isUserFlooding(
 		message.chat.type,
 		message.from!.id,
-		8,
+		12,
 		60,
 		60,
 	);
