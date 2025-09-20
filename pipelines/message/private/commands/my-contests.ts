@@ -3,11 +3,12 @@ import type { DBSchema } from "../../../../schema";
 import { arrayChunk } from "../../../../utils/array";
 import { db } from "../../../../utils/database";
 import { t } from "../../../../utils/i18n";
+import { setState } from "../../../../utils/state";
 
 export const handlerPrivateCommandMyContests: BotPipeline<
 	"message",
 	DBSchema
-> = async (message) => {
+> = async (message, injections) => {
 	if (message.text === t("en", "general.menu.my")) {
 		const user_id = message.from?.id ?? -1;
 
@@ -76,6 +77,8 @@ export const handlerPrivateCommandMyContests: BotPipeline<
 				},
 			});
 		}
+
+		setState(message.chat.id, "private", {}, injections?.redis);
 
 		return NyxResponse.Finish;
 	}

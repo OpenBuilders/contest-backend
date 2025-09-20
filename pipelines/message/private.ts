@@ -1,11 +1,15 @@
 import { type BotPipeline, NyxResponse } from "nyx-bot-client";
 import type { DBSchema } from "../../schema";
 import { handlerPrivateCommands } from "./private/commands";
+import { handlerPrivateDefault } from "./private/default";
 import { handlerPrivateFlood } from "./private/flood";
+import { handlerPrivateStates } from "./private/state";
 
 const pipelines: BotPipeline<"message", DBSchema>[] = [
 	handlerPrivateFlood,
+	handlerPrivateStates,
 	handlerPrivateCommands,
+	handlerPrivateDefault,
 ];
 
 export const handlerMessagePrivate: BotPipeline<"message", DBSchema> = async (
