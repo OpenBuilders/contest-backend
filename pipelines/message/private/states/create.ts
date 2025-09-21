@@ -90,6 +90,17 @@ const handlerPrivateStateCreateTitle: BotPipeline<"message", DBSchema> = async (
 	return NyxResponse.Ok;
 };
 
+const ALLOWED_ENTITIES = [
+	"bold",
+	"mention",
+	"italic",
+	"underline",
+	"strikethrough",
+	"text_link",
+	"text_mention",
+	"url",
+];
+
 const handlerPrivateStateCreateDescription: BotPipeline<
 	"message",
 	DBSchema
@@ -99,7 +110,12 @@ const handlerPrivateStateCreateDescription: BotPipeline<
 	if (params.step === "description") {
 		const validate = z.safeParse(
 			z.string().min(1).max(limits.form.create.description.maxLength),
-			encodeEntitiesToHTML(message.text ?? "", message.entities ?? []),
+			encodeEntitiesToHTML(
+				message.text ?? "",
+				(message.entities ?? []).filter((i) =>
+					ALLOWED_ENTITIES.includes(i.type),
+				),
+			),
 		);
 
 		if (validate.success) {
