@@ -49,7 +49,7 @@ export class EventEmitter<
 }
 
 export type Events = {
-	contestCreated: { contest_id: number; user_id: number };
+	contestCreated: { contest_id: number; user_id: number; notify: boolean };
 	contestUpdated: { contest_id: number; user_id: number };
 	contestAnnounced: { contest_id: number; user_id: number };
 	contestBeforeDelete: { contest_id: number; user_id: number };

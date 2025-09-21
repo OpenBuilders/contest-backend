@@ -1,4 +1,3 @@
-import { CryptoHasher } from "bun";
 import type { Handler } from "elysia";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";

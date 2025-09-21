@@ -7,7 +7,7 @@ import type { Events } from "../utils/events";
 import { t } from "../utils/i18n";
 
 export const handleContestCreated = async (data: Events["contestCreated"]) => {
-	const { contest_id } = data;
+	const { contest_id, notify } = data;
 
 	const contest = await db
 		.selectFrom("contests")
@@ -25,28 +25,30 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 
 	if (!contest) return;
 
-	const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
+	if (notify) {
+		const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
 
-	sendMessage({
-		chat_id: contest.owner_id,
-		text: t("en", "notifications.created.text", {
-			contest_name: contest.title,
-			contest_url: contest_url,
-		}),
-		link_preview_options: {
-			is_disabled: true,
-		},
-		reply_markup: {
-			inline_keyboard: [
-				[
-					{
-						text: t("en", "notifications.created.buttons.view"),
-						url: contest_url,
-					},
+		sendMessage({
+			chat_id: contest.owner_id,
+			text: t("en", "notifications.created.text", {
+				contest_name: contest.title,
+				contest_url: contest_url,
+			}),
+			link_preview_options: {
+				is_disabled: true,
+			},
+			reply_markup: {
+				inline_keyboard: [
+					[
+						{
+							text: t("en", "notifications.created.buttons.view"),
+							url: contest_url,
+						},
+					],
 				],
-			],
-		},
-	});
+			},
+		});
+	}
 
 	await cacheContestCoverImage(contest);
 };

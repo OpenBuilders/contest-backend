@@ -1,5 +1,4 @@
 import { writeFile } from "node:fs/promises";
-import { CryptoHasher } from "bun";
 import type { Handler } from "elysia";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
@@ -127,6 +126,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 		events.emit("contestCreated", {
 			contest_id: contest!.id!,
 			user_id,
+			notify: true,
 		});
 
 		return {

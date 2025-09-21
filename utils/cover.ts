@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import os from "node:os";
-import { CryptoHasher } from "bun";
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { sendPhoto } from "nyx-bot-client";
 import sharp from "sharp";
