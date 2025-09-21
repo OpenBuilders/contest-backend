@@ -210,63 +210,82 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 		);
 
 		if (validate.success) {
-			const { data: days } = validate;
+			const contests = await db
+				.selectFrom("contests")
+				.select(["id"])
+				.where("owner_id", "=", message.chat.id)
+				.execute();
 
-			const slug = generateRandomHash();
-			const slug_moderator = generateRandomHash();
+			if (contests.length <= 64) {
+				const { data: days } = validate;
 
-			const value: DBSchema["contests"] = {
-				slug,
-				slug_moderator,
-				title: params.title,
-				description: params.description ?? "",
-				prize: params.prize,
-				owner_id: message.chat.id,
-				date_end: Math.ceil(Date.now() / 1000) + days * 86400,
-				anonymous: 0,
-				fee: 0,
-			};
+				const slug = generateRandomHash();
+				const slug_moderator = generateRandomHash();
 
-			if (params.photo) {
-				const file = await getFile({
-					file_id: params.photo,
-				});
+				const value: DBSchema["contests"] = {
+					slug,
+					slug_moderator,
+					title: params.title,
+					description: params.description ?? "",
+					prize: params.prize,
+					owner_id: message.chat.id,
+					date_end: Math.ceil(Date.now() / 1000) + days * 86400,
+					anonymous: 0,
+					fee: 0,
+				};
 
-				if (file.ok) {
-					const fileId = generateRandomHash();
+				if (params.photo) {
+					const file = await getFile({
+						file_id: params.photo,
+					});
 
-					const image = await normalizeImageToWebP(
-						await readFile(file.result.file_path!),
-						256,
-						256,
-					);
+					if (file.ok) {
+						const fileId = generateRandomHash();
 
-					if (image) {
-						await writeFile(
-							`${__dirname}/../../../../storage/images/${fileId}`,
-							image,
+						const image = await normalizeImageToWebP(
+							await readFile(file.result.file_path!),
+							256,
+							256,
 						);
 
-						value.image = fileId;
+						if (image) {
+							await writeFile(
+								`${__dirname}/../../../../storage/images/${fileId}`,
+								image,
+							);
+
+							value.image = fileId;
+						}
 					}
 				}
+
+				await db.insertInto("contests").values(value).execute();
+
+				const contest = await db
+					.selectFrom("contests")
+					.selectAll()
+					.where("slug", "=", slug)
+					.executeTakeFirst();
+
+				events.emit("contestCreated", {
+					contest_id: contest!.id!,
+					user_id: message.chat.id,
+					notify: true,
+				});
+
+				setState(message.chat.id, "private", {});
+			} else {
+				sendMessage({
+					chat_id: message.chat.id,
+					text: t("en", "general.create.max", {
+						max: "64",
+					}),
+					reply_parameters: {
+						message_id: message.message_id,
+						allow_sending_without_reply: true,
+					},
+				});
 			}
-
-			await db.insertInto("contests").values(value).execute();
-
-			const contest = await db
-				.selectFrom("contests")
-				.selectAll()
-				.where("slug", "=", slug)
-				.executeTakeFirst();
-
-			events.emit("contestCreated", {
-				contest_id: contest!.id!,
-				user_id: message.chat.id,
-				notify: true,
-			});
-
-			setState(message.chat.id, "private", {});
 		} else {
 			sendMessage({
 				chat_id: message.chat.id,

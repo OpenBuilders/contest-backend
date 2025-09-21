@@ -68,77 +68,85 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 	const schema = validator.safeParse(ctx.body);
 
 	if (schema.success) {
-		const { data } = schema;
-
-		const slug = generateRandomHash();
-		const slug_moderator = generateRandomHash();
-
-		const value: DBSchema["contests"] = {
-			slug: slug,
-			slug_moderator: slug_moderator,
-			title: data.title,
-			description: domPurify.sanitize(data.description ?? "", {
-				ALLOWED_TAGS: limits.form.create.description.allowedTags,
-				ALLOWED_ATTR: limits.form.create.description.allowedAttrs,
-				ALLOW_ARIA_ATTR: false,
-				ALLOW_DATA_ATTR: false,
-				KEEP_CONTENT: true,
-			}),
-			instruction: data.instruction,
-			anonymous: data.anonymous ? 1 : 0,
-			date_end: Math.trunc(data.date.end / 1_000),
-			fee: data.fee,
-			fee_wallet: data.fee_wallet,
-			owner_id: user_id,
-			prize: data.prize ?? undefined,
-			theme: data.theme,
-			moderators: [],
-			verified: 0,
-		};
-
-		if (data.image) {
-			const fileId = generateRandomHash();
-
-			const image = await normalizeImageToWebP(
-				Buffer.from(await data.image.arrayBuffer()),
-				256,
-				256,
-			);
-
-			if (image) {
-				await writeFile(`${__dirname}/../../storage/images/${fileId}`, image);
-
-				value.image = fileId;
-			}
-		}
-
-		value.theme = JSON.stringify(value.theme) as any;
-		value.moderators = JSON.stringify(value.moderators) as any;
-
-		await db.insertInto("contests").values(value).execute();
-
-		const contest = await db
+		const contests = await db
 			.selectFrom("contests")
 			.select(["id"])
-			.where("slug", "=", slug)
-			.executeTakeFirst();
+			.where("owner_id", "=", user_id)
+			.execute();
 
-		events.emit("contestCreated", {
-			contest_id: contest!.id!,
-			user_id,
-			notify: true,
-		});
+		if (contests.length <= 64) {
+			const { data } = schema;
 
-		return {
-			status: "success",
-			result: {
+			const slug = generateRandomHash();
+			const slug_moderator = generateRandomHash();
+
+			const value: DBSchema["contests"] = {
 				slug: slug,
-			},
-		};
-	} else {
-		return {
-			status: "failed",
-			result: {},
-		};
+				slug_moderator: slug_moderator,
+				title: data.title,
+				description: domPurify.sanitize(data.description ?? "", {
+					ALLOWED_TAGS: limits.form.create.description.allowedTags,
+					ALLOWED_ATTR: limits.form.create.description.allowedAttrs,
+					ALLOW_ARIA_ATTR: false,
+					ALLOW_DATA_ATTR: false,
+					KEEP_CONTENT: true,
+				}),
+				instruction: data.instruction,
+				anonymous: data.anonymous ? 1 : 0,
+				date_end: Math.trunc(data.date.end / 1_000),
+				fee: data.fee,
+				fee_wallet: data.fee_wallet,
+				owner_id: user_id,
+				prize: data.prize ?? undefined,
+				theme: data.theme,
+				moderators: [],
+				verified: 0,
+			};
+
+			if (data.image) {
+				const fileId = generateRandomHash();
+
+				const image = await normalizeImageToWebP(
+					Buffer.from(await data.image.arrayBuffer()),
+					256,
+					256,
+				);
+
+				if (image) {
+					await writeFile(`${__dirname}/../../storage/images/${fileId}`, image);
+
+					value.image = fileId;
+				}
+			}
+
+			value.theme = JSON.stringify(value.theme) as any;
+			value.moderators = JSON.stringify(value.moderators) as any;
+
+			await db.insertInto("contests").values(value).execute();
+
+			const contest = await db
+				.selectFrom("contests")
+				.select(["id"])
+				.where("slug", "=", slug)
+				.executeTakeFirst();
+
+			events.emit("contestCreated", {
+				contest_id: contest!.id!,
+				user_id,
+				notify: true,
+			});
+
+			return {
+				status: "success",
+				result: {
+					slug: slug,
+				},
+			};
+		}
 	}
+
+	return {
+		status: "failed",
+		result: {},
+	};
 };

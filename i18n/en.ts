@@ -32,6 +32,7 @@ const dictionary = {
 				text: "⏱ How long should your contest be open for submissions?\nSend the number of days (e.g., 7 for a week, 30 for a month).\nSubmissions will open immediately.",
 				invalid: "⚠️ That doesn’t work. Send a number from {min} to {max} days.",
 			},
+			max: "⚠️ You can create at most {max} contests, please delete previous ones.",
 		},
 		flood: "We are unable to process your request due to flooding.",
 		menu: {
