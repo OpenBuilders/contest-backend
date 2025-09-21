@@ -14,6 +14,7 @@ const validator = z.preprocess(
 			.string()
 			.min(limits.form.participate.description.minLength)
 			.max(limits.form.participate.description.maxLength + 256),
+		boc: z.string().optional(),
 	}),
 );
 
@@ -44,6 +45,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 					contest_id: contest.id!,
 					submission: JSON.stringify({
 						description: data.description,
+						boc: data.boc,
 					}),
 					user_id: user_id,
 				};

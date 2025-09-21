@@ -38,6 +38,7 @@ import {
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsGallery, routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
+import { routePOSTContestTransactionCreate } from "./routes/transaction";
 
 export const initializeAPI = async () => {
 	z.object({
@@ -90,6 +91,13 @@ export const initializeAPI = async () => {
 		.post("/contest/:slug/delete", routePOSTContestDelete)
 		.post("/contest/:slug/submit", routePOSTContestSubmit)
 		// Contest Actions
+
+		// Transactions
+		.post(
+			"/contest/:slug/transaction/create",
+			routePOSTContestTransactionCreate,
+		)
+		// Transactions
 
 		.get("/contest/:slug", routeGETContest);
 
