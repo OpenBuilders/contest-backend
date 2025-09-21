@@ -312,5 +312,7 @@ export async function cacheContestCoverImage(
 			})
 			.where("id", "=", id)
 			.execute();
+
+		return new_cover_image;
 	}
 }

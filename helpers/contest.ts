@@ -17,7 +17,7 @@ export function generateContestCaption(
 	}
 
 	text += `\n🗓 ${t(lang, "general.contest.caption.deadline")}: <b>${new Date(
-		deadline,
+		deadline * 1000,
 	).toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",

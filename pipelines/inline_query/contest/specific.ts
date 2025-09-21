@@ -5,6 +5,7 @@ import type {
 } from "nyx-bot-client";
 import { answerInlineQuery, NyxResponse } from "nyx-bot-client";
 import { generateContestCaption } from "../../../helpers/contest";
+import { miniAppInternalURL } from "../../../information/general";
 import type { DBSchema } from "../../../schema";
 import { db } from "../../../utils/database";
 import { env } from "../../../utils/env";
@@ -54,7 +55,7 @@ export const handlerInlineQueryContestSpecific: BotPipeline<
 				[
 					{
 						text: t("en", "general.contest.buttons.open"),
-						url: `https://t.me/${env.BOT_USERNAME}/${env.MINIAPP_SLUG}?startapp=contest-${slug}`,
+						url: `${miniAppInternalURL}?startapp=contest-${slug}`,
 					},
 				],
 			];

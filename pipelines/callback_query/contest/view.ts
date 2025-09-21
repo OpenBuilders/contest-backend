@@ -6,6 +6,7 @@ import {
 	sendPhoto,
 } from "nyx-bot-client";
 import { generateContestCaption } from "../../../helpers/contest";
+import { miniAppInternalURL } from "../../../information/general";
 import type { DBSchema } from "../../../schema";
 import { cacheContestCoverImage } from "../../../utils/cover";
 import { db } from "../../../utils/database";
@@ -64,7 +65,7 @@ export const handlerCallbackQueryContestView: BotPipeline<
 				[
 					{
 						text: t("en", "general.contest.buttons.open"),
-						url: `https://t.me/${env.BOT_USERNAME}/${env.MINIAPP_SLUG}?startapp=contest-${contest.slug}`,
+						url: `${miniAppInternalURL}?startapp=contest-${contest.slug}`,
 					},
 				],
 				[

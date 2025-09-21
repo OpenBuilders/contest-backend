@@ -1,5 +1,10 @@
 import { sleep } from "bun";
-import { sendMessage } from "nyx-bot-client";
+import {
+	type InlineKeyboardButton,
+	sendMessage,
+	sendPhoto,
+} from "nyx-bot-client";
+import { generateContestCaption } from "../helpers/contest";
 import { miniAppInternalURL } from "../information/general";
 import { cacheContestCoverImage } from "../utils/cover";
 import { db } from "../utils/database";
@@ -11,46 +16,59 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 
 	const contest = await db
 		.selectFrom("contests")
-		.select([
-			"id",
-			"owner_id",
-			"title",
-			"slug",
-			"image",
-			"cover_image",
-			"theme",
-		])
+		.selectAll()
 		.where("id", "=", contest_id)
 		.executeTakeFirst();
 
 	if (!contest) return;
 
+	const cover = await cacheContestCoverImage(contest);
+
 	if (notify) {
-		const contest_url = `${miniAppInternalURL}?startapp=contest-${contest.slug}`;
+		const { title, prize, date_end, fee, description } = contest;
 
-		sendMessage({
-			chat_id: contest.owner_id,
-			text: t("en", "notifications.created.text", {
-				contest_name: contest.title,
-				contest_url: contest_url,
-			}),
-			link_preview_options: {
-				is_disabled: true,
-			},
-			reply_markup: {
-				inline_keyboard: [
-					[
-						{
-							text: t("en", "notifications.created.buttons.view"),
-							url: contest_url,
-						},
-					],
-				],
-			},
-		});
+		const caption = generateContestCaption(
+			title,
+			prize,
+			date_end,
+			fee,
+			description,
+		);
+
+		const keyboard: InlineKeyboardButton[][] = [
+			[
+				{
+					text: t("en", "general.contest.buttons.open"),
+					url: `${miniAppInternalURL}?startapp=contest-${contest.slug}`,
+				},
+			],
+			[
+				{
+					text: t("en", "general.contest.buttons.share"),
+					switch_inline_query: `contest-${contest.slug}`,
+				},
+			],
+		];
+
+		if (cover) {
+			sendPhoto({
+				chat_id: contest.owner_id,
+				photo: cover.file_id!,
+				caption: caption,
+				reply_markup: {
+					inline_keyboard: keyboard,
+				},
+			});
+		} else {
+			sendMessage({
+				chat_id: contest.owner_id,
+				text: caption,
+				reply_markup: {
+					inline_keyboard: keyboard,
+				},
+			});
+		}
 	}
-
-	await cacheContestCoverImage(contest);
 };
 
 export const handleContestUpdated = async (data: Events["contestUpdated"]) => {
