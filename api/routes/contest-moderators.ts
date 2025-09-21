@@ -2,6 +2,7 @@ import { CryptoHasher } from "bun";
 import type { Handler } from "elysia";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
+import { generateRandomHash } from "../../helpers/string";
 import { transformContestAPI } from "../../transformers/contest";
 import { events } from "../../utils/events";
 
@@ -134,10 +135,7 @@ export const routePOSTContestModeratorsRevoke: Handler = async (ctx) => {
 		.executeTakeFirst();
 
 	if (contest) {
-		const slug_moderator = CryptoHasher.hash(
-			"md5",
-			`${Math.random()}-${Date.now()}-${Math.random()}`,
-		).toHex();
+		const slug_moderator = generateRandomHash();
 
 		await db
 			.updateTable("contests")

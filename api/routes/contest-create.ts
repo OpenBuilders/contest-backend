@@ -3,6 +3,7 @@ import { CryptoHasher } from "bun";
 import type { Handler } from "elysia";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
+import { generateRandomHash } from "../../helpers/string";
 import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { domPurify } from "../../utils/dompurify";
@@ -70,15 +71,8 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 	if (schema.success) {
 		const { data } = schema;
 
-		const slug = CryptoHasher.hash(
-			"md5",
-			`${Math.random()}-${Date.now()}-${Math.random()}`,
-		).toHex();
-
-		const slug_moderator = CryptoHasher.hash(
-			"md5",
-			`${Math.random()}-${Date.now()}-${Math.random()}`,
-		).toHex();
+		const slug = generateRandomHash();
+		const slug_moderator = generateRandomHash();
 
 		const value: DBSchema["contests"] = {
 			slug: slug,
@@ -104,10 +98,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 		};
 
 		if (data.image) {
-			const fileId = CryptoHasher.hash(
-				"md5",
-				`${Math.random()}-${Date.now()}-${Math.random()}`,
-			).toHex();
+			const fileId = generateRandomHash();
 
 			const image = await normalizeImageToWebP(
 				Buffer.from(await data.image.arrayBuffer()),

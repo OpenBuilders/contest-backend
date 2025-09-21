@@ -4,6 +4,7 @@ import { CryptoHasher } from "bun";
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { sendPhoto } from "nyx-bot-client";
 import sharp from "sharp";
+import { generateRandomHash } from "../helpers/string";
 import type { DBSchema } from "../schema";
 import { db } from "./database";
 import { env } from "./env";
@@ -259,10 +260,7 @@ export async function generateContestCoverImage(
 		})
 		.toBuffer();
 
-	const filename = CryptoHasher.hash(
-		"md5",
-		`${Math.random()}-${Date.now()}-${Math.random()}`,
-	).toHex();
+	const filename = generateRandomHash();
 
 	const filepath = `${os.tmpdir()}/${filename}`;
 
