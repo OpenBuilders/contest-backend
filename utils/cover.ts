@@ -92,7 +92,7 @@ export async function generateContestCoverImage(
 	const ctx = canvas.getContext("2d");
 
 	const { width, height } = canvas;
-	const imageSize = Math.min(width, height) / 3;
+	const imageSize = Math.min(width, height) / 2.5;
 
 	const gradient = ctx.createRadialGradient(
 		width / 2,
@@ -100,7 +100,7 @@ export async function generateContestCoverImage(
 		0,
 		width / 2,
 		height / 2,
-		Math.min(width, height) / 2,
+		Math.max(width, height) / 2,
 	);
 
 	const theme: { backdrop: ContestThemeBackdrop; symbol: string } = {
@@ -202,16 +202,6 @@ export async function generateContestCoverImage(
 
 	ctx.globalAlpha = 1;
 
-	if (!image) {
-		ctx.drawImage(
-			symbolImageWhite,
-			(width - imageSize) / 2,
-			(height - imageSize) / 2,
-			imageSize,
-			imageSize,
-		);
-	}
-
 	if (image) {
 		const imageFile = await loadImage(
 			await sharp(await fs.readFile(`${__dirname}/../storage/images/${image}`))
@@ -245,9 +235,17 @@ export async function generateContestCoverImage(
 
 		ctx.drawImage(imageFile, x, y, imageSize, imageSize);
 		ctx.restore();
+	} else {
+		ctx.drawImage(
+			symbolImageWhite,
+			(width - imageSize) / 2,
+			(height - imageSize) / 2,
+			imageSize,
+			imageSize,
+		);
 	}
 
-	ctx.font = `${Math.min(width, height) / 12}px Inter-SemiBold, Vazirmatn-Medium`;
+	ctx.font = `${Math.max(width, height) / 18}px Inter-SemiBold, Vazirmatn-Medium`;
 	const measure = ctx.measureText(title);
 
 	ctx.fillStyle = "white";
