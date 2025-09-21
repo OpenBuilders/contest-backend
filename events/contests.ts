@@ -166,16 +166,16 @@ export const handleContestSubmitted = async (
 		link_preview_options: {
 			is_disabled: true,
 		},
-		reply_markup: {
-			inline_keyboard: [
-				[
-					{
-						text: t("en", "notifications.submitted.user.buttons.view"),
-						url: submission_url,
-					},
-				],
-			],
-		},
+		// reply_markup: {
+		// 	inline_keyboard: [
+		// 		[
+		// 			{
+		// 				text: t("en", "notifications.submitted.user.buttons.view"),
+		// 				url: submission_url,
+		// 			},
+		// 		],
+		// 	],
+		// },
 	});
 
 	// Notify the owner
