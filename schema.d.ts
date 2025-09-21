@@ -41,11 +41,9 @@ export type DBSchema = {
 		fee: number;
 		fee_wallet?: string;
 		prize?: string;
-		public: BoolInt;
 		anonymous: BoolInt;
 		verified?: BoolInt;
 		announced?: BoolInt;
-		category?: string;
 		image?: string;
 		cover_image?: {
 			file_id: string;

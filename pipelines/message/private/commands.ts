@@ -3,12 +3,14 @@ import { type BotPipeline, NyxResponse } from "nyx-bot-client";
 import type { DBSchema } from "../../../schema";
 import { handlerPrivateCommandCreate } from "./commands/create";
 import { handlerPrivateCommandMyContests } from "./commands/my-contests";
+import { handlerPrivateCommandSkip } from "./commands/skip";
 import { handlerPrivateCommandStart } from "./commands/start";
 
 const pipelines: BotPipeline<"message", DBSchema>[] = [
 	handlerPrivateCommandStart,
 	handlerPrivateCommandMyContests,
 	handlerPrivateCommandCreate,
+	handlerPrivateCommandSkip,
 ];
 
 export const handlerPrivateCommands: BotPipeline<"message", DBSchema> = async (

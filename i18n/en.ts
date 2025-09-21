@@ -19,9 +19,9 @@ const dictionary = {
 					"❌ Invalid title. Please use plain text between {min} and {max} characters.",
 			},
 			description: {
-				text: "🗒 Please send a brief description of your contest. You can use <b>bold</b>, <i>italic</i>, or links in your text.\nIf you’d like, you can also /skip this step and add a description later in the app.",
+				text: "🗒 Good, Please send a brief description for <b>{title}</b>. You can use <b>bold</b>, <i>italic</i>, or links in your text.\n\nIf you’d like, you can also /skip this step and add a description later in the app.",
 				invalid:
-					"❌ Invalid description. Please make sure it’s a text with up to {max} characters.",
+					"❌ Invalid description. Please make sure it’s a text with up to {max} characters.\n\nIf you’d like, you can also /skip this step and add a description later in the app.",
 			},
 			photo: {
 				text: "🖼 Please send a square thumbnail for your contest. You can also /skip this step.",
@@ -30,7 +30,7 @@ const dictionary = {
 			},
 			date: {
 				text: "⏱ How long should your contest be open for submissions?\nSend the number of days (e.g., 7 for a week, 30 for a month).\nSubmissions will open immediately.",
-				invalid: "⚠️ That doesn’t work. Send a number from 1 to 90 days.",
+				invalid: "⚠️ That doesn’t work. Send a number from {min} to {max} days.",
 			},
 			done: {
 				text: "🎉 Congrats! You’ve successfully created <b>{name}</b>.\nYou can now open the app to manage your contest—edit the title, description, prize pool, and more.",
@@ -1007,26 +1007,6 @@ const dictionary = {
 			wolf: "Wolf",
 			zebra: "Zebra",
 		},
-	},
-	categories: {
-		tech: "Technology",
-		crypto: "Crypto & Blockchain",
-		design: "Design",
-		development: "Software Development",
-		ai: "AI & Machine Learning",
-		business: "Business & Startups",
-		marketing: "Marketing & Growth",
-		product: "Product & UX",
-		community: "Community Engagement",
-		gaming: "Gaming",
-		education: "Education & Learning",
-		photography: "Photography",
-		art: "Art & Illustration",
-		video: "Video Creation",
-		music: "Music",
-		memes: "Memes & Humor",
-		writing: "Writing & Blogging",
-		hackathon: "Hackathons",
 	},
 } as const;
 
