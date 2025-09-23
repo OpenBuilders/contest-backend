@@ -5,6 +5,7 @@ import {
 	sendPhoto,
 } from "nyx-bot-client";
 import { generateContestCaption } from "../helpers/contest";
+import { MESSAGE_EFFECTS } from "../information/effect";
 import { miniAppInternalURL } from "../information/general";
 import { cacheContestCoverImage } from "../utils/cover";
 import { db } from "../utils/database";
@@ -66,6 +67,7 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 				reply_markup: {
 					inline_keyboard: keyboard,
 				},
+				message_effect_id: MESSAGE_EFFECTS.confetti,
 			});
 		}
 	}
@@ -84,9 +86,7 @@ export const handleContestUpdated = async (data: Events["contestUpdated"]) => {
 	await cacheContestCoverImage(contest);
 };
 
-export const handleContestDelete = async (
-	data: Events["contestDelete"],
-) => {
+export const handleContestDelete = async (data: Events["contestDelete"]) => {
 	const { contest_id } = data;
 
 	await db
@@ -104,10 +104,7 @@ export const handleContestDelete = async (
 		.where("contest_id", "=", contest_id)
 		.execute();
 
-    await db
-      .deleteFrom("contests")
-      .where("id", "=", contest_id)
-      .execute();
+	await db.deleteFrom("contests").where("id", "=", contest_id).execute();
 };
 
 export const handleContestBookmarked = (
@@ -167,16 +164,7 @@ export const handleContestSubmitted = async (
 		link_preview_options: {
 			is_disabled: true,
 		},
-		// reply_markup: {
-		// 	inline_keyboard: [
-		// 		[
-		// 			{
-		// 				text: t("en", "notifications.submitted.user.buttons.view"),
-		// 				url: submission_url,
-		// 			},
-		// 		],
-		// 	],
-		// },
+		message_effect_id: MESSAGE_EFFECTS.confetti,
 	});
 
 	// Notify the owner
@@ -293,6 +281,7 @@ export const handleContestAnnounced = async (
 					],
 				],
 			},
+			message_effect_id: MESSAGE_EFFECTS.confetti,
 		});
 
 		await sleep(250);

@@ -1,8 +1,8 @@
 import {
 	handleContestAnnounced,
-	handleContestDelete,
 	handleContestBookmarked,
 	handleContestCreated,
+	handleContestDelete,
 	handleContestSubmitted,
 	handleContestUpdated,
 } from "../events/contests";
