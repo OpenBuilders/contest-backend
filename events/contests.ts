@@ -59,6 +59,7 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 				reply_markup: {
 					inline_keyboard: keyboard,
 				},
+				message_effect_id: MESSAGE_EFFECTS.confetti,
 			});
 		} else {
 			sendMessage({
