@@ -1,0 +1,8 @@
+node_modules
+storage/images/*
+!.gitkeep
+.git
+.env
+.env.docker
+test.ts
+*.log

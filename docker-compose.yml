@@ -1,0 +1,39 @@
+services:
+   backend:
+      build: .
+      container_name: contonest-backend
+      restart: unless-stopped
+      ports:
+         - "3000:3000"
+      env_file:
+         - ".env.docker"
+      depends_on:
+         - db
+         - redis
+      volumes:
+         - ./storage/images:/app/storage/images
+
+   db:
+      image: mysql:8.0
+      container_name: contonest-mysql
+      restart: unless-stopped
+      environment:
+         MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+         MYSQL_DATABASE: ${MYSQL_NAME}
+         MYSQL_USER: ${MYSQL_USER}
+         MYSQL_PASSWORD: ${MYSQL_PASS}
+      volumes:
+         - mysql_data:/var/lib/mysql
+         - ./database.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+   redis:
+      image: redis:7-alpine
+      container_name: contonest-redis
+      restart: unless-stopped
+      volumes:
+         - redis_data:/data
+      command: ["redis-server", "--appendonly", "yes"]
+
+volumes:
+   mysql_data:
+   redis_data:
