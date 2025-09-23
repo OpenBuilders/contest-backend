@@ -35,6 +35,7 @@ export function generateContestCaption(
 				KEEP_CONTENT: true,
 				ALLOWED_TAGS: [],
 				ALLOWED_ATTR: [],
+				IN_PLACE: true,
 			})
 			.replace(/\n+/g, "\n\n"),
 		768,

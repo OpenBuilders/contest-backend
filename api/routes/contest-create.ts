@@ -90,6 +90,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 					ALLOW_ARIA_ATTR: false,
 					ALLOW_DATA_ATTR: false,
 					KEEP_CONTENT: true,
+					IN_PLACE: true,
 				}),
 				instruction: data.instruction,
 				anonymous: data.anonymous ? 1 : 0,
