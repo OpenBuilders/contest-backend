@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import type { GalleryItem } from "../../schema";
 import {
 	annotateContestAPI,
@@ -10,7 +9,13 @@ import { t } from "../../utils/i18n";
 export const getGallery = async (): Promise<GalleryItem[]> => {
 	try {
 		const items: GalleryItem[] = JSON.parse(
-			fs.readFileSync(`${__dirname}/../../gallery.json`).toString(),
+			(
+				await db
+					.selectFrom("settings")
+					.select(["value"])
+					.where("meta", "=", "gallery")
+					.executeTakeFirst()
+			)?.value ?? "[]",
 		);
 
 		const contest_ids: number[] = items

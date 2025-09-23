@@ -9,6 +9,7 @@ export const pools = {
 		user: env.MYSQL_USER,
 		database: env.MYSQL_NAME,
 		password: env.MYSQL_PASS,
+		port: env.MYSQL_PORT,
 		connectionLimit: env.POOL_SIZE_MYSQL,
 		maxIdle: 1,
 		idleTimeout: 60 * 60_000,

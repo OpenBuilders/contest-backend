@@ -101,4 +101,10 @@ export type DBSchema = {
 		contest_id: number;
 		created_at?: string;
 	};
+
+	settings: {
+		id?: number;
+		meta: string;
+		value: string;
+	};
 };

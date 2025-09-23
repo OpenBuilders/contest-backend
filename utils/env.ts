@@ -13,6 +13,7 @@ const envScheme = z.object({
 	MYSQL_NAME: z.string().nonempty().optional(),
 	MYSQL_PASS: z.string().nonempty().optional(),
 	MYSQL_HOST: z.string().nonempty().optional(),
+	MYSQL_PORT: z.number().default(3306),
 
 	API_HOST: z.string().nonempty().optional(),
 	API_PORT: z.coerce.number().optional(),
