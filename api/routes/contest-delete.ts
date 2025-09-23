@@ -13,17 +13,7 @@ export const routePOSTContestDelete: Handler = async (ctx) => {
 
 	if (contest) {
 		if (contest.owner_id === user_id) {
-			events.emit("contestBeforeDelete", {
-				contest_id: contest.id!,
-				user_id,
-			});
-
-			await db
-				.deleteFrom("contests")
-				.where("slug", "=", ctx.params.slug)
-				.execute();
-
-			events.emit("contestDeleted", {
+			events.emit("contestDelete", {
 				contest_id: contest.id!,
 				user_id,
 			});

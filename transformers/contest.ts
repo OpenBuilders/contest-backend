@@ -143,7 +143,15 @@ const populateContestResults = async (
 ) => {
 	if (placements.length === 0) return [];
 
-	const submission_ids = [...new Set(placements.flatMap((i) => i.submissions))];
+	let submission_ids: number[] = [];
+
+	if (
+		placements.every((item) =>
+			item.submissions.every((i) => typeof i === "number"),
+		)
+	) {
+		submission_ids = [...new Set(placements.flatMap((i) => i.submissions))];
+	}
 
 	const submissions = await db
 		.selectFrom("submissions")
@@ -176,7 +184,7 @@ const populateContestResults = async (
 			submissions: placement.submissions
 				.map((submission_id) => {
 					const submission = submissions.find((i) => i.id === submission_id);
-					if (!submission) return undefined;
+					if (!submission) return submission_id;
 
 					const user = users.find((i) => i.user_id === submission.user_id);
 					if (!user) return undefined;

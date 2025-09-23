@@ -84,8 +84,8 @@ export const handleContestUpdated = async (data: Events["contestUpdated"]) => {
 	await cacheContestCoverImage(contest);
 };
 
-export const handleContestBeforeDelete = async (
-	data: Events["contestBeforeDelete"],
+export const handleContestDelete = async (
+	data: Events["contestDelete"],
 ) => {
 	const { contest_id } = data;
 
@@ -103,11 +103,12 @@ export const handleContestBeforeDelete = async (
 		.deleteFrom("submissions")
 		.where("contest_id", "=", contest_id)
 		.execute();
-};
 
-export const handleContestDeleted = async (
-	data: Events["contestDeleted"],
-) => {};
+    await db
+      .deleteFrom("contests")
+      .where("id", "=", contest_id)
+      .execute();
+};
 
 export const handleContestBookmarked = (
 	data: Events["contestBookmarked"],

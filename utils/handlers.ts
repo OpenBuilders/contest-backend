@@ -1,9 +1,8 @@
 import {
 	handleContestAnnounced,
-	handleContestBeforeDelete,
+	handleContestDelete,
 	handleContestBookmarked,
 	handleContestCreated,
-	handleContestDeleted,
 	handleContestSubmitted,
 	handleContestUpdated,
 } from "../events/contests";
@@ -16,8 +15,7 @@ import { events } from "./events";
 
 export const initializeEventHandlers = () => {
 	events.on("contestCreated", handleContestCreated);
-	events.on("contestBeforeDelete", handleContestBeforeDelete);
-	events.on("contestDeleted", handleContestDeleted);
+	events.on("contestDelete", handleContestDelete);
 	events.on("contestBookmarked", handleContestBookmarked);
 	events.on("contestSubmitted", handleContestSubmitted);
 	events.on("contestAnnounced", handleContestAnnounced);

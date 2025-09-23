@@ -52,8 +52,7 @@ export type Events = {
 	contestCreated: { contest_id: number; user_id: number; notify: boolean };
 	contestUpdated: { contest_id: number; user_id: number };
 	contestAnnounced: { contest_id: number; user_id: number };
-	contestBeforeDelete: { contest_id: number; user_id: number };
-	contestDeleted: { contest_id: number; user_id: number };
+	contestDelete: { contest_id: number; user_id: number };
 	contestBookmarked: { contest_id: number; user_id: number };
 	contestSubmitted: {
 		contest_id: number;
