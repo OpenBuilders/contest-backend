@@ -22,7 +22,7 @@ export type GallerySlider = {
 export type GallerySection = {
 	type: "section";
 	id: string;
-	title: string;
+	title?: string;
 	items: any[];
 };
 

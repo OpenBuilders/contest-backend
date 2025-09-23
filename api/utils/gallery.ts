@@ -47,12 +47,12 @@ export const getGallery = async (): Promise<GalleryItem[]> => {
 
 		const gallery = items.map((item) => {
 			if (item.type === "section") {
-				const { type, items, title, id } = item;
+				const { type, items, id } = item;
 
 				return {
 					type,
 					id,
-					title: t("en", title as any),
+					title: item.title,
 					items: items.map(
 						(i: any) => contests.find((item) => item.contest.id === i)!,
 					) as any,
