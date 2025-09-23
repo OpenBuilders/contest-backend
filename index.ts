@@ -69,6 +69,10 @@ client.initialize({
 			});
 		}
 	},
+	redis: {
+		host: env.REDIS_HOST,
+		port: env.REDIS_PORT,
+	},
 	benchmark: false,
 });
 

@@ -13,9 +13,12 @@ const envScheme = z.object({
 	MYSQL_NAME: z.string().nonempty().optional(),
 	MYSQL_PASS: z.string().nonempty().optional(),
 	MYSQL_HOST: z.string().nonempty().optional(),
-	MYSQL_PORT: z.number().default(3306),
+	MYSQL_PORT: z.coerce.number().default(3306),
 
-	API_HOST: z.string().nonempty().optional(),
+	REDIS_HOST: z.string().nonempty().default("127.0.0.1"),
+	REDIS_PORT: z.coerce.number().default(6379),
+
+	API_HOST: z.string().nonempty().default("127.0.0.1"),
 	API_PORT: z.coerce.number().optional(),
 	API_AUTH_TTL: z.coerce.number().default(3600),
 	API_JWT_SECRET: z.string().nonempty().optional(),

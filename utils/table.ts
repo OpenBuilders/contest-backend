@@ -1,7 +1,13 @@
 import NyxTable from "nyx-bot-client/utils/table";
 import { createClient } from "redis";
+import { env } from "./env";
 
-const redisTables = createClient();
+const redisTables = createClient({
+	socket: {
+		host: env.REDIS_HOST,
+		port: env.REDIS_PORT,
+	},
+});
 await redisTables.connect();
 
 export const tableSample: NyxTable<{

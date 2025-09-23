@@ -15,7 +15,12 @@ export const pools = {
 		idleTimeout: 60 * 60_000,
 	}),
 	redis: createClientPool(
-		{},
+		{
+			socket: {
+				host: env.REDIS_HOST,
+				port: env.REDIS_PORT,
+			},
+		},
 		{
 			minimum: 1,
 			maximum: env.POOL_SIZE_REDIS,

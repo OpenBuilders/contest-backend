@@ -117,7 +117,7 @@ export const initializeAPI = async () => {
 		}))
 		.listen({
 			port: env.API_PORT,
-			hostname: env.API_HOST ?? "127.0.0.1",
+			hostname: env.API_HOST,
 			development: false,
 		});
 
