@@ -22,8 +22,10 @@ const envScheme = z.object({
 	API_PORT: z.coerce.number().optional(),
 	API_AUTH_TTL: z.coerce.number().default(3600),
 	API_JWT_SECRET: z.string().nonempty().optional(),
-	WEBHOOK_SECRET: z.string().nonempty().optional(),
 	API_VERSION: z.string().nonempty().default("0.0.0"),
+
+	WEBHOOK_SECRET: z.string().nonempty().optional(),
+	WEBHOOK_URL: z.url(),
 
 	MINIAPP_URL: z.url(),
 	MINIAPP_SLUG: z.string().nonempty(),

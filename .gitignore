@@ -37,4 +37,5 @@ test.ts
 
 storage/images/*
 !storage/images/.gitkeep
-gallery.json
+storage/covers/*
+!storage/covers/.gitkeep

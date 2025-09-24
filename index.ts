@@ -1,4 +1,4 @@
-import { sendMessage } from "nyx-bot-client";
+import { getWebhookInfo, sendMessage } from "nyx-bot-client";
 import client from "nyx-bot-client/nyx-client";
 import { initializeAPI } from "./api/api";
 import { handlerCallbackQueryAnalytics } from "./pipelines/callback_query/analytics";
@@ -16,6 +16,7 @@ import { db } from "./utils/database";
 import { env } from "./utils/env";
 import { initializeEventHandlers } from "./utils/handlers";
 import { pools } from "./utils/pool";
+import { initializeWebhook } from "./webhook";
 
 client.initialize({
 	botConfig: {
@@ -79,3 +80,5 @@ client.initialize({
 initializeAPI();
 
 initializeEventHandlers();
+
+initializeWebhook();

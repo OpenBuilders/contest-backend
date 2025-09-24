@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import os from "node:os";
+import { resolve } from "node:path";
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { sendPhoto } from "nyx-bot-client";
 import sharp from "sharp";
@@ -259,11 +259,11 @@ export async function generateContestCoverImage(
 
 	const filename = generateRandomHash();
 
-	const filepath = `${os.tmpdir()}/${filename}`;
+	const filepath = `${__dirname}/../storage/covers/${filename}`;
 
 	await fs.writeFile(filepath, buff);
 
-	return filepath;
+	return resolve(filepath);
 }
 
 export async function cacheContestCoverImage(

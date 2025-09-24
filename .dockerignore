@@ -1,5 +1,6 @@
 node_modules
 storage/images/*
+storage/covers/*
 !.gitkeep
 .git
 .env
