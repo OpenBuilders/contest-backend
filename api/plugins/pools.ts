@@ -6,7 +6,7 @@ export const pluginPools = (app: Elysia) =>
 	app
 		.derive(async () => {
 			return {
-				mysql: pools.mysql,
+				pg: pools.pg,
 				redis: pools.redis,
 				db: db,
 			};

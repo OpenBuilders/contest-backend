@@ -1,18 +1,18 @@
 import genereicPool from "generic-pool";
-import { createPool } from "mysql2";
+import { Pool } from "pg";
 import { createClientPool } from "redis";
 import { env } from "./env";
 
 export const pools = {
-	mysql: createPool({
-		host: env.MYSQL_HOST,
-		user: env.MYSQL_USER,
-		database: env.MYSQL_NAME,
-		password: env.MYSQL_PASS,
-		port: env.MYSQL_PORT,
-		connectionLimit: env.POOL_SIZE_MYSQL,
-		maxIdle: 1,
-		idleTimeout: 60 * 60_000,
+	pg: new Pool({
+		host: env.PGSQL_HOST,
+		user: env.PGSQL_USER,
+		password: env.PGSQL_PASS,
+		port: env.PGSQL_PORT,
+		database: env.PGSQL_NAME,
+		idleTimeoutMillis: 60 * 60_000,
+		max: env.POOL_SIZE_PGSQL,
+		min: 1,
 	}),
 	redis: createClientPool(
 		{

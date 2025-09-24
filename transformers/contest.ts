@@ -24,26 +24,23 @@ export const transformContestAPI = async (
 		fee_wallet,
 		description,
 		instruction,
+		theme,
 		anonymous: anonymousValue,
 		verified: verifiedValue,
 		announced: announcedValue,
 		results: resultsValue,
 	} = contest;
 
-	const theme: DBSchema["contests"]["theme"] = contest.theme
-		? JSON.parse(contest.theme as any)
-		: undefined;
+	const verified = verifiedValue ? verifiedValue : undefined;
 
-	const verified = verifiedValue ? verifiedValue === 1 : undefined;
+	anonymous = anonymous ?? (anonymousValue ? anonymousValue : undefined);
 
-	anonymous = anonymous ?? (anonymousValue ? anonymousValue === 1 : undefined);
-
-	const announced = announcedValue ? announcedValue === 1 : undefined;
+	const announced = announcedValue ? announcedValue : undefined;
 
 	const results =
 		resultsValue && announced
 			? await populateContestResults(
-					JSON.parse(resultsValue as any),
+					resultsValue,
 					Boolean(anonymous),
 					requester_id,
 				)
@@ -79,7 +76,10 @@ export const annotateContestAPI = async (
 	let submissions_count: TransformedContest["submissions_count"];
 
 	if (requester_id) {
-		if (requester_id === owner_id) {
+		if (
+			Number.parseInt(requester_id as any, 10) ===
+			Number.parseInt(owner_id as any, 10)
+		) {
 			role = "owner";
 		} else {
 			const participant = await db

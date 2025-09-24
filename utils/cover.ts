@@ -273,22 +273,20 @@ export async function cacheContestCoverImage(
 	>,
 ) {
 	const { id, title, image, theme, cover_image } = contest;
-	const theme_parsed = JSON.parse((theme ?? "{}") as any);
 
 	const metadata = {
 		title,
 		image,
-		theme: theme_parsed,
+		theme,
 	};
 
-	const cover_image_parsed = JSON.parse((cover_image ?? "{}") as any);
-	if (JSON.stringify(cover_image_parsed?.metadata) === JSON.stringify(metadata))
+	if (JSON.stringify(cover_image?.metadata) === JSON.stringify(metadata))
 		return;
 
 	const file_path = await generateContestCoverImage(
 		title,
-		ContestThemeBackdrops.find((i) => i.id === (theme_parsed.backdrop ?? -1)),
-		theme_parsed.symbol,
+		ContestThemeBackdrops.find((i) => i.id === (theme?.backdrop ?? -1)),
+		theme?.symbol,
 		image,
 	);
 

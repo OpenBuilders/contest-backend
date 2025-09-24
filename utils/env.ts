@@ -7,13 +7,13 @@ const envScheme = z.object({
 	BOT_API_SERVER: z.string().optional(),
 
 	POOL_SIZE_REDIS: z.coerce.number().optional(),
-	POOL_SIZE_MYSQL: z.coerce.number().optional(),
+	POOL_SIZE_PGSQL: z.coerce.number().optional(),
 
-	MYSQL_USER: z.string().nonempty().optional(),
-	MYSQL_NAME: z.string().nonempty().optional(),
-	MYSQL_PASS: z.string().nonempty().optional(),
-	MYSQL_HOST: z.string().nonempty().optional(),
-	MYSQL_PORT: z.coerce.number().default(3306),
+	PGSQL_USER: z.string().nonempty().optional(),
+	PGSQL_NAME: z.string().nonempty().optional(),
+	PGSQL_PASS: z.string().nonempty().optional(),
+	PGSQL_HOST: z.string().nonempty().optional(),
+	PGSQL_PORT: z.coerce.number().default(5432),
 
 	REDIS_HOST: z.string().nonempty().default("127.0.0.1"),
 	REDIS_PORT: z.coerce.number().default(6379),

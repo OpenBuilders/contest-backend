@@ -77,9 +77,7 @@ export const handlerCallbackQueryContestView: BotPipeline<
 			];
 
 			if (contest.cover_image) {
-				const cover: typeof contest.cover_image = JSON.parse(
-					contest.cover_image as any,
-				);
+				const cover = contest.cover_image;
 
 				sendPhoto({
 					chat_id: callback_query.message!.chat.id,

@@ -99,7 +99,7 @@ export const handlerInlineQueryContestSearch: BotPipeline<
 			];
 
 			if (cover_image) {
-				const cover: typeof cover_image = JSON.parse(cover_image as any);
+				const cover = cover_image;
 
 				results.push({
 					id: `contest-${slug}`,

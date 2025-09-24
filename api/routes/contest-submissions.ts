@@ -37,7 +37,7 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 			"submissions.created_at",
 		];
 
-		if (contest.owner_id === user_id) {
+		if (Number.parseInt(contest.owner_id, 10) === user_id) {
 			fields.push(
 				"users.user_id",
 				"users.first_name",
@@ -111,8 +111,8 @@ export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 				.executeTakeFirst();
 
 			if (submission) {
-				const likes = JSON.parse(submission.likes ?? "[]");
-				const dislikes = JSON.parse(submission.dislikes ?? "[]");
+				const likes = submission.likes ?? [];
+				const dislikes = submission.dislikes ?? [];
 
 				const { type } = schema.data;
 

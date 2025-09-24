@@ -1,164 +1,421 @@
-/*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.19  Distrib 10.11.13-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: Contonest
--- ------------------------------------------------------
--- Server version	10.11.13-MariaDB-0ubuntu0.24.04.1
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `bookmarks`
+-- PostgreSQL database dump
 --
 
-DROP TABLE IF EXISTS `bookmarks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bookmarks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `contest_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `contest_id` (`contest_id`),
-  CONSTRAINT ` bookmarks_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `bookmarks_contest_id` FOREIGN KEY (`contest_id`) REFERENCES `contests` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+\restrict THnfCcZCuzxojkJG4M3LikfAfp2UzqVVBOJWS5tqx42mCRvZm3H1sSIqSWHY4yX
+
+-- Dumped from database version 17.6 (Ubuntu 17.6-1.pgdg24.04+1)
+-- Dumped by pg_dump version 17.6 (Ubuntu 17.6-1.pgdg24.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
--- Table structure for table `contests`
+-- Name: bookmarks; Type: TABLE; Schema: public; Owner: contonest_user
 --
 
-DROP TABLE IF EXISTS `contests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `contests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `slug` varchar(32) NOT NULL,
-  `slug_moderator` varchar(32) NOT NULL,
-  `owner_id` bigint(20) NOT NULL,
-  `moderators` text DEFAULT NULL,
-  `title` varchar(48) NOT NULL,
-  `description` text NOT NULL,
-  `instruction` tinytext DEFAULT NULL,
-  `fee` double NOT NULL,
-  `fee_wallet` tinytext DEFAULT NULL,
-  `prize` varchar(48) DEFAULT NULL,
-  `theme` tinytext DEFAULT NULL,
-  `anonymous` tinyint(1) NOT NULL,
-  `verified` tinyint(1) NOT NULL DEFAULT 0,
-  `announced` tinyint(1) NOT NULL DEFAULT 0,
-  `image` tinytext DEFAULT NULL,
-  `cover_image` tinytext DEFAULT NULL,
-  `results` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`results`)),
-  `date_end` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`),
-  UNIQUE KEY `slug_moderator` (`slug_moderator`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE public.bookmarks (
+    id integer NOT NULL,
+    user_id bigint NOT NULL,
+    contest_id integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.bookmarks OWNER TO contonest_user;
 
 --
--- Table structure for table `moderators`
+-- Name: bookmarks_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
 --
 
-DROP TABLE IF EXISTS `moderators`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `moderators` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `contest_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `contest_id` (`contest_id`),
-  CONSTRAINT `moderators_contest_id` FOREIGN KEY (`contest_id`) REFERENCES `contests` (`id`),
-  CONSTRAINT `moderators_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+ALTER TABLE public.bookmarks ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.bookmarks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 
 --
--- Table structure for table `settings`
+-- Name: contests; Type: TABLE; Schema: public; Owner: contonest_user
 --
 
-DROP TABLE IF EXISTS `settings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `meta` varchar(32) NOT NULL,
-  `value` text DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `meta` (`meta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE public.contests (
+    id integer NOT NULL,
+    slug character varying(32) NOT NULL,
+    slug_moderator character varying(32) NOT NULL,
+    owner_id bigint NOT NULL,
+    moderators text,
+    title character varying(48) NOT NULL,
+    description text NOT NULL,
+    instruction text,
+    fee double precision NOT NULL,
+    fee_wallet text,
+    prize character varying(48),
+    theme jsonb,
+    anonymous boolean NOT NULL,
+    verified boolean DEFAULT false NOT NULL,
+    announced boolean DEFAULT false NOT NULL,
+    image text,
+    cover_image jsonb,
+    results jsonb DEFAULT '[]'::jsonb NOT NULL,
+    date_end integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.contests OWNER TO contonest_user;
 
 --
--- Table structure for table `submissions`
+-- Name: contests_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
 --
 
-DROP TABLE IF EXISTS `submissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `submissions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `contest_id` int(11) NOT NULL,
-  `submission` text NOT NULL,
-  `likes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`likes`)),
-  `dislikes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`dislikes`)),
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `contest_id` (`contest_id`),
-  CONSTRAINT `participants_contest_id` FOREIGN KEY (`contest_id`) REFERENCES `contests` (`id`),
-  CONSTRAINT `participants_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+ALTER TABLE public.contests ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.contests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 
 --
--- Table structure for table `users`
+-- Name: moderators; Type: TABLE; Schema: public; Owner: contonest_user
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `first_name` varchar(64) NOT NULL,
-  `last_name` varchar(64) DEFAULT NULL,
-  `username` varchar(64) DEFAULT NULL,
-  `profile_photo` tinytext DEFAULT NULL,
-  `premium` tinyint(1) NOT NULL DEFAULT 0,
-  `anonymous_profile` tinytext NOT NULL,
-  `language` varchar(8) NOT NULL DEFAULT 'en',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+CREATE TABLE public.moderators (
+    id integer NOT NULL,
+    user_id bigint NOT NULL,
+    contest_id integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-23  3:18:04
+ALTER TABLE public.moderators OWNER TO contonest_user;
+
+--
+-- Name: moderators_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE public.moderators ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.moderators_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: contonest_user
+--
+
+CREATE TABLE public.settings (
+    id integer NOT NULL,
+    meta character varying(32) NOT NULL,
+    value text
+);
+
+
+ALTER TABLE public.settings OWNER TO contonest_user;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE public.settings ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: submissions; Type: TABLE; Schema: public; Owner: contonest_user
+--
+
+CREATE TABLE public.submissions (
+    id integer NOT NULL,
+    user_id bigint NOT NULL,
+    contest_id integer NOT NULL,
+    submission jsonb NOT NULL,
+    likes jsonb DEFAULT '[]'::jsonb NOT NULL,
+    dislikes jsonb DEFAULT '[]'::jsonb NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.submissions OWNER TO contonest_user;
+
+--
+-- Name: submissions_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE public.submissions ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.submissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: contonest_user
+--
+
+CREATE TABLE public.users (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    first_name character varying(64) NOT NULL,
+    last_name character varying(64),
+    username character varying(64),
+    profile_photo text,
+    premium boolean DEFAULT false NOT NULL,
+    anonymous_profile jsonb NOT NULL,
+    language character varying(8) DEFAULT 'en'::character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO contonest_user;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
+--
+
+CREATE SEQUENCE public.users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.users_id_seq OWNER TO contonest_user;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: contonest_user
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: bookmarks bookmarks_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.bookmarks
+    ADD CONSTRAINT bookmarks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: contests contests_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.contests
+    ADD CONSTRAINT contests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: contests contests_slug_key; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.contests
+    ADD CONSTRAINT contests_slug_key UNIQUE (slug);
+
+
+--
+-- Name: contests contests_slug_moderator_key; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.contests
+    ADD CONSTRAINT contests_slug_moderator_key UNIQUE (slug_moderator);
+
+
+--
+-- Name: users idx_user_id; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT idx_user_id UNIQUE (user_id);
+
+
+--
+-- Name: moderators moderators_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.moderators
+    ADD CONSTRAINT moderators_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: submissions submissions_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.submissions
+    ADD CONSTRAINT submissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: bookmarks_contest_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX bookmarks_contest_id_idx ON public.bookmarks USING btree (contest_id);
+
+
+--
+-- Name: bookmarks_user_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX bookmarks_user_id_idx ON public.bookmarks USING btree (user_id);
+
+
+--
+-- Name: moderators_contest_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX moderators_contest_id_idx ON public.moderators USING btree (contest_id);
+
+
+--
+-- Name: moderators_user_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX moderators_user_id_idx ON public.moderators USING btree (user_id);
+
+
+--
+-- Name: settings_meta_key; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE UNIQUE INDEX settings_meta_key ON public.settings USING btree (meta);
+
+
+--
+-- Name: submissions_contest_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX submissions_contest_id_idx ON public.submissions USING btree (contest_id);
+
+
+--
+-- Name: submissions_user_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX submissions_user_id_idx ON public.submissions USING btree (user_id);
+
+
+--
+-- Name: users_user_id_idx; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX users_user_id_idx ON public.users USING btree (user_id);
+
+
+--
+-- Name: bookmarks bookmarks_contest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.bookmarks
+    ADD CONSTRAINT bookmarks_contest_id_fkey FOREIGN KEY (contest_id) REFERENCES public.contests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: bookmarks bookmarks_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.bookmarks
+    ADD CONSTRAINT bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: contests contests_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.contests
+    ADD CONSTRAINT contests_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.users(user_id) ON DELETE RESTRICT;
+
+
+--
+-- Name: moderators moderators_contest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.moderators
+    ADD CONSTRAINT moderators_contest_id_fkey FOREIGN KEY (contest_id) REFERENCES public.contests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: moderators moderators_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.moderators
+    ADD CONSTRAINT moderators_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: submissions submissions_contest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.submissions
+    ADD CONSTRAINT submissions_contest_id_fkey FOREIGN KEY (contest_id) REFERENCES public.contests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: submissions submissions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.submissions
+    ADD CONSTRAINT submissions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict THnfCcZCuzxojkJG4M3LikfAfp2UzqVVBOJWS5tqx42mCRvZm3H1sSIqSWHY4yX
+

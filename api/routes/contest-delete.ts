@@ -12,7 +12,7 @@ export const routePOSTContestDelete: Handler = async (ctx) => {
 		.executeTakeFirst();
 
 	if (contest) {
-		if (contest.owner_id === user_id) {
+		if (Number.parseInt(contest.owner_id, 10) === user_id) {
 			events.emit("contestDelete", {
 				contest_id: contest.id!,
 				user_id,

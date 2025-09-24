@@ -1,5 +1,3 @@
-export type BoolInt = 0 | 1;
-
 export type Placement = {
 	id: number;
 	name: string;
@@ -41,9 +39,9 @@ export type DBSchema = {
 		fee: number;
 		fee_wallet?: string;
 		prize?: string;
-		anonymous: BoolInt;
-		verified?: BoolInt;
-		announced?: BoolInt;
+		anonymous: boolean;
+		verified?: boolean;
+		announced?: boolean;
 		image?: string;
 		cover_image?: {
 			file_id: string;
@@ -72,8 +70,8 @@ export type DBSchema = {
 		last_name?: string;
 		username?: string;
 		profile_photo?: string;
-		premium?: BoolInt;
-		anonymous_profile: [number, string, string];
+		premium?: boolean;
+		anonymous_profile: [number, string, string] | string[][];
 		language: string;
 		created_at?: string;
 	};
@@ -82,7 +80,7 @@ export type DBSchema = {
 		id?: number;
 		user_id: number;
 		contest_id: number;
-		submission: string;
+		submission: object;
 		likes?: number[];
 		dislikes?: number[];
 		created_at?: string;

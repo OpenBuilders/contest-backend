@@ -21,7 +21,7 @@ export const routeGETContestResults: Handler = async (ctx) => {
 		.executeTakeFirst();
 
 	if (contest) {
-		const placements = JSON.parse(contest.results);
+		const placements = contest.results;
 
 		const fields = [
 			"users.anonymous_profile",
@@ -31,7 +31,7 @@ export const routeGETContestResults: Handler = async (ctx) => {
 			"submissions.dislikes",
 		];
 
-		if (contest.owner_id === user_id) {
+		if (Number.parseInt(contest.owner_id, 10) === user_id) {
 			fields.push(
 				"users.user_id",
 				"users.first_name",
@@ -103,7 +103,7 @@ export const routePOSTContestPlacementCreate: Handler = async (ctx) => {
 		if (contest) {
 			const { data } = schema;
 
-			const results = JSON.parse(contest.results);
+			const results = contest.results;
 			results.push({
 				id: randomLong(),
 				name: data.name,
@@ -224,9 +224,9 @@ export const routePOSTContestPlacementUpdate: Handler = async (ctx) => {
 		if (contest) {
 			const { data } = schema;
 
-			const results: Placement[] = JSON.parse(contest.results as any);
+			const results: Placement[] = contest.results;
 			const submission_index = results.findIndex(
-				(i) => i.id === data.id && i.id === Number.parseInt(ctx.params.id!),
+				(i) => i.id === data.id && i.id === Number.parseInt(ctx.params.id!, 10),
 			);
 
 			if (submission_index > -1) {
@@ -263,9 +263,9 @@ export const routePOSTContestPlacementDelete: Handler = async (ctx) => {
 		.executeTakeFirst();
 
 	if (contest) {
-		const results: Placement[] = JSON.parse(contest.results as any);
+		const results: Placement[] = contest.results;
 		const submission_index = results.findIndex(
-			(i) => i.id === Number.parseInt(ctx.params.id!),
+			(i) => i.id === Number.parseInt(ctx.params.id!, 10),
 		);
 
 		if (submission_index > -1) {

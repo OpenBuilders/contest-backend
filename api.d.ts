@@ -1,5 +1,5 @@
 import type { Kysely } from "kysely";
-import type { Pool } from "mysql2";
+import type { Pool } from "pg";
 import type { RedisClientType } from "redis";
 import type { DBSchema } from "../../schema";
 
@@ -8,7 +8,7 @@ export type JWTInjections = {
 };
 
 export type PoolInjections = {
-	mysql: Pool;
+	pg: Pool;
 	redis: RedisClientType;
 	db: Kysely<DBSchema>;
 };

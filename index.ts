@@ -46,7 +46,7 @@ client.initialize({
 		return {
 			injections: {
 				db: db,
-				mysql: pools.mysql,
+				pg: pools.pg,
 				redis: pools.redis,
 			},
 			onFinish: async () => {},

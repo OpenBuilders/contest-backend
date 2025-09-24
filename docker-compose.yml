@@ -18,31 +18,20 @@ services:
          - "9092:9092"
 
    db:
-      image: mariadb:10.11.14
-      container_name: contonest-mysql
+      image: postgres:17
+      container_name: contonest-postgres
       restart: unless-stopped
       environment:
-         MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
-         MYSQL_DATABASE: ${MYSQL_NAME}
-         MYSQL_USER: ${MYSQL_USER}
-         MYSQL_PASSWORD: ${MYSQL_PASS}
+         POSTGRES_USER: ${PGSQL_USER}
+         POSTGRES_PASSWORD: ${PGSQL_PASS}
+         POSTGRES_DB: ${PGSQL_NAME}
       healthcheck:
-         test:
-            [
-               "CMD",
-               "mysqladmin",
-               "ping",
-               "-h",
-               "localhost",
-               "-u",
-               "${MYSQL_USER}",
-               "--password=${MYSQL_PASS}",
-            ]
+         test: ["CMD-SHELL", "pg_isready -U ${PGSQL_USER}"]
          interval: 10s
          timeout: 5s
          retries: 5
       volumes:
-         - mysql_data:/var/lib/mysql
+         - postgres_data:/var/lib/postgresql/data
          - ./database.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
    redis:
@@ -74,7 +63,7 @@ services:
          - "9091:9091"
 
 volumes:
-   mysql_data:
+   postgres_data:
    redis_data:
    telegram-bot-api-data:
    image-storage:

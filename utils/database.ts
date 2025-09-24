@@ -1,9 +1,9 @@
-import { Kysely, MysqlDialect } from "kysely";
+import { Kysely, PostgresDialect } from "kysely";
 import type { DBSchema } from "../schema";
 import { pools } from "./pool";
 
 export const db = new Kysely<DBSchema>({
-	dialect: new MysqlDialect({
-		pool: pools.mysql,
+	dialect: new PostgresDialect({
+		pool: pools.pg,
 	}),
 });
