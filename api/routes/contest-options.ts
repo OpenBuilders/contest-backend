@@ -57,7 +57,7 @@ const validatorContestOptionsUpdate = z.preprocess(
 		instruction: z
 			.string()
 			.min(limits.form.create.instruction.minLength)
-			.max(limits.form.create.instruction.maxLength)
+			.max(limits.form.create.instruction.maxLength + 256)
 			.optional(),
 		prize: z
 			.string()

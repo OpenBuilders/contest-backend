@@ -35,7 +35,7 @@ const validator = z.preprocess(
 		instruction: z
 			.string()
 			.min(limits.form.create.instruction.minLength)
-			.max(limits.form.create.instruction.maxLength)
+			.max(limits.form.create.instruction.maxLength + 256)
 			.optional(),
 		prize: z
 			.string()
@@ -93,7 +93,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 					IN_PLACE: true,
 				}),
 				instruction: data.instruction,
-				anonymous: data.anonymous ? 1 : 0,
+				anonymous: Boolean(data.anonymous),
 				date_end: Math.trunc(data.date.end / 1_000),
 				fee: data.fee,
 				fee_wallet: data.fee_wallet,
@@ -101,7 +101,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				prize: data.prize ?? undefined,
 				theme: data.theme,
 				moderators: [],
-				verified: 0,
+				verified: false,
 			};
 
 			if (data.image) {

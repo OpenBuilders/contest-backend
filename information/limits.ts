@@ -13,7 +13,7 @@ export const limits = {
 			},
 			instruction: {
 				minLength: 0,
-				maxLength: 128,
+				maxLength: 1024,
 			},
 			prize: {
 				minLength: 0,
