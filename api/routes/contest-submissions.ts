@@ -32,8 +32,6 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 			"users.anonymous_profile",
 			"submissions.submission",
 			"submissions.id",
-			"submissions.likes",
-			"submissions.dislikes",
 			"submissions.created_at",
 		];
 
@@ -57,10 +55,12 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 		return {
 			status: "success",
 			result: {
-				submissions: submissions.map((submission) => ({
-					submission: transformSubmission(submission),
-					metadata: annotateSubmission(submission, user_id),
-				})),
+				submissions: await Promise.all(
+					submissions.map(async (submission) => ({
+						submission: await transformSubmission(submission),
+						metadata: await annotateSubmission(submission, user_id),
+					})),
+				),
 			},
 		};
 	}
@@ -105,71 +105,43 @@ export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 		if (contest) {
 			const submission = await db
 				.selectFrom("submissions")
-				.select(["likes", "dislikes"])
+				.select(["id"])
 				.where("id", "=", ctx.params.id)
 				.where("contest_id", "=", contest.id)
 				.executeTakeFirst();
 
 			if (submission) {
-				const likes = submission.likes ?? [];
-				const dislikes = submission.dislikes ?? [];
-
 				const { type } = schema.data;
+				const vote_id = type === "like" ? 1 : 0;
 
-				let liked = false;
-				let disliked = false;
+				const vote = await db
+					.selectFrom("votes")
+					.select(["vote"])
+					.where("user_id", "=", user_id)
+					.where("submission_id", "=", submission.id)
+					.executeTakeFirst();
 
-				if (type === "like") {
-					const index = likes.indexOf(user_id);
+				if (vote) {
+					await db
+						.deleteFrom("votes")
+						.where("user_id", "=", user_id)
+						.where("submission_id", "=", submission.id)
+						.execute();
 
-					if (index !== -1) {
-						likes.splice(index, 1);
-					} else {
-						likes.push(user_id);
-						liked = true;
-					}
-
-					const indexRemove = dislikes.indexOf(user_id);
-
-					if (indexRemove !== -1) {
-						dislikes.splice(indexRemove, 1);
-					}
-				} else if (type === "dislike") {
-					const index = dislikes.indexOf(user_id);
-
-					if (index !== -1) {
-						dislikes.splice(index, 1);
-					} else {
-						dislikes.push(user_id);
-						disliked = true;
-					}
-
-					const indexRemove = likes.indexOf(user_id);
-
-					if (indexRemove !== -1) {
-						likes.splice(indexRemove, 1);
+					if (Number.parseInt(vote.vote as any, 10) === vote_id) {
+						return await routeGETContestSubmissions(ctx);
 					}
 				}
-
 				await db
-					.updateTable("submissions")
-					.set({
-						likes: JSON.stringify(likes) as any,
-						dislikes: JSON.stringify(dislikes) as any,
+					.insertInto("votes")
+					.values({
+						user_id,
+						submission_id: submission.id,
+						vote: vote_id,
 					})
-					.where("id", "=", ctx.params.id)
-					.where("contest_id", "=", contest.id)
 					.execute();
 
-				return {
-					status: "success",
-					result: {
-						likes: likes.length,
-						dislikes: dislikes.length,
-						liked_by_viewer: liked,
-						disliked_by_viewer: disliked,
-					},
-				};
+				return await routeGETContestSubmissions(ctx);
 			}
 		}
 	}

@@ -81,8 +81,14 @@ export type DBSchema = {
 		user_id: number;
 		contest_id: number;
 		submission: object;
-		likes?: number[];
-		dislikes?: number[];
+		created_at?: string;
+	};
+
+	votes: {
+		id?: number;
+		user_id: number;
+		submission_id: number;
+		vote: number;
 		created_at?: string;
 	};
 

@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict THnfCcZCuzxojkJG4M3LikfAfp2UzqVVBOJWS5tqx42mCRvZm3H1sSIqSWHY4yX
+\restrict DqQ0jUnmMcxKusXTzlhOQcVH1d4MeMGVxajfNeWfZ4fEQhK9aF7giwpSnrhGqHX
 
--- Dumped from database version 17.6 (Ubuntu 17.6-1.pgdg24.04+1)
--- Dumped by pg_dump version 17.6 (Ubuntu 17.6-1.pgdg24.04+1)
+-- Dumped from database version 17.6 (Ubuntu 17.6-2.pgdg24.04+1)
+-- Dumped by pg_dump version 18.0 (Ubuntu 18.0-1.pgdg24.04+3)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -159,8 +159,6 @@ CREATE TABLE public.submissions (
     user_id bigint NOT NULL,
     contest_id integer NOT NULL,
     submission jsonb NOT NULL,
-    likes jsonb DEFAULT '[]'::jsonb NOT NULL,
-    dislikes jsonb DEFAULT '[]'::jsonb NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
@@ -220,6 +218,35 @@ ALTER SEQUENCE public.users_id_seq OWNER TO contonest_user;
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: votes; Type: TABLE; Schema: public; Owner: contonest_user
+--
+
+CREATE TABLE public.votes (
+    id integer NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    submission_id bigint,
+    vote bit(1)
+);
+
+
+ALTER TABLE public.votes OWNER TO contonest_user;
+
+--
+-- Name: votes_id_seq; Type: SEQUENCE; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE public.votes ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.votes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 
 --
@@ -294,6 +321,14 @@ ALTER TABLE ONLY public.submissions
 
 
 --
+-- Name: votes submissions_pkey_1; Type: CONSTRAINT; Schema: public; Owner: contonest_user
+--
+
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT submissions_pkey_1 PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: contonest_user
 --
 
@@ -348,6 +383,13 @@ CREATE INDEX submissions_contest_id_idx ON public.submissions USING btree (conte
 --
 
 CREATE INDEX submissions_user_id_idx ON public.submissions USING btree (user_id);
+
+
+--
+-- Name: submissions_user_id_idx_1; Type: INDEX; Schema: public; Owner: contonest_user
+--
+
+CREATE INDEX submissions_user_id_idx_1 ON public.votes USING btree (user_id);
 
 
 --
@@ -417,5 +459,5 @@ ALTER TABLE ONLY public.submissions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict THnfCcZCuzxojkJG4M3LikfAfp2UzqVVBOJWS5tqx42mCRvZm3H1sSIqSWHY4yX
+\unrestrict DqQ0jUnmMcxKusXTzlhOQcVH1d4MeMGVxajfNeWfZ4fEQhK9aF7giwpSnrhGqHX
 

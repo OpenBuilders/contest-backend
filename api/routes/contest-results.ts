@@ -27,8 +27,6 @@ export const routeGETContestResults: Handler = async (ctx) => {
 			"users.anonymous_profile",
 			"submissions.submission",
 			"submissions.id",
-			"submissions.likes",
-			"submissions.dislikes",
 		];
 
 		if (Number.parseInt(contest.owner_id, 10) === user_id) {
@@ -52,10 +50,12 @@ export const routeGETContestResults: Handler = async (ctx) => {
 			status: "success",
 			result: {
 				placements: placements,
-				submissions: submissions.map((submission) => ({
-					submission: transformSubmission(submission),
-					metadata: annotateSubmission(submission, user_id),
-				})),
+				submissions: await Promise.all(
+					submissions.map(async (submission) => ({
+						submission: await transformSubmission(submission),
+						metadata: await annotateSubmission(submission, user_id),
+					})),
+				),
 				announced: Boolean(contest.announced),
 			},
 		};
