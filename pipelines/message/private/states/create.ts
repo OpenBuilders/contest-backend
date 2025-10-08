@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import type { Insertable } from "kysely";
 import {
 	type BotPipeline,
 	getFile,
@@ -222,7 +223,7 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 				const slug = generateRandomHash();
 				const slug_moderator = generateRandomHash();
 
-				const value: Partial<DBSchema["contests"]> = {
+				const value: Insertable<DBSchema["contests"]> = {
 					slug,
 					slug_moderator,
 					title: params.title,

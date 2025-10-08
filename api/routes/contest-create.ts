@@ -1,5 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import type { Handler } from "elysia";
+import type { Insertable } from "kysely";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { generateRandomHash } from "../../helpers/string";
@@ -80,7 +81,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			const slug = generateRandomHash();
 			const slug_moderator = generateRandomHash();
 
-			const value: Partial<DBSchema["contests"]> = {
+			const value: Insertable<DBSchema["contests"]> = {
 				slug: slug,
 				slug_moderator: slug_moderator,
 				title: data.title,
@@ -97,11 +98,11 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				date_end: Math.trunc(data.date.end / 1_000),
 				fee: data.fee,
 				fee_wallet: data.fee_wallet ?? null,
-				owner_id: user_id as any,
+				owner_id: user_id,
 				prize: data.prize ?? null,
 				theme: data.theme,
 				moderators: JSON.stringify([]),
-				verified: false as any,
+				verified: false,
 			};
 
 			if (data.image) {

@@ -1,4 +1,5 @@
 import type { Handler } from "elysia";
+import type { Updateable } from "kysely";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { limits } from "../../information/limits";
@@ -87,7 +88,7 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 		if (contest) {
 			const { data } = schema;
 
-			const value: Partial<DBSchema["contests"]> = {
+			const value: Updateable<DBSchema["contests"]> = {
 				title: data.title,
 				description: domPurify.sanitize(data.description ?? "", {
 					ALLOWED_TAGS: limits.form.create.description.allowedTags,

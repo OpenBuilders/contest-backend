@@ -1,4 +1,5 @@
 import type { Handler } from "elysia";
+import type { Insertable } from "kysely";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { limits } from "../../information/limits";
@@ -41,7 +42,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 			if (!entry) {
 				const { data } = schema;
 
-				const value: Partial<DBSchema["submissions"]> = {
+				const value: Insertable<DBSchema["submissions"]> = {
 					contest_id: contest.id as any,
 					submission: JSON.stringify({
 						description: data.description,
