@@ -41,13 +41,13 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 			if (!entry) {
 				const { data } = schema;
 
-				const value: DBSchema["submissions"] = {
-					contest_id: contest.id!,
+				const value: Partial<DBSchema["submissions"]> = {
+					contest_id: contest.id as any,
 					submission: JSON.stringify({
 						description: data.description,
 						boc: data.boc,
 					}),
-					user_id: user_id,
+					user_id: user_id as any,
 				};
 
 				// TODO: validate payment
@@ -55,7 +55,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 				await db.insertInto("submissions").values(value).execute();
 
 				events.emit("contestSubmitted", {
-					contest_id: contest.id!,
+					contest_id: contest.id as any,
 					user_id,
 				});
 

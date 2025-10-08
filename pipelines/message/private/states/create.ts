@@ -213,7 +213,7 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 			const contests = await db
 				.selectFrom("contests")
 				.select(["id"])
-				.where("owner_id", "=", message.chat.id)
+				.where("owner_id", "=", message.chat.id as any)
 				.execute();
 
 			if (contests.length <= 64) {
@@ -222,15 +222,15 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 				const slug = generateRandomHash();
 				const slug_moderator = generateRandomHash();
 
-				const value: DBSchema["contests"] = {
+				const value: Partial<DBSchema["contests"]> = {
 					slug,
 					slug_moderator,
 					title: params.title,
 					description: params.description ?? "",
 					prize: params.prize,
-					owner_id: message.chat.id,
+					owner_id: message.chat.id as any,
 					date_end: Math.ceil(Date.now() / 1000) + days * 86400,
-					anonymous: 0,
+					anonymous: false,
 					fee: 0,
 				};
 
@@ -259,7 +259,10 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 					}
 				}
 
-				await db.insertInto("contests").values(value).execute();
+				await db
+					.insertInto("contests")
+					.values(value as any)
+					.execute();
 
 				const contest = await db
 					.selectFrom("contests")

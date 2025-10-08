@@ -80,7 +80,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			const slug = generateRandomHash();
 			const slug_moderator = generateRandomHash();
 
-			const value: DBSchema["contests"] = {
+			const value: Partial<DBSchema["contests"]> = {
 				slug: slug,
 				slug_moderator: slug_moderator,
 				title: data.title,
@@ -92,16 +92,16 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 					KEEP_CONTENT: true,
 					IN_PLACE: true,
 				}),
-				instruction: data.instruction,
+				instruction: data.instruction ?? null,
 				anonymous: Boolean(data.anonymous),
 				date_end: Math.trunc(data.date.end / 1_000),
 				fee: data.fee,
-				fee_wallet: data.fee_wallet,
-				owner_id: user_id,
-				prize: data.prize ?? undefined,
+				fee_wallet: data.fee_wallet ?? null,
+				owner_id: user_id as any,
+				prize: data.prize ?? null,
 				theme: data.theme,
-				moderators: [],
-				verified: false,
+				moderators: JSON.stringify([]),
+				verified: false as any,
 			};
 
 			if (data.image) {

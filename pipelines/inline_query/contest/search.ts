@@ -9,7 +9,6 @@ import { generateContestCaption } from "../../../helpers/contest";
 import { miniAppInternalURL } from "../../../information/general";
 import type { DBSchema } from "../../../schema";
 import { db } from "../../../utils/database";
-import { env } from "../../../utils/env";
 import { t } from "../../../utils/i18n";
 
 export const handlerInlineQueryContestSearch: BotPipeline<
@@ -23,7 +22,7 @@ export const handlerInlineQueryContestSearch: BotPipeline<
 		.leftJoin("bookmarks", (join) =>
 			join
 				.onRef("bookmarks.contest_id", "=", "contests.id")
-				.on("bookmarks.user_id", "=", user_id),
+				.on("bookmarks.user_id", "=", user_id as any),
 		)
 		.select([
 			"contests.id",
@@ -38,26 +37,26 @@ export const handlerInlineQueryContestSearch: BotPipeline<
 		])
 		.where((eb) =>
 			eb.or([
-				eb("contests.owner_id", "=", user_id),
+				eb("contests.owner_id", "=", user_id as any),
 				eb.exists(
 					eb
 						.selectFrom("moderators")
 						.whereRef("moderators.contest_id", "=", "contests.id")
-						.where("moderators.user_id", "=", user_id)
+						.where("moderators.user_id", "=", user_id as any)
 						.selectAll(),
 				),
 				eb.exists(
 					eb
 						.selectFrom("submissions")
 						.whereRef("submissions.contest_id", "=", "contests.id")
-						.where("submissions.user_id", "=", user_id)
+						.where("submissions.user_id", "=", user_id as any)
 						.selectAll(),
 				),
 				eb.exists(
 					eb
 						.selectFrom("bookmarks")
 						.whereRef("bookmarks.contest_id", "=", "contests.id")
-						.where("bookmarks.user_id", "=", user_id)
+						.where("bookmarks.user_id", "=", user_id as any)
 						.selectAll(),
 				),
 			]),
@@ -83,7 +82,7 @@ export const handlerInlineQueryContestSearch: BotPipeline<
 
 			const caption = generateContestCaption(
 				title,
-				prize,
+				prize ?? undefined,
 				date_end,
 				fee,
 				description,
@@ -104,7 +103,7 @@ export const handlerInlineQueryContestSearch: BotPipeline<
 				results.push({
 					id: `contest-${slug}`,
 					type: "photo",
-					photo_file_id: cover.file_id,
+					photo_file_id: (cover as any).file_id,
 					caption: caption,
 					parse_mode: "HTML",
 					title: title,

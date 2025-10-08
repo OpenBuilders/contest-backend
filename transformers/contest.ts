@@ -40,7 +40,7 @@ export const transformContestAPI = async (
 	const results =
 		resultsValue && announced
 			? await populateContestResults(
-					resultsValue,
+					resultsValue as any,
 					Boolean(anonymous),
 					requester_id,
 				)
@@ -85,8 +85,8 @@ export const annotateContestAPI = async (
 			const participant = await db
 				.selectFrom("submissions")
 				.select(["id"])
-				.where("user_id", "=", requester_id)
-				.where("contest_id", "=", id!)
+				.where("user_id", "=", requester_id as any)
+				.where("contest_id", "=", id as any)
 				.executeTakeFirst();
 
 			if (participant) {
@@ -96,8 +96,8 @@ export const annotateContestAPI = async (
 			const moderator = await db
 				.selectFrom("moderators")
 				.select(["id"])
-				.where("user_id", "=", requester_id)
-				.where("contest_id", "=", id!)
+				.where("user_id", "=", requester_id as any)
+				.where("contest_id", "=", id as any)
 				.executeTakeFirst();
 
 			if (moderator) {
@@ -110,7 +110,7 @@ export const annotateContestAPI = async (
 		const result_moderators = await db
 			.selectFrom("moderators")
 			.select(({ fn }) => fn.countAll().as("count"))
-			.where("contest_id", "=", id)
+			.where("contest_id", "=", id as any)
 			.executeTakeFirst();
 
 		moderators_count = Number(result_moderators?.count ?? 0);
@@ -120,7 +120,7 @@ export const annotateContestAPI = async (
 		const result_submissions = await db
 			.selectFrom("submissions")
 			.select(({ fn }) => fn.countAll().as("count"))
-			.where("contest_id", "=", id)
+			.where("contest_id", "=", id as any)
 			.executeTakeFirst();
 
 		submissions_count = Number(result_submissions?.count ?? 0);
@@ -171,7 +171,7 @@ const populateContestResults = async (
 				"user_id",
 				"language",
 			])
-			.where("user_id", "in", user_ids.length > 0 ? user_ids : [-1])
+			.where("user_id", "in", (user_ids.length > 0 ? user_ids : [-1]) as any)
 			.execute()
 	).map((i) => transformUserAPI(i as any));
 
@@ -186,10 +186,12 @@ const populateContestResults = async (
 					const submission = submissions.find((i) => i.id === submission_id);
 					if (!submission) return submission_id;
 
-					const user = users.find((i) => i.user_id === submission.user_id);
+					const user = users.find(
+						(i) => i.user_id.toString() === submission.user_id.toString(),
+					);
 					if (!user) return undefined;
 
-					const self = user.user_id === requester_id;
+					const self = user.user_id.toString() === requester_id?.toString();
 
 					const {
 						anonymous_profile,

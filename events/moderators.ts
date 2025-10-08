@@ -20,7 +20,7 @@ export const handleModeratorJoined = async (
 	const moderator = await db
 		.selectFrom("users")
 		.select(["first_name", "last_name", "language", "username"])
-		.where("user_id", "=", user_id)
+		.where("user_id", "=", user_id as any)
 		.executeTakeFirst();
 
 	if (!moderator) return;

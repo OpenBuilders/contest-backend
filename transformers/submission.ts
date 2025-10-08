@@ -5,7 +5,6 @@ import { transformUserAPI } from "./user";
 type TransformedSubmission = Partial<DBSchema["submissions"]> &
 	Partial<DBSchema["users"]> & {
 		submission: {
-			link: string;
 			description?: string;
 		};
 		likes: number;
@@ -24,7 +23,7 @@ export const transformSubmission = async (
 	const votes = await db
 		.selectFrom("votes")
 		.select(["vote", "user_id", "created_at"])
-		.where("submission_id", "=", id!)
+		.where("submission_id", "=", id as any)
 		.execute();
 
 	const likes = votes.filter((i) => Number.parseInt(i.vote as any, 10) === 1);
@@ -77,7 +76,7 @@ export const transformSubmission = async (
 		liked_by,
 		created_at,
 		...user,
-	} as TransformedSubmission;
+	} as any as TransformedSubmission;
 };
 
 export const annotateSubmission = async (
@@ -89,8 +88,8 @@ export const annotateSubmission = async (
 	const vote = await db
 		.selectFrom("votes")
 		.select(["vote"])
-		.where("submission_id", "=", id!)
-		.where("user_id", "=", requester_id!)
+		.where("submission_id", "=", id as any)
+		.where("user_id", "=", requester_id as any)
 		.executeTakeFirst();
 
 	const liked_by_viewer =

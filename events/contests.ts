@@ -23,14 +23,14 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 
 	if (!contest) return;
 
-	const cover = await cacheContestCoverImage(contest);
+	const cover = await cacheContestCoverImage(contest as any);
 
 	if (notify) {
 		const { title, prize, date_end, fee, description } = contest;
 
 		const caption = generateContestCaption(
 			title,
-			prize,
+			prize ?? undefined,
 			date_end,
 			fee,
 			description,
@@ -84,7 +84,7 @@ export const handleContestUpdated = async (data: Events["contestUpdated"]) => {
 		.executeTakeFirst();
 
 	if (!contest) return;
-	await cacheContestCoverImage(contest);
+	await cacheContestCoverImage(contest as any);
 };
 
 export const handleContestDelete = async (data: Events["contestDelete"]) => {
@@ -128,7 +128,7 @@ export const handleContestSubmitted = async (
 	const participant = await db
 		.selectFrom("users")
 		.select(["first_name", "last_name", "language", "username"])
-		.where("user_id", "=", user_id)
+		.where("user_id", "=", user_id as any)
 		.executeTakeFirst();
 
 	if (!participant) return;
@@ -137,7 +137,7 @@ export const handleContestSubmitted = async (
 		.selectFrom("submissions")
 		.select(["id", "submission"])
 		.where("contest_id", "=", contest_id)
-		.where("user_id", "=", user_id)
+		.where("user_id", "=", user_id as any)
 		.executeTakeFirst();
 
 	if (!submission) return;

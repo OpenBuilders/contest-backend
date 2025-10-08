@@ -17,31 +17,31 @@ export const handlerPrivateCommandMyContests: BotPipeline<
 			.leftJoin("bookmarks", (join) =>
 				join
 					.onRef("bookmarks.contest_id", "=", "contests.id")
-					.on("bookmarks.user_id", "=", user_id),
+					.on("bookmarks.user_id", "=", user_id as any),
 			)
 			.select(["contests.id", "contests.slug", "contests.title"])
 			.where((eb) =>
 				eb.or([
-					eb("contests.owner_id", "=", user_id),
+					eb("contests.owner_id", "=", user_id as any),
 					eb.exists(
 						eb
 							.selectFrom("moderators")
 							.whereRef("moderators.contest_id", "=", "contests.id")
-							.where("moderators.user_id", "=", user_id)
+							.where("moderators.user_id", "=", user_id as any)
 							.selectAll(),
 					),
 					eb.exists(
 						eb
 							.selectFrom("submissions")
 							.whereRef("submissions.contest_id", "=", "contests.id")
-							.where("submissions.user_id", "=", user_id)
+							.where("submissions.user_id", "=", user_id as any)
 							.selectAll(),
 					),
 					eb.exists(
 						eb
 							.selectFrom("bookmarks")
 							.whereRef("bookmarks.contest_id", "=", "contests.id")
-							.where("bookmarks.user_id", "=", user_id)
+							.where("bookmarks.user_id", "=", user_id as any)
 							.selectAll(),
 					),
 				]),

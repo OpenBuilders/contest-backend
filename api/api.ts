@@ -4,7 +4,6 @@ import z from "zod";
 import { env } from "../utils/env";
 import { pluginJWT } from "./plugins/jwt";
 import { pluginPools } from "./plugins/pools";
-import { routeGETAchievementsMy } from "./routes/achievements";
 import { routePOSTAuthorize } from "./routes/authorize";
 import { routePOSTBotWebhook } from "./routes/bot-webhook";
 import { routeGETContest } from "./routes/contest";
@@ -53,7 +52,6 @@ export const initializeAPI = async () => {
 		.use(pluginJWT)
 		.get("/contests/my", routeGETContestsMy)
 		.get("/contests/gallery", routeGETContestsGallery)
-		.get("/achievements/my", routeGETAchievementsMy)
 		.post("/contest/create", routePOSTContestCreate)
 
 		// Contest Manage Moderators

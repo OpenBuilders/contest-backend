@@ -8,7 +8,6 @@ import { generateContestCaption } from "../../../helpers/contest";
 import { miniAppInternalURL } from "../../../information/general";
 import type { DBSchema } from "../../../schema";
 import { db } from "../../../utils/database";
-import { env } from "../../../utils/env";
 import { t } from "../../../utils/i18n";
 
 export const handlerInlineQueryContestSpecific: BotPipeline<
@@ -45,7 +44,7 @@ export const handlerInlineQueryContestSpecific: BotPipeline<
 
 			const caption = generateContestCaption(
 				title,
-				prize,
+				prize ?? undefined,
 				date_end,
 				fee,
 				description,
@@ -66,7 +65,7 @@ export const handlerInlineQueryContestSpecific: BotPipeline<
 				results.push({
 					id: inline_query.query,
 					type: "photo",
-					photo_file_id: cover.file_id,
+					photo_file_id: (cover as any).file_id,
 					caption: caption,
 					parse_mode: "HTML",
 					title: title,

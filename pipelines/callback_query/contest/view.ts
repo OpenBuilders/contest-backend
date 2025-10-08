@@ -55,7 +55,7 @@ export const handlerCallbackQueryContestView: BotPipeline<
 
 			const caption = generateContestCaption(
 				title,
-				prize,
+				prize ?? undefined,
 				date_end,
 				fee,
 				description,
@@ -81,7 +81,7 @@ export const handlerCallbackQueryContestView: BotPipeline<
 
 				sendPhoto({
 					chat_id: callback_query.message!.chat.id,
-					photo: cover.file_id,
+					photo: (cover as any).file_id,
 					caption: caption,
 					reply_markup: {
 						inline_keyboard: keyboard,
@@ -96,7 +96,7 @@ export const handlerCallbackQueryContestView: BotPipeline<
 					},
 				});
 
-				cacheContestCoverImage(contest);
+				cacheContestCoverImage(contest as any);
 			}
 		}
 

@@ -280,14 +280,18 @@ export async function cacheContestCoverImage(
 		theme,
 	};
 
-	if (JSON.stringify(cover_image?.metadata) === JSON.stringify(metadata))
+	if (
+		JSON.stringify((cover_image as any)?.metadata) === JSON.stringify(metadata)
+	)
 		return;
 
 	const file_path = await generateContestCoverImage(
 		title,
-		ContestThemeBackdrops.find((i) => i.id === (theme?.backdrop ?? -1)),
-		theme?.symbol,
-		image,
+		ContestThemeBackdrops.find(
+			(i) => i.id === ((theme as any)?.backdrop ?? -1),
+		),
+		(theme as any)?.symbol,
+		image as any,
 	);
 
 	const result = await sendPhoto({
@@ -306,7 +310,7 @@ export async function cacheContestCoverImage(
 			.set({
 				cover_image: JSON.stringify(new_cover_image) as any,
 			})
-			.where("id", "=", id)
+			.where("id", "=", id as any)
 			.execute();
 
 		return new_cover_image;

@@ -40,8 +40,8 @@ export const getGallery = async (): Promise<GalleryItem[]> => {
 					.where("id", "in", contest_ids.length > 0 ? contest_ids : [-1])
 					.execute()
 			).map(async (contest) => ({
-				contest: await transformContestAPI(contest),
-				metadata: await annotateContestAPI(contest, -1),
+				contest: await transformContestAPI(contest as any),
+				metadata: await annotateContestAPI(contest as any, -1),
 			})),
 		);
 
