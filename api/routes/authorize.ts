@@ -108,6 +108,9 @@ export const routePOSTAuthorize: Handler = async (ctx) => {
 						user_id: initData.user.id,
 					}),
 					user: transformUserAPI(user),
+					wallets: {
+						master: env.MASTER_WALLET,
+					},
 					limits: limits,
 					version: env.API_VERSION,
 				},

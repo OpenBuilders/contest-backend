@@ -31,6 +31,7 @@ const envScheme = z.object({
 	MINIAPP_SLUG: z.string().nonempty(),
 
 	COVER_ARCHIVE_CHAT_ID: z.coerce.number().negative(),
+	MASTER_WALLET: z.string().nonempty().optional(),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);
