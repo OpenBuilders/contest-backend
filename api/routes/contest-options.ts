@@ -42,7 +42,7 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 
 const validatorContestOptionsUpdate = z.preprocess(
 	(data: any) => {
-		data.fee = Number.parseInt(data.fee, 10);
+		data.fee = Number.parseFloat(data.fee);
 		return data;
 	},
 	z.object({

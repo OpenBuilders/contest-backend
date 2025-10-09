@@ -14,7 +14,7 @@ const validator = z.preprocess(
 	(data: any) => {
 		data.date = JSON.parse(data.date);
 		data.theme = JSON.parse(data.theme);
-		data.fee = Number.parseInt(data.fee, 10);
+		data.fee = Number.parseFloat(data.fee, 10);
 		data.anonymous = data.anonymous === "true";
 
 		if (data.theme.backdrop && !data.theme.symbol) {
