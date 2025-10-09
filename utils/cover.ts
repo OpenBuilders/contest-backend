@@ -7,6 +7,7 @@ import { generateRandomHash } from "../helpers/string";
 import type { DBSchema } from "../schema";
 import { db } from "./database";
 import { env } from "./env";
+import { isEqual } from "./general";
 import { type ContestThemeBackdrop, ContestThemeBackdrops } from "./themes";
 
 const fonts = [
@@ -280,10 +281,7 @@ export async function cacheContestCoverImage(
 		theme,
 	};
 
-	if (
-		JSON.stringify((cover_image as any)?.metadata) === JSON.stringify(metadata)
-	)
-		return;
+	if (isEqual((cover_image as any)?.metadata, metadata)) return;
 
 	const file_path = await generateContestCoverImage(
 		title,
