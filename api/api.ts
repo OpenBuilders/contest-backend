@@ -37,7 +37,10 @@ import {
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsGallery, routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
-import { routePOSTContestTransactionCreate } from "./routes/transaction";
+import {
+	routeGETContestTonProofPayloadCreate,
+	routePOSTContestTransactionCreate,
+} from "./routes/transaction";
 
 export const initializeAPI = async () => {
 	z.object({
@@ -91,6 +94,7 @@ export const initializeAPI = async () => {
 		// Contest Actions
 
 		// Transactions
+		.get("/transaction/payload/create", routeGETContestTonProofPayloadCreate)
 		.post(
 			"/contest/:slug/transaction/create",
 			routePOSTContestTransactionCreate,

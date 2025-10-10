@@ -32,6 +32,9 @@ const envScheme = z.object({
 
 	COVER_ARCHIVE_CHAT_ID: z.coerce.number().negative(),
 	MASTER_WALLET: z.string().nonempty().optional(),
+
+	TON_CLIENT_ENDPOINT_URL: z.string().nonempty(),
+	TON_CLIENT_API_KEY: z.string().nonempty().optional(),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);

@@ -8,6 +8,7 @@ import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { domPurify } from "../../utils/dompurify";
 import { events } from "../../utils/events";
+import { verifyTonProof } from "../../utils/hash";
 import { normalizeImageToWebP } from "../../utils/image";
 
 const validator = z.preprocess(
@@ -19,6 +20,10 @@ const validator = z.preprocess(
 
 		if (data.theme.backdrop && !data.theme.symbol) {
 			data.theme.symbol = "symbol-55";
+		}
+
+		if (data.ton_proof) {
+			data.ton_proof = JSON.parse(data.ton_proof);
 		}
 
 		return data;
@@ -58,8 +63,23 @@ const validator = z.preprocess(
 			.string()
 			.regex(/^(-?\d+):[0-9a-fA-F]{64}$/)
 			.optional(),
+		fee_wallet_initState: z.string().optional(),
 		anonymous: z.boolean(),
 		image: z.instanceof(File).optional(),
+		ton_proof: z
+			.object({
+				name: z.string(),
+				proof: z.object({
+					timestamp: z.number(),
+					domain: z.object({
+						lengthBytes: z.number(),
+						value: z.string(),
+					}),
+					payload: z.string(),
+					signature: z.string(),
+				}),
+			})
+			.optional(),
 	}),
 );
 
@@ -75,7 +95,15 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			.where("owner_id", "=", user_id)
 			.execute();
 
-		if (contests.length <= 64) {
+		const ton_proof = schema.data.fee_wallet
+			? await verifyTonProof(
+					schema.data.fee_wallet,
+					schema.data.ton_proof?.proof,
+					schema.data.fee_wallet_initState ?? "",
+				)
+			: true;
+
+		if (contests.length <= 64 && ton_proof) {
 			const { data } = schema;
 
 			const slug = generateRandomHash();
