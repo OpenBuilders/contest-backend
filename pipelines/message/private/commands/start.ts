@@ -22,7 +22,7 @@ export const handlerPrivateCommandStart: BotPipeline<
 				resize_keyboard: true,
 				keyboard: [
 					[{ text: t("en", "general.menu.my") }],
-					[{ text: t("en", "general.menu.create") }],
+					// [{ text: t("en", "general.menu.create") }],
 				],
 			},
 		});
