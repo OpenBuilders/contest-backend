@@ -297,6 +297,13 @@ export async function cacheContestCoverImage(
 		photo: `file://${file_path}`,
 	});
 
+	console.log(
+		"DEBUG_PHOTO",
+		file_path,
+		`exists: ${(await fs.exists(file_path)) ? "true" : "false"}`,
+		result,
+	);
+
 	await fs.rm(file_path);
 
 	if (result.ok) {
