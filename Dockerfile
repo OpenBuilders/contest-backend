@@ -8,6 +8,7 @@ RUN bun install
 COPY . .
 
 RUN mkdir -p /app/storage/images
+RUN mkdir -p /app/storage/covers
 
 EXPOSE 3000
 
