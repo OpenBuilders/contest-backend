@@ -28,4 +28,9 @@ export const runMigrations = async () => {
 		console.error("failed to migrate");
 		console.error(error);
 	}
+
+	await db.destroy();
+	process.exit(0);
 };
+
+runMigrations();

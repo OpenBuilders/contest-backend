@@ -1,7 +1,6 @@
 import { sendMessage } from "nyx-bot-client";
 import client from "nyx-bot-client/nyx-client";
 import { initializeAPI } from "./api/api";
-import { runMigrations } from "./migrate";
 import { handlerCallbackQueryAnalytics } from "./pipelines/callback_query/analytics";
 import { handlerCallbackQueryContest } from "./pipelines/callback_query/contest";
 import { handlerCallbackQueryDefault } from "./pipelines/callback_query/default";
@@ -18,8 +17,6 @@ import { env } from "./utils/env";
 import { initializeEventHandlers } from "./utils/handlers";
 import { pools } from "./utils/pool";
 import { initializeWebhook } from "./webhook";
-
-runMigrations();
 
 client.initialize({
 	botConfig: {
