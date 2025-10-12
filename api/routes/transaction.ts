@@ -48,8 +48,7 @@ export const routePOSTContestTransactionCreate: Handler = async (ctx) => {
 			schema.data.wallet_initState ?? "",
 		);
 
-		// Temporary solution for testing purpose
-		if (contest && (ton_proof || true)) {
+		if (contest && ton_proof) {
 			const body = {
 				master: beginCell()
 					.storeUint(0, 32)
