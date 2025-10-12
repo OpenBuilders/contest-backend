@@ -16,6 +16,12 @@ services:
          - telegram-bot-api-data:/var/lib/telegram-bot-api
       ports:
          - "9092:9092"
+      healthcheck:
+         test: ["CMD", "curl", "-f", "http://backend:9092/health"]
+         interval: 30s
+         timeout: 5s
+         retries: 3
+         start_period: 10s
 
    db:
       image: postgres:17

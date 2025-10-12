@@ -37,6 +37,7 @@ import {
 import { routePOSTContestSubmit } from "./routes/contest-submit";
 import { routeGETContestsGallery, routeGETContestsMy } from "./routes/contests";
 import { routeGETDefault } from "./routes/default";
+import { routeGETHealth } from "./routes/health";
 import {
 	routeGETContestTonProofPayloadCreate,
 	routePOSTContestTransactionCreate,
@@ -48,6 +49,7 @@ export const initializeAPI = async () => {
 	}).parse(import.meta.env);
 
 	const bareRoutes = new Elysia()
+		.get("/health", routeGETHealth)
 		.post("/bot-webhook", routePOSTBotWebhook)
 		.get("/images/:name", routeGETContestImage);
 
