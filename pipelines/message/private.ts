@@ -16,8 +16,6 @@ export const handlerMessagePrivate: BotPipeline<"message", DBSchema> = async (
 	message,
 	injections,
 ) => {
-	console.log("update_received_pv", message);
-
 	if (message.chat.type === "private") {
 		for (const handler of pipelines) {
 			const result = await handler(message, injections);
