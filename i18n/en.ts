@@ -1,11 +1,11 @@
 const dictionary = {
 	general: {
-		name: "Contonest",
+		name: "Contests Tool",
 		start: {
 			text: "🏆 Welcome to <b>{title}</b>!",
 		},
 		welcome: {
-			text: "Hi {name}, welcome to <b>{title}</b>! 🎉\n\n{title} is a platform where you can create, join, and enjoy contests of all kinds. Whether it’s public challenges, private competitions, or fun community events, Contonest makes it simple, engaging, and fair.",
+			text: "Hi {name}, welcome to <b>{title}</b>! 🎉\n\n{title} is a platform where you can create, join, and enjoy contests of all kinds. Whether it’s public challenges, private competitions, or fun community events, Contests Tool makes it simple, engaging, and fair.",
 			button: "Launch App 🏆",
 		},
 		myContests: {
