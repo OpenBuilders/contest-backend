@@ -5,7 +5,6 @@ const envScheme = z.object({
 	BOT_USERNAME: z.string().nonempty(),
 	BOT_ADMIN_ID: z.coerce.number().optional(),
 	BOT_API_SERVER: z.string().optional(),
-	BOT_API_FILE_PREFIX: z.string().optional().default("file://"),
 
 	POOL_SIZE_REDIS: z.coerce.number().optional(),
 	POOL_SIZE_PGSQL: z.coerce.number().optional(),

@@ -294,7 +294,7 @@ export async function cacheContestCoverImage(
 
 	const result = await sendPhoto({
 		chat_id: env.COVER_ARCHIVE_CHAT_ID,
-		photo: `${env.BOT_API_FILE_PREFIX}${file_path}`,
+		photo: `file://${file_path}`,
 	});
 
 	await fs.rm(file_path);
