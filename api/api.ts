@@ -41,6 +41,7 @@ import { routeGETHealth } from "./routes/health";
 import {
 	routeGETContestTonProofPayloadCreate,
 	routePOSTContestTransactionCreate,
+	routePOSTPrecontestTransactionCreate,
 } from "./routes/transaction";
 
 export const initializeAPI = async () => {
@@ -97,6 +98,7 @@ export const initializeAPI = async () => {
 
 		// Transactions
 		.get("/transaction/payload/create", routeGETContestTonProofPayloadCreate)
+		.post("/contest/transaction/create", routePOSTPrecontestTransactionCreate)
 		.post(
 			"/contest/:slug/transaction/create",
 			routePOSTContestTransactionCreate,

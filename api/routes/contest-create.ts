@@ -1,4 +1,5 @@
 import { writeFile } from "node:fs/promises";
+import { sleep } from "bun";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
 import z from "zod";
@@ -10,6 +11,7 @@ import { domPurify } from "../../utils/dompurify";
 import { events } from "../../utils/events";
 import { verifyTonProof } from "../../utils/hash";
 import { normalizeImageToWebP } from "../../utils/image";
+import { verifyTransaction } from "../../utils/ton";
 
 const validator = z.preprocess(
 	(data: any) => {
@@ -57,8 +59,15 @@ const validator = z.preprocess(
 		}),
 		fee: z
 			.number()
-			.min(limits.form.create.fee.min)
-			.max(limits.form.create.fee.max),
+			.refine(
+				(val) =>
+					val === 0 ||
+					(val >= limits.form.create.fee.min &&
+						val <= limits.form.create.fee.max),
+				{
+					message: `Fee must be 0 or between ${limits.form.create.fee.min} and ${limits.form.create.fee.max}`,
+				},
+			),
 		fee_wallet: z
 			.string()
 			.regex(/^(-?\d+):[0-9a-fA-F]{64}$/)
@@ -80,6 +89,7 @@ const validator = z.preprocess(
 				}),
 			})
 			.optional(),
+		boc: z.string().optional(),
 	}),
 );
 
@@ -103,7 +113,21 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				)
 			: true;
 
-		if (contests.length <= 64 && ton_proof) {
+		let payment_valid = false;
+
+		payment_valid = false;
+		let tries = 0;
+
+		do {
+			await sleep(5_000);
+			payment_valid = await verifyTransaction(
+				schema.data.boc ?? "",
+				schema.data.fee_wallet ?? "",
+			);
+			tries++;
+		} while (!payment_valid && tries <= 20);
+
+		if (contests.length <= 64 && ton_proof && payment_valid) {
 			const { data } = schema;
 
 			const slug = generateRandomHash();

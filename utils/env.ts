@@ -32,10 +32,14 @@ const envScheme = z.object({
 	MINIAPP_SLUG: z.string().nonempty(),
 
 	COVER_ARCHIVE_CHAT_ID: z.coerce.number().negative(),
+	MODERATION_CHAT_ID: z.coerce.number().negative(),
 	MASTER_WALLET: z.string().nonempty().optional(),
 
 	TON_CLIENT_ENDPOINT_URL: z.string().nonempty(),
 	TON_CLIENT_API_KEY: z.string().nonempty().optional(),
+
+	FEE_COMMISSION: z.coerce.number(),
+	FEE_CREATE_CONTEST: z.coerce.number(),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);

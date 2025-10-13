@@ -20,7 +20,7 @@ export const limits = {
 				maxLength: 16,
 			},
 			fee: {
-				min: 0,
+				min: 1,
 				max: 1_000,
 			},
 		},

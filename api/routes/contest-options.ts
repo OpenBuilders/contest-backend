@@ -67,8 +67,15 @@ const validatorContestOptionsUpdate = z.preprocess(
 			.optional(),
 		fee: z
 			.number()
-			.min(limits.form.create.fee.min)
-			.max(limits.form.create.fee.max),
+			.refine(
+				(val) =>
+					val === 0 ||
+					(val >= limits.form.create.fee.min &&
+						val <= limits.form.create.fee.max),
+				{
+					message: `Fee must be 0 or between ${limits.form.create.fee.min} and ${limits.form.create.fee.max}`,
+				},
+			),
 	}),
 );
 

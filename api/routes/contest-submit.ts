@@ -49,7 +49,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 						schema.data.wallet ?? "",
 					);
 					tries++;
-				} while (!payment_valid && tries <= 10);
+				} while (!payment_valid && tries <= 20);
 			}
 
 			const entry = await db
