@@ -297,7 +297,11 @@ export async function cacheContestCoverImage(
 		photo: `${env.BOT_API_FILE_PREFIX}${file_path}`,
 	});
 
-	await fs.rm(file_path);
+	console.log("DEBUG_PHOTO", result, file_path, {
+		chat_id: env.COVER_ARCHIVE_CHAT_ID,
+		photo: `${env.BOT_API_FILE_PREFIX}${file_path}`,
+	});
+	// await fs.rm(file_path);
 
 	if (result.ok) {
 		const new_cover_image = {
