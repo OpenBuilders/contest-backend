@@ -297,7 +297,7 @@ export async function cacheContestCoverImage(
 		photo: `file://${file_path}`,
 	});
 
-	await fs.rm(file_path);
+	// await fs.rm(file_path);
 
 	if (result.ok) {
 		const new_cover_image = {
