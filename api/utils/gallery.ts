@@ -1,22 +1,37 @@
-import type { GalleryItem } from "../../schema";
+import type { GalleryItem, GallerySection } from "../../schema";
 import {
 	annotateContestAPI,
 	transformContestAPI,
 } from "../../transformers/contest";
 import { db } from "../../utils/database";
-import { t } from "../../utils/i18n";
 
 export const getGallery = async (): Promise<GalleryItem[]> => {
 	try {
-		const items: GalleryItem[] = JSON.parse(
-			(
-				await db
-					.selectFrom("settings")
-					.select(["value"])
-					.where("meta", "=", "gallery")
-					.executeTakeFirst()
-			)?.value ?? "[]",
-		);
+		const setting = await db
+			.selectFrom("settings")
+			.select(["value"])
+			.where("meta", "=", "gallery")
+			.executeTakeFirst();
+
+		const defaultGallery = JSON.stringify([
+			{
+				id: "public",
+				items: [],
+				type: "section",
+			},
+		]);
+
+		if (!setting) {
+			await db
+				.insertInto("settings")
+				.values({
+					meta: "gallery",
+					value: defaultGallery,
+				})
+				.execute();
+		}
+
+		const items: GalleryItem[] = JSON.parse(setting?.value ?? defaultGallery);
 
 		const contest_ids: number[] = items
 			.filter((i) => i.type === "section")

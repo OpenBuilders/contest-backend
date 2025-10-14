@@ -7,7 +7,7 @@ import {
 } from "../../transformers/contest";
 import { getGallery } from "../utils/gallery";
 
-const gallery = await getGallery();
+export const gallery = await getGallery();
 
 export const routeGETContestsMy: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;

@@ -54,6 +54,27 @@ const dictionary = {
 			},
 		},
 	},
+	message: {
+		group: {
+			moderation: {
+				verify: {
+					text: "✅ Contest {contest} is verified.",
+				},
+				unverify: {
+					text: "☑️ Contest {contest} is unverified.",
+				},
+				feature: {
+					text: "🏆 Contest {contest} is featured.",
+				},
+				unfeature: {
+					text: "🗑 Contest {contest} is unfeatured.",
+				},
+				notFound: {
+					text: "❌ Contest {contest} is not found.",
+				},
+			},
+		},
+	},
 	callback_query: {
 		contest: {
 			view: {

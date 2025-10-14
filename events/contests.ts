@@ -9,6 +9,7 @@ import { MESSAGE_EFFECTS } from "../information/effect";
 import { miniAppInternalURL } from "../information/general";
 import { cacheContestCoverImage } from "../utils/cover";
 import { db } from "../utils/database";
+import { env } from "../utils/env";
 import type { Events } from "../utils/events";
 import { t } from "../utils/i18n";
 
@@ -51,6 +52,23 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 			],
 		];
 
+		const keyboardModeration: InlineKeyboardButton[][] = [
+			[
+				{
+					text: t("en", "general.contest.buttons.open"),
+					url: `${miniAppInternalURL}?startapp=contest-${contest.slug}`,
+				},
+			],
+			[
+				{
+					text: "🆔",
+					copy_text: {
+						text: contest.slug,
+					},
+				},
+			],
+		];
+
 		if (cover) {
 			sendPhoto({
 				chat_id: contest.owner_id,
@@ -61,6 +79,15 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 				},
 				message_effect_id: MESSAGE_EFFECTS.confetti,
 			});
+
+			sendPhoto({
+				chat_id: env.MODERATION_CHAT_ID,
+				photo: cover.file_id!,
+				caption: caption,
+				reply_markup: {
+					inline_keyboard: keyboardModeration,
+				},
+			});
 		} else {
 			sendMessage({
 				chat_id: contest.owner_id,
@@ -69,6 +96,14 @@ export const handleContestCreated = async (data: Events["contestCreated"]) => {
 					inline_keyboard: keyboard,
 				},
 				message_effect_id: MESSAGE_EFFECTS.confetti,
+			});
+
+			sendMessage({
+				chat_id: env.MODERATION_CHAT_ID,
+				text: caption,
+				reply_markup: {
+					inline_keyboard: keyboardModeration,
+				},
 			});
 		}
 	}
