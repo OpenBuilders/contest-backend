@@ -1,7 +1,7 @@
 # 🏆 Contests Tool Backend
 
-![](https://raw.githubusercontent.com/erfanmola/Contonest/master/docs/Contonest.gif)
+![](https://raw.githubusercontent.com/OpenBuilders/contest-tool/master/docs/Demo.gif)
 
-Backend of Contonest handling the API and Telegram bot, built with **TypeScript + Bun**.
+Backend of Contests Tool handling the API and Telegram bot, built with **TypeScript + Bun**.
 
-See the main repository for full documentation: [Contonest](https://github.com/erfanmola/Contonest)
+See the main repository for full documentation: [Contests Tool](https://github.com/OpenBuilders/contest-tool)

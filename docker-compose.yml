@@ -1,7 +1,7 @@
 services:
    backend:
       build: .
-      container_name: contonest-backend
+      container_name: contests-tool-backend
       restart: unless-stopped
       env_file:
          - ".env.docker"
@@ -25,7 +25,7 @@ services:
 
    db:
       image: postgres:17
-      container_name: contonest-postgres
+      container_name: contests-tool-postgres
       restart: unless-stopped
       environment:
          POSTGRES_USER: ${PGSQL_USER}
@@ -41,7 +41,7 @@ services:
 
    redis:
       image: redis:7-alpine
-      container_name: contonest-redis
+      container_name: contests-tool-redis
       restart: unless-stopped
       healthcheck:
          test: ["CMD", "redis-cli", "ping"]
