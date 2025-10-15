@@ -5,7 +5,7 @@ const dictionary = {
 			text: "🏆 Welcome to <b>{title}</b>!",
 		},
 		welcome: {
-			text: "Hi {name}, welcome to <b>{title}</b>! 🎉\n\n{title} is a platform where you can create, join, and enjoy contests of all kinds. Whether it’s public challenges, private competitions, or fun community events, Contests Tool makes it simple, engaging, and fair.",
+			text: "<b>All-in-one tool for contests 🏆</b>\n\nCreate your own public or anonymous contest and invite moderators. Join active contests to win prize, earn respect, or just have fun.",
 			button: "Launch App 🏆",
 		},
 		myContests: {
