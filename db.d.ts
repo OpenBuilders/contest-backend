@@ -48,7 +48,6 @@ export interface Contests {
 	id: Generated<number>;
 	image: string | null;
 	instruction: string | null;
-	moderators: string | null;
 	owner_id: Int8;
 	prize: string | null;
 	results: Generated<Json>;

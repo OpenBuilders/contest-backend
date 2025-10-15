@@ -153,7 +153,6 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				owner_id: user_id,
 				prize: data.prize ?? null,
 				theme: data.theme,
-				moderators: JSON.stringify([]),
 				verified: false,
 			};
 
@@ -174,7 +173,6 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 			}
 
 			value.theme = JSON.stringify(value.theme) as any;
-			value.moderators = JSON.stringify(value.moderators) as any;
 
 			await db.insertInto("contests").values(value).execute();
 

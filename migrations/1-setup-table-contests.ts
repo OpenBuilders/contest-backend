@@ -8,7 +8,6 @@ export async function up(db: Kysely<any>) {
      slug varchar(32) NOT NULL UNIQUE,
      slug_moderator varchar(32) NOT NULL UNIQUE,
      owner_id bigint NOT NULL,
-     moderators text,
      title varchar(48) NOT NULL,
      description text NOT NULL,
      instruction text,
