@@ -95,8 +95,9 @@ const validator = z.preprocess(
 
 export const routePOSTContestCreate: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
-
+	console.log("DEBUG BACKDROP", "body", ctx.body);
 	const schema = validator.safeParse(ctx.body);
+	console.log("DEBUG BACKDROP", "schema", schema);
 
 	if (schema.success) {
 		const contests = await db
@@ -152,9 +153,11 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				fee_wallet: data.fee_wallet ?? null,
 				owner_id: user_id,
 				prize: data.prize ?? null,
-				theme: data.theme,
+				theme: JSON.stringify(data.theme),
 				verified: false,
 			};
+
+			console.log("DEBUG BACKDROP", "value", value);
 
 			if (data.image) {
 				const fileId = generateRandomHash();
@@ -171,8 +174,6 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 					value.image = fileId;
 				}
 			}
-
-			value.theme = JSON.stringify(value.theme) as any;
 
 			await db.insertInto("contests").values(value).execute();
 
