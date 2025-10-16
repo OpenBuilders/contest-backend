@@ -1,7 +1,7 @@
-import { truncateString } from "./string";
 import he from "he";
 import { domPurify } from "../utils/dompurify";
 import { type Languages, t } from "../utils/i18n";
+import { truncateString } from "./string";
 
 export function generateContestCaption(
 	title: string,
@@ -32,12 +32,14 @@ export function generateContestCaption(
 
 	text += `\n\n${truncateString(
 		he.decode(
-			domPurify.sanitize(description, {
-				KEEP_CONTENT: true,
-				ALLOWED_TAGS: [],
-				ALLOWED_ATTR: [],
-				IN_PLACE: true,
-			}),
+			domPurify
+				.sanitize(description, {
+					KEEP_CONTENT: true,
+					ALLOWED_TAGS: ["br", "b", "i", "u"],
+					ALLOWED_ATTR: [],
+					IN_PLACE: true,
+				})
+				.replace(/<br>/g, "\n"),
 		),
 		768,
 	)}`;
