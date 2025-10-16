@@ -17,7 +17,6 @@ import { db } from "./utils/database";
 import { env } from "./utils/env";
 import { initializeEventHandlers } from "./utils/handlers";
 import { pools } from "./utils/pool";
-import { initializeWebhook } from "./webhook";
 
 client.initialize({
 	botConfig: {
@@ -85,5 +84,3 @@ client.initialize({
 initializeAPI();
 
 initializeEventHandlers();
-
-initializeWebhook();

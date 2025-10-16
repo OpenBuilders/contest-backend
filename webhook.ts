@@ -9,3 +9,5 @@ export const initializeWebhook = async () => {
 		secret_token: env.WEBHOOK_SECRET,
 	});
 };
+
+initializeWebhook();
