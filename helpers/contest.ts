@@ -32,14 +32,12 @@ export function generateContestCaption(
 
 	text += `\n\n${truncateString(
 		he.decode(
-			domPurify
-				.sanitize(description, {
-					KEEP_CONTENT: true,
-					ALLOWED_TAGS: [],
-					ALLOWED_ATTR: [],
-					IN_PLACE: true,
-				})
-				.replace(/\n+/g, "\n\n"),
+			domPurify.sanitize(description, {
+				KEEP_CONTENT: true,
+				ALLOWED_TAGS: [],
+				ALLOWED_ATTR: [],
+				IN_PLACE: true,
+			}),
 		),
 		768,
 	)}`;
