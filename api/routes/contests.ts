@@ -83,3 +83,8 @@ export const routeGETContestsGallery: Handler = async () => {
 		},
 	};
 };
+
+const updateGalleryInterval = setInterval(async () => {
+	gallery.splice(0, gallery.length);
+	gallery.push(...(await getGallery()));
+}, 1800_000);
