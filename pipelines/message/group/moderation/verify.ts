@@ -24,6 +24,7 @@ export const handlerGroupModerationVerify: BotPipeline<
 				.set({
 					verified: true,
 				})
+				.where("slug", "=", slug)
 				.execute();
 
 			sendMessage({
