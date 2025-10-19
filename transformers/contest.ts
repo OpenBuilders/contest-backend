@@ -87,7 +87,7 @@ export const annotateContestAPI = async (
 				.select(["id"])
 				.where("user_id", "=", requester_id as any)
 				.where("contest_id", "=", id as any)
-				.where("status", "=", "1")
+				// .where("status", "=", "1")
 				.executeTakeFirst();
 
 			if (participant) {
