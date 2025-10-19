@@ -2,15 +2,19 @@ import { writeFile } from "node:fs/promises";
 import { sleep } from "bun";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
+import { sendMessage } from "nyx-bot-client";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
 import { generateRandomHash } from "../../helpers/string";
 import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
+import { db } from "../../utils/database";
 import { domPurify } from "../../utils/dompurify";
 import { events } from "../../utils/events";
 import { verifyTonProof } from "../../utils/hash";
+import { t } from "../../utils/i18n";
 import { normalizeImageToWebP } from "../../utils/image";
+import { pools } from "../../utils/pool";
 import { verifyTransaction } from "../../utils/ton";
 
 const validator = z.preprocess(
@@ -114,21 +118,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				)
 			: true;
 
-		let payment_valid = false;
-
-		payment_valid = false;
-		let tries = 0;
-
-		do {
-			await sleep(5_000);
-			payment_valid = await verifyTransaction(
-				schema.data.boc ?? "",
-				schema.data.fee_wallet ?? "",
-			);
-			tries++;
-		} while (!payment_valid && tries <= 20);
-
-		if (contests.length <= 64 && ton_proof && payment_valid) {
+		if (contests.length <= 64 && ton_proof) {
 			const { data } = schema;
 
 			const slug = generateRandomHash();
@@ -155,6 +145,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				prize: data.prize ?? null,
 				theme: JSON.stringify(data.theme),
 				verified: false,
+				status: 0,
 			};
 
 			console.log("DEBUG BACKDROP", "value", value);
@@ -177,22 +168,31 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 
 			await db.insertInto("contests").values(value).execute();
 
-			const contest = await db
-				.selectFrom("contests")
-				.select(["id"])
-				.where("slug", "=", slug)
-				.executeTakeFirst();
+			await pools.redis.set(
+				`contest-pending-${slug}`,
+				JSON.stringify({
+					wallet: data.fee_wallet,
+					boc: data.boc,
+					time: Date.now() / 1_000,
+				}),
+			);
 
-			events.emit("contestCreated", {
-				contest_id: contest!.id!,
-				user_id,
-				notify: true,
-			});
+			// const contest = await db
+			// 	.selectFrom("contests")
+			// 	.select(["id"])
+			// 	.where("slug", "=", slug)
+			// 	.executeTakeFirst();
+
+			// events.emit("contestCreated", {
+			// 	contest_id: contest!.id!,
+			// 	user_id,
+			// 	notify: true,
+			// });
 
 			return {
 				status: "success",
 				result: {
-					slug: slug,
+					// slug: slug,
 				},
 			};
 		}
@@ -203,3 +203,55 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 		result: {},
 	};
 };
+
+const contestPaymentsProcessor = setInterval(async () => {
+	const now = Date.now() / 1_000;
+
+	for (const key of await pools.redis.keys("contest-pending-*")) {
+		const slug = key.replace("contest-pending-", "");
+		const params = JSON.parse((await pools.redis.get(key)) ?? "{}");
+
+		const contest = await db
+			.selectFrom("contests")
+			.select(["id", "owner_id", "title"])
+			.where("slug", "=", slug)
+			.executeTakeFirst();
+
+		if (contest) {
+			if (params.time >= now - 3600) {
+				if (await verifyTransaction(params.boc, params.wallet)) {
+					await pools.redis.del(key);
+
+					await db
+						.updateTable("contests")
+						.set({
+							status: 1,
+						})
+						.where("slug", "=", slug)
+						.execute();
+
+					events.emit("contestCreated", {
+						contest_id: contest.id!,
+						user_id: Number.parseInt(contest.owner_id, 10),
+						notify: true,
+					});
+				}
+
+				await sleep(1_000);
+			} else {
+				await pools.redis.del(key);
+
+				await db.deleteFrom("contests").where("slug", "=", slug).execute();
+
+				sendMessage({
+					chat_id: contest.owner_id,
+					text: t("en", "notifications.failedCreate.text", {
+						name: contest.title,
+					}),
+				});
+			}
+		} else {
+			await pools.redis.del(key);
+		}
+	}
+}, 10_000);

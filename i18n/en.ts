@@ -130,6 +130,12 @@ const dictionary = {
 				},
 			},
 		},
+		failedCreate: {
+			text: "❌ Failed to create the contest <b>{name}</b> due to error in processing the payment.",
+		},
+		failedSubmit: {
+			text: "❌ Failed to submit your work for <b>{name}</b> due to error in processing the payment.",
+		},
 	},
 	aliases: {
 		adjectives: {
