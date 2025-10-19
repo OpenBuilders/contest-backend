@@ -87,6 +87,7 @@ export const annotateContestAPI = async (
 				.select(["id"])
 				.where("user_id", "=", requester_id as any)
 				.where("contest_id", "=", id as any)
+				.where("status", "=", "1")
 				.executeTakeFirst();
 
 			if (participant) {
@@ -121,6 +122,7 @@ export const annotateContestAPI = async (
 			.selectFrom("submissions")
 			.select(({ fn }) => fn.countAll().as("count"))
 			.where("contest_id", "=", id as any)
+			.where("status", "=", "1")
 			.executeTakeFirst();
 
 		submissions_count = Number(result_submissions?.count ?? 0);
@@ -157,6 +159,7 @@ const populateContestResults = async (
 		.selectFrom("submissions")
 		.select(["user_id", "id"])
 		.where("id", "in", submission_ids.length > 0 ? submission_ids : [-1])
+		.where("status", "=", "1")
 		.execute();
 
 	const user_ids = [...new Set(submissions.flatMap((i) => i.user_id))];

@@ -33,29 +33,32 @@ export const routeGETContestsMy: Handler = async (ctx) => {
 			"bookmarks.id as bookmark_id",
 		])
 		.where((eb) =>
-			eb.or([
-				eb("contests.owner_id", "=", user_id),
-				eb.exists(
-					eb
-						.selectFrom("moderators")
-						.whereRef("moderators.contest_id", "=", "contests.id")
-						.where("moderators.user_id", "=", user_id)
-						.selectAll(),
-				),
-				eb.exists(
-					eb
-						.selectFrom("submissions")
-						.whereRef("submissions.contest_id", "=", "contests.id")
-						.where("submissions.user_id", "=", user_id)
-						.selectAll(),
-				),
-				eb.exists(
-					eb
-						.selectFrom("bookmarks")
-						.whereRef("bookmarks.contest_id", "=", "contests.id")
-						.where("bookmarks.user_id", "=", user_id)
-						.selectAll(),
-				),
+			eb.and([
+				eb("contests.status", "=", 1),
+				eb.or([
+					eb("contests.owner_id", "=", user_id),
+					eb.exists(
+						eb
+							.selectFrom("moderators")
+							.whereRef("moderators.contest_id", "=", "contests.id")
+							.where("moderators.user_id", "=", user_id)
+							.selectAll(),
+					),
+					eb.exists(
+						eb
+							.selectFrom("submissions")
+							.whereRef("submissions.contest_id", "=", "contests.id")
+							.where("submissions.user_id", "=", user_id)
+							.selectAll(),
+					),
+					eb.exists(
+						eb
+							.selectFrom("bookmarks")
+							.whereRef("bookmarks.contest_id", "=", "contests.id")
+							.where("bookmarks.user_id", "=", user_id)
+							.selectAll(),
+					),
+				]),
 			]),
 		)
 		.orderBy("contests.id", "desc")

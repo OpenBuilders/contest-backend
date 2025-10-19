@@ -36,6 +36,7 @@ export const routeGETContest: Handler = async (ctx) => {
 			"bookmarks.id as bookmark_id",
 		])
 		.where("contests.slug", "=", ctx.params.slug)
+		.where("contests.status", "=", 1)
 		.executeTakeFirst();
 
 	if (contest) {

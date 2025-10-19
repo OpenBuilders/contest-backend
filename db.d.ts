@@ -56,6 +56,7 @@ export interface Contests {
 	theme: Json | null;
 	title: string;
 	verified: Generated<boolean>;
+	status: Int8;
 }
 
 export interface Moderators {
@@ -77,6 +78,7 @@ export interface Submissions {
 	id: Generated<number>;
 	submission: Json;
 	user_id: Int8;
+	status: Int8;
 }
 
 export interface Users {
