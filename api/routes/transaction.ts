@@ -15,6 +15,10 @@ const validatorContestTransactionCreate = z.preprocess(
 		return data;
 	},
 	z.object({
+		description: z
+			.string()
+			.min(limits.form.participate.description.minLength)
+			.max(limits.form.participate.description.maxLength + 256),
 		wallet: z.string().regex(/^(-?\d+):[0-9a-fA-F]{64}$/),
 		wallet_initState: z.string(),
 		ton_proof: z.object({
