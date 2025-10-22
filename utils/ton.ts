@@ -26,11 +26,13 @@ export const verifyTransaction = async (
 		if (tx.inMessage) {
 			const cell = beginCell().store(storeMessage(tx.inMessage)).endCell();
 			hashes.push(cell.hash().toString("hex"));
+			hashes.push(tx.inMessage.body.hash().toString("hex"))
 		}
 
 		for (const msg of tx.outMessages.values()) {
 			const cell = beginCell().store(storeMessage(msg)).endCell();
 			hashes.push(cell.hash().toString("hex"));
+			hashes.push(msg.body.hash().toString("hex"));
 		}
 
 		return {
