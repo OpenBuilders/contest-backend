@@ -40,6 +40,8 @@ const envScheme = z.object({
 
 	FEE_COMMISSION: z.coerce.number(),
 	FEE_CREATE_CONTEST: z.coerce.number(),
+
+	INVOICE_WEBHOOK_SECRET: z.string().nonempty(),
 });
 
 export const env: z.infer<typeof envScheme> = envScheme.parse(import.meta.env);

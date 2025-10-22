@@ -1,3 +1,4 @@
+import { Address } from "@ton/core";
 import { sleep } from "bun";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
@@ -8,9 +9,11 @@ import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { db } from "../../utils/database";
 import { events } from "../../utils/events";
+import { generateUserIDHash } from "../../utils/hash";
 import { t } from "../../utils/i18n";
 import { pools } from "../../utils/pool";
 import { verifyTransaction } from "../../utils/ton";
+import { invoices } from "./invoice-webhook";
 
 const validator = z.preprocess(
 	(data: any) => {
@@ -32,12 +35,13 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 	const schema = validator.safeParse(ctx.body);
 
 	if (schema.success) {
-		const contest: Pick<DBSchema["contests"], "id" | "fee"> | undefined =
-			await db
-				.selectFrom("contests")
-				.select(["id", "fee"])
-				.where("slug", "=", ctx.params.slug)
-				.executeTakeFirst();
+		const contest:
+			| Pick<DBSchema["contests"], "id" | "fee" | "slug">
+			| undefined = await db
+			.selectFrom("contests")
+			.select(["id", "fee", "slug"])
+			.where("slug", "=", ctx.params.slug)
+			.executeTakeFirst();
 
 		if (contest) {
 			const entry = await db
@@ -74,8 +78,10 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 						`submission-pending-${entry?.id}`,
 						JSON.stringify({
 							wallet: data.wallet,
+							wallet_raw: Address.parse(data.wallet!).toRawString(),
 							boc: data.boc,
 							time: Date.now() / 1_000,
+							payload: `contest-${contest.slug}-${generateUserIDHash(user_id)}`,
 						}),
 					);
 
@@ -123,7 +129,17 @@ const submissionPaymentsProcessor = setInterval(async () => {
 
 		if (submission) {
 			if (params.time >= now - 3600) {
-				if (await verifyTransaction(params.boc, params.wallet)) {
+				const invoice = invoices.find(
+					(i) => i.raw === params.wallet_raw && i.payload === params.payload,
+				);
+
+				if (invoice) {
+					invoices.splice(invoices.indexOf(invoice), 1);
+				}
+
+				// const verified = await verifyTransaction(params.boc, params.wallet);
+
+				if (invoice) {
 					await pools.redis.del(key);
 
 					await db

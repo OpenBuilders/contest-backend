@@ -1,4 +1,5 @@
 import { writeFile } from "node:fs/promises";
+import { Address } from "@ton/core";
 import { sleep } from "bun";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
@@ -10,12 +11,14 @@ import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { db } from "../../utils/database";
 import { domPurify } from "../../utils/dompurify";
+import { env } from "../../utils/env";
 import { events } from "../../utils/events";
 import { verifyTonProof } from "../../utils/hash";
 import { t } from "../../utils/i18n";
 import { normalizeImageToWebP } from "../../utils/image";
 import { pools } from "../../utils/pool";
 import { verifyTransaction } from "../../utils/ton";
+import { invoices } from "./invoice-webhook";
 
 const validator = z.preprocess(
 	(data: any) => {
@@ -172,6 +175,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				`contest-pending-${slug}`,
 				JSON.stringify({
 					wallet: data.fee_wallet,
+					wallet_raw: Address.parse(data.fee_wallet!).toRawString(),
 					boc: data.boc,
 					time: Date.now() / 1_000,
 				}),
@@ -219,7 +223,19 @@ const contestPaymentsProcessor = setInterval(async () => {
 
 		if (contest) {
 			if (params.time >= now - 3600) {
-				if (await verifyTransaction(params.boc, params.wallet)) {
+				const invoice = invoices.find(
+					(i) =>
+						i.raw === params.wallet_raw &&
+						i.amountParsed === env.FEE_CREATE_CONTEST,
+				);
+
+				if (invoice) {
+					invoices.splice(invoices.indexOf(invoice), 1);
+				}
+
+				// const verified = await verifyTransaction(params.boc, params.wallet);
+
+				if (invoice) {
 					await pools.redis.del(key);
 
 					await db

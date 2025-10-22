@@ -12,13 +12,13 @@
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@biomejs/biome": "^2.2.6",
+		"@biomejs/biome": "^2.2.7",
 		"@elysiajs/cors": "^1.4.0",
 		"@ton/core": "^0.62.0",
 		"@ton/ton": "^16.0.0",
 		"@types/he": "^1.2.3",
 		"@types/jsdom": "^27.0.0",
-		"@types/node": "^24.8.1",
+		"@types/node": "^24.9.1",
 		"@types/pg": "^8.15.5",
 		"canvas": "^3.2.0",
 		"dompurify": "^3.3.0",
