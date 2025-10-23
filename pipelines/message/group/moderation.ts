@@ -1,6 +1,7 @@
 import { type BotPipeline, NyxResponse } from "nyx-bot-client";
 import type { DBSchema } from "../../../schema";
 import { env } from "../../../utils/env";
+import { handlerGroupModerationBlackify } from "./moderation/blackify";
 import { handlerGroupModerationFeature } from "./moderation/feature";
 import { handlerGroupModerationUnfeature } from "./moderation/unfeature";
 import { handlerGroupModerationUnverify } from "./moderation/unverify";
@@ -11,6 +12,7 @@ const pipelines: BotPipeline<"message", DBSchema>[] = [
 	handlerGroupModerationUnverify,
 	handlerGroupModerationFeature,
 	handlerGroupModerationUnfeature,
+	handlerGroupModerationBlackify,
 ];
 
 export const handlerGroupModeration: BotPipeline<"message", DBSchema> = async (

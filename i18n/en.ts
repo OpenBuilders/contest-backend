@@ -57,6 +57,9 @@ const dictionary = {
 	message: {
 		group: {
 			moderation: {
+				blackify: {
+					text: "⚫️ Contest {contest} is blackified.",
+				},
 				verify: {
 					text: "✅ Contest {contest} is verified.",
 				},
