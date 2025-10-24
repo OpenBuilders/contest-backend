@@ -102,9 +102,7 @@ const validator = z.preprocess(
 
 export const routePOSTContestCreate: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
-	console.log("DEBUG BACKDROP", "body", ctx.body);
 	const schema = validator.safeParse(ctx.body);
-	console.log("DEBUG BACKDROP", "schema", schema);
 
 	if (schema.success) {
 		const contests = await db
@@ -150,8 +148,6 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				verified: false,
 				status: 0,
 			};
-
-			console.log("DEBUG BACKDROP", "value", value);
 
 			if (data.image) {
 				const fileId = generateRandomHash();

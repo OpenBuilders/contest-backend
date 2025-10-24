@@ -1,12 +1,15 @@
 import type { Handler } from "elysia";
+import { rm, writeFile } from "fs/promises";
 import type { Updateable } from "kysely";
 import z from "zod";
 import type { JWTInjections, PoolInjections } from "../../api";
+import { generateRandomHash } from "../../helpers/string";
 import { limits } from "../../information/limits";
 import type { DBSchema } from "../../schema";
 import { transformContestAPI } from "../../transformers/contest";
 import { domPurify } from "../../utils/dompurify";
 import { events } from "../../utils/events";
+import { normalizeImageToWebP } from "../../utils/image";
 
 export const routeGETContestOptions: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -14,12 +17,17 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 	const contest = await db
 		.selectFrom("contests")
 		.select([
+			"slug",
 			"title",
 			"prize",
 			"fee",
 			"description",
 			"instruction",
 			"fee_wallet",
+			"theme",
+			"date_end",
+			"image",
+			"anonymous",
 		])
 		.where("slug", "=", ctx.params.slug)
 		.where("owner_id", "=", user_id)
@@ -42,7 +50,15 @@ export const routeGETContestOptions: Handler = async (ctx) => {
 
 const validatorContestOptionsUpdate = z.preprocess(
 	(data: any) => {
+		data.date = JSON.parse(data.date);
+		data.theme = JSON.parse(data.theme);
 		data.fee = Number.parseFloat(data.fee);
+		data.anonymous = data.anonymous === "true";
+
+		if (data.theme.backdrop && !data.theme.symbol) {
+			data.theme.symbol = "symbol-55";
+		}
+
 		return data;
 	},
 	z.object({
@@ -65,6 +81,13 @@ const validatorContestOptionsUpdate = z.preprocess(
 			.min(limits.form.create.prize.minLength)
 			.max(limits.form.create.prize.maxLength)
 			.optional(),
+		date: z.object({
+			end: z.number(),
+		}),
+		theme: z.object({
+			backdrop: z.number().optional(),
+			symbol: z.string().optional(),
+		}),
 		fee: z
 			.number()
 			.refine(
@@ -76,6 +99,8 @@ const validatorContestOptionsUpdate = z.preprocess(
 					message: `Fee must be 0 or between ${limits.form.create.fee.min} and ${limits.form.create.fee.max}`,
 				},
 			),
+		anonymous: z.boolean(),
+		image: z.instanceof(File).optional(),
 	}),
 );
 
@@ -87,7 +112,7 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 	if (schema.success) {
 		const contest = await db
 			.selectFrom("contests")
-			.select(["id"])
+			.select(["id", "image"])
 			.where("slug", "=", ctx.params.slug)
 			.where("owner_id", "=", user_id)
 			.executeTakeFirst();
@@ -108,7 +133,32 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 				instruction: data.instruction ?? "",
 				fee: data.fee,
 				prize: data.prize ?? undefined,
+				anonymous: Boolean(data.anonymous),
+				date_end: Math.trunc(data.date.end / 1_000),
+				theme: JSON.stringify(data.theme),
 			};
+
+			if (data.image) {
+				const fileId = generateRandomHash();
+
+				const image = await normalizeImageToWebP(
+					Buffer.from(await data.image.arrayBuffer()),
+					256,
+					256,
+				);
+
+				if (image) {
+					await writeFile(`${__dirname}/../../storage/images/${fileId}`, image);
+
+					value.image = fileId;
+				}
+
+				if (contest.image) {
+					try {
+						await rm(`${__dirname}/../../storage/images/${contest.image}`);
+					} catch (_) {}
+				}
+			}
 
 			await db
 				.updateTable("contests")
