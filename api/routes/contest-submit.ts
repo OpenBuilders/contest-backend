@@ -197,23 +197,41 @@ const submissionPaymentsProcessor = setInterval(async () => {
 
 				await pools.redis.del(key);
 
+				// await db
+				// 	.deleteFrom("submissions")
+				// 	.where("id", "=", Number.parseInt(id, 10))
+				// 	.execute();
+
+				// const contest = await db
+				// 	.selectFrom("contests")
+				// 	.select(["title"])
+				// 	.where("id", "=", submission.contest_id)
+				// 	.executeTakeFirst();
+
+				// sendMessage({
+				// 	chat_id: submission.user_id,
+				// 	text: t("en", "notifications.failedSubmit.text", {
+				// 		name: contest?.title ?? "Unknown",
+				// 	}),
+				// });
+
 				await db
-					.deleteFrom("submissions")
+					.updateTable("submissions")
+					.set({
+						status: 1,
+					})
 					.where("id", "=", Number.parseInt(id, 10))
 					.execute();
-
-				const contest = await db
-					.selectFrom("contests")
-					.select(["title"])
-					.where("id", "=", submission.contest_id)
-					.executeTakeFirst();
-
-				sendMessage({
-					chat_id: submission.user_id,
-					text: t("en", "notifications.failedSubmit.text", {
-						name: contest?.title ?? "Unknown",
-					}),
+				events.emit("contestSubmitted", {
+					contest_id: submission.contest_id,
+					user_id: Number.parseInt(submission.user_id, 10),
 				});
+
+				console.log(
+					"DEBUG_SUBMISSION",
+					"FAILED",
+					new Date().toLocaleTimeString(),
+				);
 			}
 		} else {
 			await pools.redis.del(key);
