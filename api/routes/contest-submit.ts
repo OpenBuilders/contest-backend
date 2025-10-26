@@ -50,6 +50,13 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 				.where("user_id", "=", user_id)
 				.executeTakeFirst();
 
+			console.log(
+				"DEBUG_SUBMISSION",
+				"ENTRY_EXISTS?",
+				entry,
+				new Date().toLocaleTimeString(),
+			);
+
 			if (!entry) {
 				const { data } = schema;
 
@@ -62,6 +69,13 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 					user_id: user_id as any,
 					status: contest.fee > 0 ? 0 : 1,
 				};
+
+				console.log(
+					"DEBUG_SUBMISSION",
+					"VALUE",
+					value,
+					new Date().toLocaleTimeString(),
+				);
 
 				await db.insertInto("submissions").values(value).execute();
 
@@ -82,6 +96,20 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 							time: Date.now() / 1_000,
 							payload: `contest-${contest.slug}-${generateUserIDHash(user_id)}`,
 						}),
+					);
+
+					console.log(
+						"DEBUG_SUBMISSION",
+						"ENTRY",
+						entry,
+						new Date().toLocaleTimeString(),
+					);
+
+					console.log(
+						"DEBUG_SUBMISSION",
+						"REDIS",
+						await pools.redis.get(`submission-pending-${entry?.id}`),
+						new Date().toLocaleTimeString(),
 					);
 
 					return {
@@ -157,6 +185,16 @@ const submissionPaymentsProcessor = setInterval(async () => {
 
 				// await sleep(1_000);
 			} else {
+				console.log(
+					"DEBUG_SUBMISSION",
+					"DELETE",
+					submission,
+					id,
+					params,
+					now,
+					new Date().toLocaleTimeString(),
+				);
+
 				await pools.redis.del(key);
 
 				await db
