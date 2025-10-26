@@ -1,6 +1,5 @@
 import { writeFile } from "node:fs/promises";
 import { Address } from "@ton/core";
-import { sleep } from "bun";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
 import { sendMessage } from "nyx-bot-client";
@@ -249,7 +248,7 @@ const contestPaymentsProcessor = setInterval(async () => {
 					});
 				}
 
-				await sleep(1_000);
+				// await sleep(1_000);
 			} else {
 				await pools.redis.del(key);
 
@@ -266,4 +265,4 @@ const contestPaymentsProcessor = setInterval(async () => {
 			await pools.redis.del(key);
 		}
 	}
-}, 10_000);
+}, 1_000);
