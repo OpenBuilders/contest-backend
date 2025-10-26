@@ -48,13 +48,13 @@ export const routePOSTContestTransactionCreate: Handler = async (ctx) => {
 			.where("slug", "=", ctx.params.slug)
 			.executeTakeFirst();
 
-		const ton_proof = await verifyTonProof(
-			schema.data.wallet,
-			schema.data.ton_proof?.proof,
-			schema.data.wallet_initState ?? "",
-		);
+		// const ton_proof = await verifyTonProof(
+		// 	schema.data.wallet,
+		// 	schema.data.ton_proof?.proof,
+		// 	schema.data.wallet_initState ?? "",
+		// );
 
-		if (contest && ton_proof) {
+		if (contest) {
 			const body = {
 				master: beginCell()
 					.storeUint(0, 32)
