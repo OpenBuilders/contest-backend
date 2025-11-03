@@ -39,3 +39,5 @@ storage/images/*
 !storage/images/.gitkeep
 storage/covers/*
 !storage/covers/.gitkeep
+
+*.log

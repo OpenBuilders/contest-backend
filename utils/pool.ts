@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import { createClientPool } from "redis";
 import { health } from "../api/routes/health";
 import { env } from "./env";
+import { logger } from "./logger";
 
 export const pools = {
 	pg: new Pool({
@@ -15,7 +16,7 @@ export const pools = {
 		max: env.POOL_SIZE_PGSQL,
 		min: 1,
 	}).addListener("error", () => {
-		console.error("Exiting due to pgsql error");
+		logger.error("PGSQL", "Exiting due to error");
 		health.pg = false;
 	}),
 	redis: createClientPool(
@@ -31,7 +32,7 @@ export const pools = {
 			cleanupDelay: 30_000,
 		},
 	).addListener("error", () => {
-		console.error("Exiting due to redis error");
+		logger.error("REDIS", "Exiting due to error");
 		health.redis = false;
 	}),
 	sample: genereicPool.createPool(

@@ -1,6 +1,7 @@
 import { Address } from "@ton/core";
 import type { Handler } from "elysia";
 import { env } from "../../utils/env";
+import { logger } from "../../utils/logger";
 
 type Invoice = {
 	amount: string;
@@ -15,8 +16,6 @@ type Invoice = {
 export const invoices: Invoice[] = [];
 
 export const routePOSTInvoiceWebhook: Handler = async (ctx) => {
-	console.log("DEBUG_TRANSACTION", "CTX", ctx, new Date().toLocaleTimeString());
-
 	if (
 		env.INVOICE_WEBHOOK_SECRET === undefined ||
 		ctx.headers["x-invoice-api-secret-token"] === env.INVOICE_WEBHOOK_SECRET
@@ -25,12 +24,7 @@ export const routePOSTInvoiceWebhook: Handler = async (ctx) => {
 			await new Response(ctx.request.body).text(),
 		) as Invoice;
 
-		console.log(
-			"DEBUG_TRANSACTION",
-			"INVOICE",
-			invoice,
-			new Date().toLocaleTimeString(),
-		);
+		logger.info("TRANSACTION", `Invoice received: ${JSON.stringify(invoice)}`);
 
 		if (invoice.currency === "TON") {
 			const address = Address.parse(invoice.sender);
@@ -38,22 +32,15 @@ export const routePOSTInvoiceWebhook: Handler = async (ctx) => {
 			invoice.amountParsed =
 				Number.parseInt(invoice.amount, 10) / 1_000_000_000;
 
-			console.log(
-				"DEBUG_TRANSACTION",
-				"INVOICE_TRANSFORMED",
-				invoice,
-				new Date().toLocaleTimeString(),
+			logger.info(
+				"TRANSACTION",
+				`Invoice transformed: ${JSON.stringify(invoice)}`,
 			);
 
 			invoices.push(invoice);
 		}
 
-		console.log(
-			"DEBUG_TRANSACTION",
-			"INVOICES",
-			invoices,
-			new Date().toLocaleTimeString(),
-		);
+		logger.info("TRANSACTION", `Pending Invoices: ${JSON.stringify(invoices)}`);
 
 		return {
 			status: "success",

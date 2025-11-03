@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import { logger } from "./logger";
 
 export async function normalizeImageToWebP(
 	inputBuffer: Buffer,
@@ -14,8 +15,11 @@ export async function normalizeImageToWebP(
 			})
 			.webp({ quality })
 			.toBuffer();
-	} catch (err) {
-		console.error("Failed to process image:", err);
+	} catch (e) {
+		logger.error(
+			"normalizeImageToWebP",
+			e instanceof Error ? e.message : String(e),
+		);
 		return null;
 	}
 }

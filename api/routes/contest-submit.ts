@@ -10,6 +10,7 @@ import { db } from "../../utils/database";
 import { events } from "../../utils/events";
 import { generateUserIDHash } from "../../utils/hash";
 import { t } from "../../utils/i18n";
+import { logger } from "../../utils/logger";
 import { pools } from "../../utils/pool";
 import { verifyTransaction } from "../../utils/ton";
 import { invoices } from "./invoice-webhook";
@@ -50,12 +51,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 				.where("user_id", "=", user_id)
 				.executeTakeFirst();
 
-			console.log(
-				"DEBUG_SUBMISSION",
-				"ENTRY_EXISTS?",
-				entry,
-				new Date().toLocaleTimeString(),
-			);
+			logger.info("SUBMISSION", `Entry Exists? : ${JSON.stringify(entry)}`);
 
 			if (!entry) {
 				const { data } = schema;
@@ -70,12 +66,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 					status: contest.fee > 0 ? 0 : 1,
 				};
 
-				console.log(
-					"DEBUG_SUBMISSION",
-					"VALUE",
-					value,
-					new Date().toLocaleTimeString(),
-				);
+				logger.info("SUBMISSION", `Insert Value: ${JSON.stringify(value)}`);
 
 				await db.insertInto("submissions").values(value).execute();
 
@@ -98,18 +89,9 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 						}),
 					);
 
-					console.log(
-						"DEBUG_SUBMISSION",
-						"ENTRY",
-						entry,
-						new Date().toLocaleTimeString(),
-					);
-
-					console.log(
-						"DEBUG_SUBMISSION",
-						"REDIS",
-						await pools.redis.get(`submission-pending-${entry?.id}`),
-						new Date().toLocaleTimeString(),
+					logger.info(
+						"SUBMISSION",
+						`Entry: ${JSON.stringify(entry)} | Redis: ${await pools.redis.get(`submission-pending-${entry?.id}`)}`,
 					);
 
 					return {
@@ -185,14 +167,9 @@ const submissionPaymentsProcessor = setInterval(async () => {
 
 				// await sleep(1_000);
 			} else {
-				console.log(
-					"DEBUG_SUBMISSION",
-					"DELETE",
-					submission,
-					id,
-					params,
-					now,
-					new Date().toLocaleTimeString(),
+				logger.error(
+					"SUBMISSION",
+					`Failed : ${JSON.stringify({ submission, id, params, now })}`,
 				);
 
 				await pools.redis.del(key);
@@ -226,12 +203,6 @@ const submissionPaymentsProcessor = setInterval(async () => {
 				// 	contest_id: submission.contest_id,
 				// 	user_id: Number.parseInt(submission.user_id, 10),
 				// });
-
-				console.log(
-					"DEBUG_SUBMISSION",
-					"FAILED",
-					new Date().toLocaleTimeString(),
-				);
 			}
 		} else {
 			await pools.redis.del(key);

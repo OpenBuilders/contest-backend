@@ -2,6 +2,7 @@ import { Address, Cell, contractAddress, loadStateInit } from "@ton/core";
 import { MD5 } from "bun";
 import sha256 from "fast-sha256";
 import { sign } from "tweetnacl";
+import { logger } from "./logger";
 import { tonClient } from "./ton";
 
 export const generateUserIDHash = (user_id: number) => {
@@ -103,7 +104,7 @@ export const verifyTonProof = async (
 
 		return sign.detached.verify(msgBuffer, message.signature, public_key);
 	} catch (e) {
-		console.error(e);
+		logger.error("verifyTonProof", e instanceof Error ? e.message : String(e));
 	}
 
 	return false;
