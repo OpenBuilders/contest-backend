@@ -16,7 +16,6 @@ import { verifyTonProof } from "../../utils/hash";
 import { t } from "../../utils/i18n";
 import { normalizeImageToWebP } from "../../utils/image";
 import { pools } from "../../utils/pool";
-import { verifyTransaction } from "../../utils/ton";
 import { invoices } from "./invoice-webhook";
 
 const validator = z.preprocess(
@@ -176,23 +175,9 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				}),
 			);
 
-			// const contest = await db
-			// 	.selectFrom("contests")
-			// 	.select(["id"])
-			// 	.where("slug", "=", slug)
-			// 	.executeTakeFirst();
-
-			// events.emit("contestCreated", {
-			// 	contest_id: contest!.id!,
-			// 	user_id,
-			// 	notify: true,
-			// });
-
 			return {
 				status: "success",
-				result: {
-					// slug: slug,
-				},
+				result: {},
 			};
 		}
 	}
@@ -203,7 +188,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 	};
 };
 
-const contestPaymentsProcessor = setInterval(async () => {
+const contestPaymentsProcessor = async () => {
 	const now = Date.now() / 1_000;
 
 	for (const key of await pools.redis.keys("contest-pending-*")) {
@@ -228,8 +213,6 @@ const contestPaymentsProcessor = setInterval(async () => {
 					invoices.splice(invoices.indexOf(invoice), 1);
 				}
 
-				// const verified = await verifyTransaction(params.boc, params.wallet);
-
 				if (invoice) {
 					await pools.redis.del(key);
 
@@ -247,8 +230,6 @@ const contestPaymentsProcessor = setInterval(async () => {
 						notify: true,
 					});
 				}
-
-				// await sleep(1_000);
 			} else {
 				await pools.redis.del(key);
 
@@ -265,4 +246,7 @@ const contestPaymentsProcessor = setInterval(async () => {
 			await pools.redis.del(key);
 		}
 	}
-}, 1_000);
+};
+
+events.on("transaction", contestPaymentsProcessor);
+setInterval(contestPaymentsProcessor, 60_000);

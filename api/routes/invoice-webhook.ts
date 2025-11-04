@@ -1,9 +1,10 @@
 import { Address } from "@ton/core";
 import type { Handler } from "elysia";
 import { env } from "../../utils/env";
+import { events } from "../../utils/events";
 import { logger } from "../../utils/logger";
 
-type Invoice = {
+export type Invoice = {
 	amount: string;
 	tx_hash: string;
 	currency: string;
@@ -39,6 +40,10 @@ export const routePOSTInvoiceWebhook: Handler = async (ctx) => {
 
 			invoices.push(invoice);
 		}
+
+		events.emit("transaction", {
+			invoice: invoice,
+		});
 
 		logger.info("TRANSACTION", `Pending Invoices: ${JSON.stringify(invoices)}`);
 

@@ -12,7 +12,6 @@ import { generateUserIDHash } from "../../utils/hash";
 import { t } from "../../utils/i18n";
 import { logger } from "../../utils/logger";
 import { pools } from "../../utils/pool";
-import { verifyTransaction } from "../../utils/ton";
 import { invoices } from "./invoice-webhook";
 
 const validator = z.preprocess(
@@ -123,7 +122,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 	};
 };
 
-const submissionPaymentsProcessor = setInterval(async () => {
+const submissionPaymentsProcessor = async () => {
 	const now = Date.now() / 1_000;
 
 	for (const key of await pools.redis.keys("submission-pending-*")) {
@@ -146,8 +145,6 @@ const submissionPaymentsProcessor = setInterval(async () => {
 					invoices.splice(invoices.indexOf(invoice), 1);
 				}
 
-				// const verified = await verifyTransaction(params.boc, params.wallet);
-
 				if (invoice) {
 					await pools.redis.del(key);
 
@@ -164,8 +161,6 @@ const submissionPaymentsProcessor = setInterval(async () => {
 						user_id: Number.parseInt(submission.user_id, 10),
 					});
 				}
-
-				// await sleep(1_000);
 			} else {
 				logger.error(
 					"SUBMISSION",
@@ -191,21 +186,12 @@ const submissionPaymentsProcessor = setInterval(async () => {
 						name: contest?.title ?? "Unknown",
 					}),
 				});
-
-				// await db
-				// 	.updateTable("submissions")
-				// 	.set({
-				// 		status: 1,
-				// 	})
-				// 	.where("id", "=", Number.parseInt(id, 10))
-				// 	.execute();
-				// events.emit("contestSubmitted", {
-				// 	contest_id: submission.contest_id,
-				// 	user_id: Number.parseInt(submission.user_id, 10),
-				// });
 			}
 		} else {
 			await pools.redis.del(key);
 		}
 	}
-}, 1_000);
+};
+
+events.on("transaction", submissionPaymentsProcessor);
+setInterval(submissionPaymentsProcessor, 60_000);

@@ -1,3 +1,5 @@
+import type { Invoice } from "../api/routes/invoice-webhook";
+
 type Listener<T = any> = (data: T) => void;
 
 export class EventEmitter<
@@ -69,6 +71,9 @@ export type Events = {
 	moderatorsLinkRevoked: {
 		contest_id: number;
 		user_id: number;
+	};
+	transaction: {
+		invoice: Invoice;
 	};
 };
 
