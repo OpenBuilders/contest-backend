@@ -12,7 +12,7 @@
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@biomejs/biome": "^2.3.3",
+		"@biomejs/biome": "^2.3.4",
 		"@elysiajs/cors": "^1.4.0",
 		"@ton/core": "^0.62.0",
 		"@ton/ton": "^16.0.0",
