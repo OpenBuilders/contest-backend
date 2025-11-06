@@ -53,10 +53,10 @@ export interface Contests {
 	results: Generated<Json>;
 	slug: string;
 	slug_moderator: string;
+	status: Generated<number>;
 	theme: Json | null;
 	title: string;
 	verified: Generated<boolean>;
-	status: Int8;
 }
 
 export interface Moderators {
@@ -76,9 +76,9 @@ export interface Submissions {
 	contest_id: number;
 	created_at: Generated<Timestamp>;
 	id: Generated<number>;
+	status: Generated<number>;
 	submission: Json;
 	user_id: Int8;
-	status: Int8;
 }
 
 export interface Users {
@@ -95,6 +95,7 @@ export interface Users {
 }
 
 export interface Votes {
+	comment: string | null;
 	created_at: Generated<Timestamp>;
 	id: Generated<number>;
 	submission_id: Int8 | null;
