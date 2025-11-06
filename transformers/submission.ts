@@ -9,8 +9,10 @@ type TransformedSubmission = Partial<DBSchema["submissions"]> &
 		};
 		likes: number;
 		dislikes: number;
+		raises: number;
 		liked_by: Partial<DBSchema["users"]>[];
 		disliked_by: Partial<DBSchema["users"]>[];
+		raised_by: Partial<DBSchema["users"]>[];
 	};
 
 export const transformSubmission = async (
@@ -30,9 +32,13 @@ export const transformSubmission = async (
 	const dislikes = votes.filter(
 		(i) => Number.parseInt(i.vote as any, 10) === 0,
 	);
+	const raises = votes.filter(
+		(i) => Number.parseInt(i.vote as any, 10) === 2,
+	);
 
 	const likes_count = likes.length ?? 0;
 	const dislikes_count = dislikes.length ?? 0;
+	const raises_count = raises.length ?? 0;
 
 	const voters = votes.map((i) => i.user_id);
 
@@ -67,13 +73,26 @@ export const transformSubmission = async (
 		}))
 		.filter(Boolean);
 
+	const raised_by = raises
+		?.map((i) => ({
+			...users.find(
+				(u) =>
+					Number.parseInt(u.user_id as any, 10) ===
+					Number.parseInt(i.user_id as any, 10),
+			),
+			created_at: i.created_at,
+		}))
+		.filter(Boolean);
+
 	return {
 		id,
 		submission: submissionInfo ?? [],
 		likes: likes_count,
 		dislikes: dislikes_count,
+		raises: raises_count,
 		disliked_by,
 		liked_by,
+		raised_by,
 		created_at,
 		...user,
 	} as any as TransformedSubmission;
@@ -92,6 +111,8 @@ export const annotateSubmission = async (
 		.where("user_id", "=", requester_id as any)
 		.executeTakeFirst();
 
+	const raised_by_viewer =
+		Number.parseInt((vote?.vote ?? "-1") as any, 10) === 2;
 	const liked_by_viewer =
 		Number.parseInt((vote?.vote ?? "-1") as any, 10) === 1;
 	const disliked_by_viewer =
@@ -100,5 +121,6 @@ export const annotateSubmission = async (
 	return {
 		liked_by_viewer,
 		disliked_by_viewer,
+		raised_by_viewer,
 	};
 };
