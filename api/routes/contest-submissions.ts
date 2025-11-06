@@ -75,6 +75,14 @@ const validatorContestSubmissionsVote = z.preprocess(
 	(data: any) => data,
 	z.object({
 		type: z.enum(["like", "dislike", "raise"]),
+		comment: z.string().max(1024).optional(),
+	}),
+);
+
+const validatorContestSubmissionsComment = z.preprocess(
+	(data: any) => data,
+	z.object({
+		comment: z.string().max(1024).optional(),
 	}),
 );
 
@@ -122,7 +130,7 @@ export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 
 				const vote = await db
 					.selectFrom("votes")
-					.select(["vote"])
+					.select(["vote", "comment"])
 					.where("user_id", "=", user_id)
 					.where("submission_id", "=", submission.id)
 					.executeTakeFirst();
@@ -143,9 +151,72 @@ export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 					.values({
 						user_id,
 						submission_id: submission.id,
+						comment: schema.data.comment ?? vote?.comment ?? undefined,
 						vote: vote_id,
 					})
 					.execute();
+
+				return await routeGETContestSubmissions(ctx);
+			}
+		}
+	}
+
+	return {
+		status: "failed",
+		result: {},
+	};
+};
+
+export const routePOSTContestSubmissionsComment: Handler = async (ctx) => {
+	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
+
+	const schema = validatorContestSubmissionsComment.safeParse(ctx.body);
+
+	if (schema.success) {
+		const contest = await db
+			.selectFrom("contests")
+			.select(["contests.id"])
+			.where("slug", "=", ctx.params.slug)
+			.where((eb) =>
+				eb.or([
+					eb("contests.owner_id", "=", user_id),
+					eb.exists(
+						eb
+							.selectFrom("moderators")
+							.whereRef("moderators.contest_id", "=", "contests.id")
+							.where("moderators.user_id", "=", user_id)
+							.selectAll(),
+					),
+				]),
+			)
+			.executeTakeFirst();
+
+		if (contest) {
+			const submission = await db
+				.selectFrom("submissions")
+				.select(["id"])
+				.where("id", "=", ctx.params.id)
+				.where("contest_id", "=", contest.id)
+				.executeTakeFirst();
+
+			if (submission) {
+				const vote = await db
+					.selectFrom("votes")
+					.select(["vote", "comment"])
+					.where("user_id", "=", user_id)
+					.where("submission_id", "=", submission.id)
+					.executeTakeFirst();
+
+				if (vote) {
+					await db
+						.updateTable("votes")
+						.set({
+							comment: schema.data.comment ?? "",
+						})
+						.where("user_id", "=", user_id)
+						.where("submission_id", "=", submission.id)
+						.execute();
+				}
 
 				return await routeGETContestSubmissions(ctx);
 			}

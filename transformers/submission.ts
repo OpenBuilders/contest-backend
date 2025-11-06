@@ -24,7 +24,7 @@ export const transformSubmission = async (
 
 	const votes = await db
 		.selectFrom("votes")
-		.select(["vote", "user_id", "created_at"])
+		.select(["vote", "user_id", "comment", "created_at"])
 		.where("submission_id", "=", id as any)
 		.execute();
 
@@ -56,6 +56,7 @@ export const transformSubmission = async (
 					Number.parseInt(u.user_id as any, 10) ===
 					Number.parseInt(i.user_id as any, 10),
 			),
+			comment: i.comment,
 			created_at: i.created_at,
 		}))
 		.filter(Boolean);
@@ -67,6 +68,7 @@ export const transformSubmission = async (
 					Number.parseInt(u.user_id as any, 10) ===
 					Number.parseInt(i.user_id as any, 10),
 			),
+			comment: i.comment,
 			created_at: i.created_at,
 		}))
 		.filter(Boolean);
@@ -78,6 +80,7 @@ export const transformSubmission = async (
 					Number.parseInt(u.user_id as any, 10) ===
 					Number.parseInt(i.user_id as any, 10),
 			),
+			comment: i.comment,
 			created_at: i.created_at,
 		}))
 		.filter(Boolean);

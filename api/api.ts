@@ -32,6 +32,7 @@ import {
 } from "./routes/contest-results";
 import {
 	routeGETContestSubmissions,
+	routePOSTContestSubmissionsComment,
 	routePOSTContestSubmissionsVote,
 } from "./routes/contest-submissions";
 import { routePOSTContestSubmit } from "./routes/contest-submit";
@@ -75,6 +76,10 @@ export const initializeAPI = async () => {
 		.post(
 			"/contest/:slug/submissions/:id/vote",
 			routePOSTContestSubmissionsVote,
+		)
+		.post(
+			"/contest/:slug/submissions/:id/comment",
+			routePOSTContestSubmissionsComment,
 		)
 		// Contest Manage Submissions
 
