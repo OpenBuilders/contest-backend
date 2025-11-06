@@ -143,9 +143,7 @@ export const handleContestDelete = async (data: Events["contestDelete"]) => {
 	await db.deleteFrom("contests").where("id", "=", contest_id).execute();
 };
 
-export const handleContestBookmarked = (
-	data: Events["contestBookmarked"],
-) => {};
+export const handleContestBookmarked = (_: Events["contestBookmarked"]) => {};
 
 export const handleContestSubmitted = async (
 	data: Events["contestSubmitted"],

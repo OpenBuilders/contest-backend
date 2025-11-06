@@ -10,7 +10,6 @@ import { miniAppInternalURL } from "../../../information/general";
 import type { DBSchema } from "../../../schema";
 import { cacheContestCoverImage } from "../../../utils/cover";
 import { db } from "../../../utils/database";
-import { env } from "../../../utils/env";
 import { t } from "../../../utils/i18n";
 
 export const handlerCallbackQueryContestView: BotPipeline<

@@ -79,10 +79,10 @@ const validatorContestSubmissionsVote = z.preprocess(
 );
 
 const VoteID = {
-   like: 1,
-   dislike: 0,
-   raise: 2,
-}
+	like: 1,
+	dislike: 0,
+	raise: 2,
+};
 
 export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -118,7 +118,7 @@ export const routePOSTContestSubmissionsVote: Handler = async (ctx) => {
 
 			if (submission) {
 				const { type } = schema.data;
-				const vote_id =  VoteID[type];
+				const vote_id = VoteID[type];
 
 				const vote = await db
 					.selectFrom("votes")

@@ -1,4 +1,4 @@
-import type { GalleryItem, GallerySection } from "../../schema";
+import type { GalleryItem } from "../../schema";
 import {
 	annotateContestAPI,
 	transformContestAPI,

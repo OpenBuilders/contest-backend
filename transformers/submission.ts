@@ -32,9 +32,7 @@ export const transformSubmission = async (
 	const dislikes = votes.filter(
 		(i) => Number.parseInt(i.vote as any, 10) === 0,
 	);
-	const raises = votes.filter(
-		(i) => Number.parseInt(i.vote as any, 10) === 2,
-	);
+	const raises = votes.filter((i) => Number.parseInt(i.vote as any, 10) === 2);
 
 	const likes_count = likes.length ?? 0;
 	const dislikes_count = dislikes.length ?? 0;

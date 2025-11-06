@@ -43,8 +43,8 @@ export const handleModeratorJoined = async (
 	});
 };
 
-export const handleModeratorRemoved = (data: Events["moderatorRemoved"]) => {};
+export const handleModeratorRemoved = (_: Events["moderatorRemoved"]) => {};
 
 export const handleModeratorsRevoked = (
-	data: Events["moderatorsLinkRevoked"],
+	_: Events["moderatorsLinkRevoked"],
 ) => {};
