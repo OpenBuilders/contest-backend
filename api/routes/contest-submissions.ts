@@ -5,13 +5,15 @@ import {
 	annotateSubmission,
 	transformSubmission,
 } from "../../transformers/submission";
+import { objectsToCSVBlob } from "../../utils/csv";
+import { db } from "../../utils/database";
 
 export const routeGETContestSubmissions: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
 
 	const contest = await db
 		.selectFrom("contests")
-		.select(["contests.id", "contests.owner_id"])
+		.select(["contests.id", "contests.owner_id", "contests.slug_moderator"])
 		.where("slug", "=", ctx.params.slug)
 		.where((eb) =>
 			eb.or([
@@ -55,6 +57,7 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 		return {
 			status: "success",
 			result: {
+				slug_moderator: contest.slug_moderator,
 				submissions: await Promise.all(
 					submissions.map(async (submission) => ({
 						submission: await transformSubmission(submission),
@@ -63,6 +66,68 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 				),
 			},
 		};
+	}
+
+	return {
+		status: "failed",
+		result: {},
+	};
+};
+
+export const routeGETContestSubmissionsExport: Handler = async (ctx) => {
+	const contest = await db
+		.selectFrom("contests")
+		.select(["id"])
+		.where("slug_moderator", "=", ctx.params.slug!)
+		.executeTakeFirst();
+
+	if (contest) {
+		const submissions = await db
+			.selectFrom("users")
+			.innerJoin("submissions", "users.user_id", "submissions.user_id")
+			.where("submissions.contest_id", "=", contest.id)
+			.select([
+				"users.anonymous_profile",
+				"submissions.submission",
+				"submissions.id",
+				"submissions.created_at",
+				"users.first_name",
+				"users.last_name",
+			])
+			.orderBy("submissions.id", "desc")
+			.execute();
+
+		const submissionsAnnotated = await Promise.all(
+			submissions.map(async (submission) => ({
+				submission: await transformSubmission(submission as any),
+			})),
+		);
+
+		const table = submissionsAnnotated.map((item) => ({
+			"First Name": item.submission.first_name,
+			"Last Name": item.submission.last_name ?? "",
+			Alias: [
+				// @ts-expect-error
+				item.submission.anonymous_profile[1][1]!,
+				// @ts-expect-error
+				item.submission.anonymous_profile[2][1]!,
+			].join(" "),
+			Description: item.submission.submission.description,
+			Likes: item.submission.likes,
+			Dislikes: item.submission.dislikes,
+			Raises: item.submission.raises,
+			Date: item.submission.created_at,
+		}));
+
+		const csv = objectsToCSVBlob(table);
+
+		return new Response(csv, {
+			headers: {
+				"Content-Type": "text/csv",
+				"Content-Disposition": 'attachment; filename="export.csv"',
+				"Access-Control-Allow-Origin": "https://web.telegram.org",
+			},
+		});
 	}
 
 	return {

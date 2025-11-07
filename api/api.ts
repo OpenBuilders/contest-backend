@@ -32,6 +32,7 @@ import {
 } from "./routes/contest-results";
 import {
 	routeGETContestSubmissions,
+	routeGETContestSubmissionsExport,
 	routePOSTContestSubmissionsComment,
 	routePOSTContestSubmissionsVote,
 } from "./routes/contest-submissions";
@@ -55,6 +56,7 @@ export const initializeAPI = async () => {
 		.get("/health", routeGETHealth)
 		.post("/bot-webhook", routePOSTBotWebhook)
 		.post("/webhook-invoice", routePOSTInvoiceWebhook)
+		.get("/contest/:slug/submissions/export", routeGETContestSubmissionsExport)
 		.get("/images/:name", routeGETContestImage);
 
 	const jwtGuardedRoutes = new Elysia()
