@@ -7,6 +7,7 @@ import {
 } from "../../transformers/submission";
 import { objectsToCSVBlob } from "../../utils/csv";
 import { db } from "../../utils/database";
+import { generateUserIDHash } from "../../utils/hash";
 
 export const routeGETContestSubmissions: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -77,7 +78,7 @@ export const routeGETContestSubmissions: Handler = async (ctx) => {
 export const routeGETContestSubmissionsExport: Handler = async (ctx) => {
 	const contest = await db
 		.selectFrom("contests")
-		.select(["id"])
+		.select(["id", "slug"])
 		.where("slug_moderator", "=", ctx.params.slug!)
 		.executeTakeFirst();
 
@@ -117,6 +118,8 @@ export const routeGETContestSubmissionsExport: Handler = async (ctx) => {
 			Dislikes: item.submission.dislikes,
 			Raises: item.submission.raises,
 			Date: item.submission.created_at,
+			Wallet: item.submission.submission.wallet ?? "",
+			Payload: `contest-${contest.slug}-${generateUserIDHash(Number.parseInt(item.submission.user_id as any, 10))}`,
 		}));
 
 		const csv = objectsToCSVBlob(table);

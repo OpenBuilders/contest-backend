@@ -58,6 +58,7 @@ export const routePOSTContestSubmit: Handler = async (ctx) => {
 				const value: Insertable<DBSchema["submissions"]> = {
 					contest_id: contest.id as any,
 					submission: JSON.stringify({
+						wallet: data.wallet ?? "",
 						description: data.description,
 						boc: data.boc,
 					}),

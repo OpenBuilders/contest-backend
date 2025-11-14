@@ -6,6 +6,8 @@ type TransformedSubmission = Partial<DBSchema["submissions"]> &
 	Partial<DBSchema["users"]> & {
 		submission: {
 			description?: string;
+			boc?: string;
+			wallet?: string;
 		};
 		likes: number;
 		dislikes: number;
