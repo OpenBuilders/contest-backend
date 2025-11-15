@@ -92,6 +92,7 @@ export const routeGETContestSubmissionsExport: Handler = async (ctx) => {
 				"submissions.submission",
 				"submissions.id",
 				"submissions.created_at",
+				"submissions.user_id",
 				"users.first_name",
 				"users.last_name",
 			])
