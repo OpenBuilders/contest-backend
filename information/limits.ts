@@ -7,7 +7,7 @@ export const limits = {
 			},
 			description: {
 				minLength: 0,
-				maxLength: 2048,
+				maxLength: 4096,
 				allowedTags: ["b", "i", "u", "a", "strike", "br"],
 				allowedAttrs: ["href"],
 			},
@@ -17,7 +17,7 @@ export const limits = {
 			},
 			prize: {
 				minLength: 0,
-				maxLength: 16,
+				maxLength: 20,
 			},
 			fee: {
 				min: 1,
