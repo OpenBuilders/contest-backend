@@ -170,3 +170,27 @@ test("cover rendering and Telegram delivery work with both drivers", async () =>
 	expect(code, errors).toBe(0);
 	expect(output).toContain("cleanup passed");
 }, 30000);
+
+for (const driver of ["local", "s3"]) {
+	for (const scenario of ["success", "error", "rejected", "cached"]) {
+		test(`intro animation ${driver} storage: ${scenario}`, async () => {
+			const proc = Bun.spawn(
+				[
+					process.execPath,
+					"run",
+					`${import.meta.dir}/../scripts/storage-media-check.ts`,
+					driver,
+					scenario,
+				],
+				{ stdout: "pipe", stderr: "pipe" },
+			);
+			const [output, errors, code] = await Promise.all([
+				new Response(proc.stdout).text(),
+				new Response(proc.stderr).text(),
+				proc.exited,
+			]);
+			expect(code, errors).toBe(0);
+			expect(output).toContain("Media delivery and cleanup passed");
+		});
+	}
+}
