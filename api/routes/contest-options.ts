@@ -1,4 +1,3 @@
-import { rm, writeFile } from "node:fs/promises";
 import type { Handler } from "elysia";
 import type { Updateable } from "kysely";
 import z from "zod";
@@ -10,6 +9,7 @@ import { transformContestAPI } from "../../transformers/contest";
 import { domPurify } from "../../utils/dompurify";
 import { events } from "../../utils/events";
 import { normalizeImageToWebP } from "../../utils/image";
+import { storage } from "../../utils/storage";
 
 export const routeGETContestOptions: Handler = async (ctx) => {
 	const { db, user_id }: JWTInjections & PoolInjections = ctx as any;
@@ -148,15 +148,9 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 				);
 
 				if (image) {
-					await writeFile(`${__dirname}/../../storage/images/${fileId}`, image);
+					await storage.write(`images/${fileId}`, image);
 
 					value.image = fileId;
-				}
-
-				if (contest.image) {
-					try {
-						await rm(`${__dirname}/../../storage/images/${contest.image}`);
-					} catch (_) {}
 				}
 			}
 
@@ -166,6 +160,14 @@ export const routePOSTContestOptionsUpdate: Handler = async (ctx) => {
 				.where("slug", "=", ctx.params.slug)
 				.where("owner_id", "=", user_id)
 				.execute();
+
+			if (value.image && contest.image) {
+				try {
+					await storage.delete(`images/${contest.image}`);
+				} catch (error) {
+					console.error("Failed to delete replaced contest image", error);
+				}
+			}
 
 			events.emit("contestUpdated", {
 				contest_id: contest!.id!,

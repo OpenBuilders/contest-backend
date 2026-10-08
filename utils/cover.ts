@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import { resolve } from "node:path";
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { sendPhoto } from "nyx-bot-client";
 import sharp from "sharp";
@@ -8,6 +7,7 @@ import type { DBSchema } from "../schema";
 import { db } from "./database";
 import { env } from "./env";
 import { isEqual } from "./general";
+import { storage } from "./storage";
 import { type ContestThemeBackdrop, ContestThemeBackdrops } from "./themes";
 
 const fonts = [
@@ -204,11 +204,9 @@ export async function generateContestCoverImage(
 	ctx.globalAlpha = 1;
 
 	if (image) {
-		const imageFile = await loadImage(
-			await sharp(await fs.readFile(`${__dirname}/../storage/images/${image}`))
-				.png()
-				.toBuffer(),
-		);
+		const imageBytes = await storage.read(`images/${image}`);
+		if (!imageBytes) throw new Error("Contest image not found");
+		const imageFile = await loadImage(await sharp(imageBytes).png().toBuffer());
 
 		const x = (width - imageSize) / 2;
 		const y = (height - imageSize) / 2;
@@ -260,11 +258,9 @@ export async function generateContestCoverImage(
 
 	const filename = generateRandomHash();
 
-	const filepath = `${__dirname}/../storage/covers/${filename}`;
-
-	await fs.writeFile(filepath, buff);
-
-	return resolve(filepath);
+	const key = `covers/${filename}`;
+	await storage.write(key, buff, "image/png");
+	return key;
 }
 
 export async function cacheContestCoverImage(
@@ -292,12 +288,16 @@ export async function cacheContestCoverImage(
 		image as any,
 	);
 
-	const result = await sendPhoto({
-		chat_id: env.COVER_ARCHIVE_CHAT_ID,
-		photo: `${env.BOT_API_FILE_PREFIX}${file_path}`,
-	});
-
-	await fs.rm(file_path);
+	const result = await (async () => {
+		try {
+			return await sendPhoto({
+				chat_id: env.COVER_ARCHIVE_CHAT_ID,
+				photo: storage.photo(file_path),
+			});
+		} finally {
+			await storage.delete(file_path);
+		}
+	})();
 
 	if (result.ok) {
 		const new_cover_image = {

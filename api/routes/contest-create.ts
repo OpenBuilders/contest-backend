@@ -1,4 +1,3 @@
-import { writeFile } from "node:fs/promises";
 import { Address } from "@ton/core";
 import type { Handler } from "elysia";
 import type { Insertable } from "kysely";
@@ -16,6 +15,7 @@ import { verifyTonProof } from "../../utils/hash";
 import { t } from "../../utils/i18n";
 import { normalizeImageToWebP } from "../../utils/image";
 import { pools } from "../../utils/pool";
+import { storage } from "../../utils/storage";
 import { invoices } from "./invoice-webhook";
 
 const validator = z.preprocess(
@@ -157,7 +157,7 @@ export const routePOSTContestCreate: Handler = async (ctx) => {
 				);
 
 				if (image) {
-					await writeFile(`${__dirname}/../../storage/images/${fileId}`, image);
+					await storage.write(`images/${fileId}`, image);
 
 					value.image = fileId;
 				}

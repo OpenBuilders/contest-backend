@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import type { Insertable } from "kysely";
 import {
 	type BotPipeline,
@@ -16,6 +16,7 @@ import { events } from "../../../../utils/events";
 import { t } from "../../../../utils/i18n";
 import { normalizeImageToWebP } from "../../../../utils/image";
 import { getState, setState } from "../../../../utils/state";
+import { storage } from "../../../../utils/storage";
 
 export const handlerPrivateStateCreate: BotPipeline<
 	"message",
@@ -250,10 +251,7 @@ const handlerPrivateStateCreateDate: BotPipeline<"message", DBSchema> = async (
 						);
 
 						if (image) {
-							await writeFile(
-								`${__dirname}/../../../../storage/images/${fileId}`,
-								image,
-							);
+							await storage.write(`images/${fileId}`, image);
 
 							value.image = fileId;
 						}
